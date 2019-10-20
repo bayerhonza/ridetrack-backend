@@ -1,0 +1,28 @@
+package com.ensimag.ridetrack.configuration;
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InjectionPoint;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+
+@Configuration
+public class ContextConfiguration {
+	
+	@Bean
+	@Scope("prototype")
+	public Logger logger(InjectionPoint injectionPoint) {
+		return LoggerFactory.getLogger(injectionPoint.getMember().getDeclaringClass());
+	}
+	
+	@Bean
+	public CacheManager cacheManager() {
+		ConcurrentMapCacheManager mapCacheManager = new ConcurrentMapCacheManager();
+		mapCacheManager.setCacheNames(Arrays.asList("test1", "test2"));
+		return mapCacheManager;
+	}
+}

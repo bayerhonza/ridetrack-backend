@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +14,11 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class BaseApplication {
     
-    private static final Logger logger = LoggerFactory.getLogger(BaseApplication.class);
+    private final Logger logger;
+    
+    public BaseApplication(Logger logger) {
+        this.logger = logger;
+    }
     
     public static void main(String[] args) {
         SpringApplication.run(BaseApplication.class, args);

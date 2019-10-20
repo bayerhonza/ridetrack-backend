@@ -7,6 +7,7 @@
     </Appenders>
     <Loggers>
         <Logger name="com.ensimag.ridetrack" level="TRACE"/>
+        <Logger name="org.springframework" level="INFO"/>
         <Root level="error">
             <AppenderRef ref="Console"/>
         </Root>
