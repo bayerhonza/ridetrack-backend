@@ -9,9 +9,9 @@
     <version>1.0-SNAPSHOT</version>
     
     <scm>
-        <connection>scm:git:git@gricad-gitlab.univ-grenoble-alpes.fr:bayeri/rie2019-ridetrack.git</connection>
-        <url>scm:git:git@gricad-gitlab.univ-grenoble-alpes.fr:bayeri/rie2019-ridetrack.git</url>
-        <developerConnection>scm:git:git@gricad-gitlab.univ-grenoble-alpes.fr:bayeri/rie2019-ridetrack.git</developerConnection>
+        <connection>scm:git:git@gricad-gitlab.univ-grenoble-alpes.fr:rie2019-ridetrack/ridetrack-backend.git</connection>
+        <url>scm:git:git@gricad-gitlab.univ-grenoble-alpes.fr:rie2019-ridetrack/ridetrack-backend.git</url>
+        <developerConnection>scm:git@gricad-gitlab.univ-grenoble-alpes.fr:rie2019-ridetrack/ridetrack-backend.git</developerConnection>
     </scm>
     
     <distributionManagement>
