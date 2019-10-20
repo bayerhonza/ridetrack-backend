@@ -1,0 +1,7 @@
+# IntelliJ IDEA project files
+*.iml
+.idea
+target
+
+# Hardware
+Debug/
