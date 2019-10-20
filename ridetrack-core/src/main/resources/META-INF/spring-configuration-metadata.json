@@ -1,0 +1,16 @@
+{
+	"properties": [
+		{
+			"name": "ridetrack.ttn.region",
+			"type": "java.lang.String"
+		},
+		{
+			"name": "ridetrack.ttn.appId",
+			"type": "java.lang.String"
+		},
+		{
+			"name": "ridetrack.ttn.accessKey",
+			"type" : "java.lang.String"
+		}
+	]
+}
