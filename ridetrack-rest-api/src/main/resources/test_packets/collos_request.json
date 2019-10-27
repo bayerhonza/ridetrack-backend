@@ -1,0 +1,88 @@
+{
+  "lorawan": [
+    {
+      "gatewayId": "eui-7276fffffe019882",
+      "rssi": -137,
+      "snr": -20,
+      "antennaLocation": {
+        "latitude": 45.17953,
+        "longitude": 5.70987,
+        "altitude": 246
+      }
+    },
+    {
+      "gatewayId": "cea-chamrousse-gateway",
+      "rssi": -114,
+      "snr": -17.5,
+      "antennaLocation": {
+        "latitude": 45.12564,
+        "longitude": 5.9028797,
+        "altitude": 2253
+      }
+    },
+    {
+      "gatewayId": "eui-7276fffffe019881",
+      "rssi": -135,
+      "snr": -17,
+      "antennaLocation": {
+        "latitude": 45.1878,
+        "longitude": 5.68836,
+        "altitude": 233
+      }
+    },
+    {
+      "gatewayId": "eui-904d4afffeff4c91",
+      "antennaId": 1,
+      "channel": 17,
+      "rssi": -122,
+      "snr": -10,
+      "antennaLocation": {
+        "latitude": 45.18192,
+        "longitude": 5.72629,
+        "altitude": 259
+      }
+    },
+    {
+      "gatewayId": "eui-0000024b08040056",
+      "rssi": -120,
+      "snr": -9.2,
+      "antennaLocation": {
+        "latitude": 45.190536,
+        "longitude": 5.7671146,
+        "altitude": 240
+      }
+    },
+    {
+      "gatewayId": "eui-904d4afffeff4dd5",
+      "antenna": 1,
+      "rssi": -123,
+      "snr": -9,
+      "antennaLocation": {
+        "latitude": 45.17858,
+        "longitude": 5.7508,
+        "altitude": 236
+      }
+    },
+    {
+      "gatewayId": "eui-7276fffffe019843",
+      "rssi": -123,
+      "snr": -5,
+      "antennaLocation": {
+        "latitude": 45.18552,
+        "longitude": 5.71979,
+        "altitude": 246
+      }
+    },
+    {
+      "gatewayId": "eui-904d4afffeff4c03",
+      "antennaId": 1,
+      "rssi": -99,
+      "snr": 14,
+      "antennaLocation": {
+        "latitude": 45.1907,
+        "longitude": 5.73682,
+        "altitude": 252
+      }
+    }
+  ]
+}

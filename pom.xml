@@ -46,35 +46,30 @@
         <ttnMQTTClient.version>2.1.3</ttnMQTTClient.version>
         <json.version>20190722</json.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+        <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
+        <liquibase.version>3.8.0</liquibase.version>
+        <lombok.version>1.18.10</lombok.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
     
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>${maven-install-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
-                        <encoding>UTF-8</encoding>
-                        <doencoding>UTF-8</doencoding>
-                    </configuration>
-                </plugin>
-                
-                <!-- Execution des tests -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.0</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <!-- Execution des tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+        </plugins>
     </build>
     
 </project>

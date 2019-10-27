@@ -1,4 +1,4 @@
-package com.ensimag.ridetrack.radio;
+package radio;
 import java.net.URISyntaxException;
 
 import org.thethingsnetwork.data.mqtt.Client;
