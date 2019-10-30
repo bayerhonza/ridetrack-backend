@@ -74,7 +74,7 @@ public class UserRepositoryTest {
     cl1.setClientName("clien1");
     cl1.setFullName("Client One");
 
-    User u1 = User.builder(
+    User u1 = User.builder()
         .name("user1")
         .email("test.test@test.zeA")
         .hashPassword("hashqsdfqsdfhash")
