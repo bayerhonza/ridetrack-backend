@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class BaseApplication {
-    
+    /*
     private final Logger logger;
     
     public BaseApplication(Logger logger) {
@@ -32,5 +32,5 @@ public class BaseApplication {
     @Bean
     public ApplicationRunner applicationRunner(ApplicationContext ctx) {
         return args -> logger.info("application {} with id {} started at {}", ctx.getApplicationName(), ctx.getId(), new Date(ctx.getStartupDate()));
-    }
+    }*/
 }
