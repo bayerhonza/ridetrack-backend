@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.User;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -17,25 +16,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 
 @DataJpaTest
 @TestMethodOrder(OrderAnnotation.class)
-public class UserRepositoryTest {
+public class UserRepositoryTest extends AbstractRepositoryTest {
 
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  private DataSource dataSource;
-
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
-
-  @Autowired
-  private TestEntityManager entityManager;
 
   @Test
   @Order(0)
