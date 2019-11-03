@@ -29,6 +29,7 @@ public class DeviceGroup {
   private long id;
 
 
+  @Column(name = "name")
   private String name;
 
   @NotNull

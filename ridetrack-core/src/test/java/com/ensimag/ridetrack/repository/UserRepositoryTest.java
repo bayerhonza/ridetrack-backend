@@ -44,7 +44,7 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     u1.setUsername("username1");
     u1.setHashPassword("abcde123456&é-è_è-('");
     u1.setSurname("surname1");
-    userRepository.save(u1);
+    entityManager.persist(u1);
     entityManager.flush();
     assertNotEquals(0, u1.getId());
     System.out.print(u1.getId());

@@ -1,11 +1,10 @@
 package com.ensimag.ridetrack.repository;
 
-import com.ensimag.ridetrack.models.User;
+import com.ensimag.ridetrack.models.Sensor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface SensorRepository extends JpaRepository<Sensor, Long> {
 
-  User findByUsername(String username);
 }

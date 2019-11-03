@@ -14,12 +14,13 @@ import javax.persistence.Table;
 public class Device {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_device", nullable = false)
   private long id;
 
   @OneToOne(cascade = {CascadeType.ALL})
   private Sensor sensor;
 
-
+  @Column(name = "device_uid")
+  private String deviceUid;
 }

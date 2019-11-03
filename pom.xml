@@ -47,7 +47,7 @@
         <json.version>20190722</json.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
         <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
-        <liquibase.version>3.8.0</liquibase.version>
+        <liquibase.version>3.6.3</liquibase.version>
         <lombok.version>1.18.10</lombok.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
     </properties>
