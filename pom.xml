@@ -50,6 +50,8 @@
         <liquibase.version>3.6.3</liquibase.version>
         <lombok.version>1.18.10</lombok.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <swagger.version>2.9.2</swagger.version>
+        <modelmapper.version>2.3.5</modelmapper.version>
     </properties>
 
     <dependencies>

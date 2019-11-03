@@ -11,6 +11,18 @@
 		{
 			"name": "ridetrack.ttn.accessKey",
 			"type" : "java.lang.String"
+		},
+		{
+			"name": "application.name",
+			"type": "java.lang.String"
+		},
+		{
+			"name": "build.version",
+			"type": "java.lang.String"
+		},
+		{
+			"name": "build.timestamp",
+			"type": "java.lang.String"
 		}
 	]
 }

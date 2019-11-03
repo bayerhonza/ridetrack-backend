@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "sensors")
@@ -20,6 +21,7 @@ public class Sensor {
   @OneToOne(mappedBy = "sensor")
   private Device device;
 
+  @NotBlank
   @Column(name = "device_uid")
   private String deviceUid;
 }

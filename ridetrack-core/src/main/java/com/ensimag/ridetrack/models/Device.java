@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "device")
@@ -21,6 +22,7 @@ public class Device {
   @OneToOne(cascade = {CascadeType.ALL})
   private Sensor sensor;
 
+  @NotNull
   @Column(name = "device_uid")
   private String deviceUid;
 }

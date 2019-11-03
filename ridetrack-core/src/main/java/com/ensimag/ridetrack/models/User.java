@@ -15,7 +15,9 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,21 +40,22 @@ public class User {
   @Column(name = "id_user", unique = true)
   private long id;
 
-  @NotNull
+  @NotBlank
   @Size(max = 100)
   @Column(name = "username", unique = true)
   private String username;
 
-  @NotNull
+  @NotBlank
   @Column(name = "hash_password")
   private String hashPassword;
 
-  @NotNull
+  @NotBlank
   @Size(max = 100)
   @Column(name = "name", nullable = false)
   private String name;
 
-  @NotNull
+  @NotBlank
+  @Pattern(regexp = "(.*)")
   @Size(max = 100)
   @Column(name = "surname", nullable = false)
   private String surname;

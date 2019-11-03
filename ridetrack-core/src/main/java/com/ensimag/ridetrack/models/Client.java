@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,11 +30,11 @@ public class Client {
   @Column(name = "id_client", unique = true)
   private long id;
 
-  @NotNull
+  @NotBlank
   @Column(name = "client_name", unique = true)
   private String clientName;
 
-  @NotNull
+  @NotBlank
   @Column(name = "full_name")
   private String fullName;
 
