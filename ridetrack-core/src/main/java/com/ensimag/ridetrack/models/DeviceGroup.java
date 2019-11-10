@@ -1,5 +1,8 @@
 package com.ensimag.ridetrack.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +24,8 @@ import javax.validation.constraints.NotNull;
         ),
     }
 )
+@Getter
+@Setter
 public class DeviceGroup {
 
   @Id

@@ -1,5 +1,7 @@
 package com.ensimag.ridetrack.models;
 
+import lombok.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,11 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "sensors")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Sensor {
 
   @Id

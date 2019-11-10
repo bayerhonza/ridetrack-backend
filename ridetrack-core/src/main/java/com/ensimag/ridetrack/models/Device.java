@@ -1,5 +1,7 @@
 package com.ensimag.ridetrack.models;
 
+import lombok.*;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,11 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "device")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Device {
 
   @Id
