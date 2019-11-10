@@ -5,8 +5,10 @@ import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.repository.ClientRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ClientManager {
 
 	private final ClientRepository clientRepository;
@@ -27,6 +29,10 @@ public class ClientManager {
 
 	public Optional<Client> findClientByClientName(String clientName) {
 		return clientRepository.findByClientName(clientName);
+	}
+
+	public void deleteClient(String clientName) {
+		clientRepository.deleteClientByClientName(clientName);
 	}
 
 }

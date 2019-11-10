@@ -1,14 +1,14 @@
 package com.ensimag.ridetrack.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.User;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -20,23 +20,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 @TestMethodOrder(OrderAnnotation.class)
-public class UserRepositoryTest extends AbstractRepositoryTest {
+public class RideTrackUserRepositoryTest extends AbstractRepositoryTest {
 
   @Autowired
   private UserRepository userRepository;
 
-
   @Test
-  @Order(0)
-  void injectedComponentsAreNotNull(){
-    assertThat(dataSource).isNotNull();
-    assertThat(jdbcTemplate).isNotNull();
-    assertThat(entityManager).isNotNull();
-    assertThat(userRepository).isNotNull();
-  }
-
-  @Test
-  @DisplayName("test Spring Data for Client")
+  @DisplayName("Test Spring Data for Client")
   @Order(1)
   public void testClient() {
     User u1 = new User();
@@ -49,10 +39,10 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     assertNotEquals(0, u1.getId());
     System.out.print(u1.getId());
 
-    User u1fresh = userRepository.findByUsername("username1");
-    assertNotNull(u1fresh);
-    assertSame(u1fresh, u1);
-    assertEquals("test1", u1fresh.getName());
+    Optional<User> u1FreshOptional = userRepository.findByUsername("username1");
+    assertTrue(u1FreshOptional.isPresent());
+    assertSame(u1FreshOptional.get(), u1);
+    assertEquals("test1", u1FreshOptional.get().getName());
   }
 
   @Test

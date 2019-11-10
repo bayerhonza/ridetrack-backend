@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "permissions")
-public class DeviceGroupPermissions {
+public class DeviceGroupPermissions extends AbstractTimestampEntity {
 
 
   @Id

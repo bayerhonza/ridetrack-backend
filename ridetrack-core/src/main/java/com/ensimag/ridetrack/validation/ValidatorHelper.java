@@ -1,6 +1,6 @@
 package com.ensimag.ridetrack.validation;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidatorHelper {
 
-	private final Map<ValidationPatterns, Pattern> patterns = new HashMap<>();
+	private final Map<ValidationPatterns, Pattern> patterns = new EnumMap<>(
+		ValidationPatterns.class);
 
 	private ValidatorHelper() {
 		patterns.put(ValidationPatterns.USERNAME,

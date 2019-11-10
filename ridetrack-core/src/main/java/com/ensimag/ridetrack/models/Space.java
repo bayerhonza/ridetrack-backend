@@ -1,6 +1,8 @@
 package com.ensimag.ridetrack.models;
 
-import java.util.Collections;
+import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_SPACE_CLIENT_SPACE_NAME;
+
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,19 +25,21 @@ import lombok.Setter;
 @Entity
 @Table(
     name = "space",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "client_id"})}
+    uniqueConstraints = {
+        @UniqueConstraint(name = UQ_SPACE_CLIENT_SPACE_NAME, columnNames = {"name", "client_id"})
+    }
 )
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Space {
+public class Space extends AbstractTimestampEntity {
 
   @Id
   @NotNull
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id_space", unique = true)
+  @Column(name = "id_space")
   private long id;
 
   @NotBlank
@@ -48,6 +52,6 @@ public class Space {
   private Client owner;
 
   @OneToMany(mappedBy = "space")
-  private Set<User> users = Collections.emptySet();
+  private final Set<User> users = new HashSet<>();
 
 }

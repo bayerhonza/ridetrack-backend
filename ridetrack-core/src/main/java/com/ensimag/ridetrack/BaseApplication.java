@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 public class BaseApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BaseApplication.class, args);
+        SpringApplication.run(BaseApplication.class);
     }
 
     

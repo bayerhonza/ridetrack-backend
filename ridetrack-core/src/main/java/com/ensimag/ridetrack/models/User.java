@@ -1,6 +1,8 @@
 package com.ensimag.ridetrack.models;
 
 
+import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_USER_USERNAME;
+
 import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,10 +16,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,36 +28,37 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+@Table(name = "user", uniqueConstraints = {
+    @UniqueConstraint(name = UQ_USER_USERNAME, columnNames = {"username"})
+})
+public class User extends AbstractTimestampEntity {
 
   @Id
-  @NotNull
+  @NotNull(message = "id cannot be empty")
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id_user", unique = true)
+  @Column(name = "id_user")
   private long id;
 
-  @NotBlank
+  @NotBlank(message = "username cannot be empty")
   @Size(max = 100)
-  @Column(name = "username", unique = true)
+  @Column(name = "username")
   private String username;
 
-  @NotBlank
+  @NotBlank(message = "password cannot be empty")
   @Column(name = "hash_password")
   private String hashPassword;
 
-  @NotBlank
+  @NotBlank(message = "name cannot be empty")
   @Size(max = 100)
   @Column(name = "name", nullable = false)
   private String name;
 
-  @NotBlank
-  @Pattern(regexp = "(.*)")
+  @NotBlank(message = "surname cannot be empty")
   @Size(max = 100)
   @Column(name = "surname", nullable = false)
   private String surname;
@@ -64,7 +67,7 @@ public class User {
   @Column(name = "email")
   private String email;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "id_space")
   private Space space;
 
