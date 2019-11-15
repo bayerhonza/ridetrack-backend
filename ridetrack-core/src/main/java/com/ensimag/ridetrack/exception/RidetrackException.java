@@ -1,4 +1,4 @@
-package com.ensimag.ridetrack.exceptions;
+package com.ensimag.ridetrack.exception;
 
 public class RidetrackException extends Exception {
 

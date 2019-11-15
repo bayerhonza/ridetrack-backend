@@ -1,4 +1,4 @@
-package com.ensimag.ridetrack.exceptions;
+package com.ensimag.ridetrack.rest.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

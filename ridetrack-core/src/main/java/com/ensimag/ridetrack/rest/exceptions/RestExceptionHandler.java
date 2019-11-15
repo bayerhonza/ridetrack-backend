@@ -1,9 +1,11 @@
-package com.ensimag.ridetrack.exceptions;
+package com.ensimag.ridetrack.rest.exceptions;
 
+import com.ensimag.ridetrack.exception.RidetrackConflictException;
+import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
+import com.ensimag.ridetrack.exception.RidetrackValidationException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -65,8 +67,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 		RestErrorInfo restErrorInfo = RestErrorInfo.builder()
 			.status(HttpStatus.BAD_REQUEST.value())
-			.message(ex.getLocalizedMessage())
-			.error(String.join(",", errors))
+			.message(String.join(",", errors))
+			.error("error.rest.validation")
 			.build();
 		return handleExceptionInternal(ex, restErrorInfo, headers, HttpStatus.BAD_REQUEST,
 			request);
@@ -89,37 +91,62 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			request);
 	}
 
-	@ExceptionHandler({DataIntegrityViolationException.class})
-	public ResponseEntity<RestErrorInfo> handleDataIntegrityException(HttpServletRequest req,
-		DataIntegrityViolationException ex) {
-		RestErrorInfo restErrorInfo = RestErrorInfo.builder()
-			.path(req.getServletPath())
-			.status(HttpStatus.CONFLICT.value())
-			.timestamp(OffsetDateTime.now().toString())
-			.build();
+	@ExceptionHandler({DataIntegrityViolationException.class, RidetrackConflictException.class})
+	public ResponseEntity<RestErrorInfo> handleDataIntegrityException(WebRequest req,
+		Exception ex) {
 		if (ex.getCause() instanceof ConstraintViolationException) {
 			ConstraintViolationException constraintViolationEx = (ConstraintViolationException) ex
 				.getCause();
 			String constraintName = constraintViolationEx.getConstraintName();
-			restErrorInfo.setMessage(
-				messageService.translateCodeIntoMsg(constraintName));
-			restErrorInfo.setError(messageService.getConstraintErrorCode(constraintName));
+			String errorCode = messageService.translateCodeIntoMsg(constraintName);
+			String errorMsg = messageService.getConstraintErrorCode(constraintName);
+			return buildResponseEntity(errorCode, errorMsg, HttpStatus.CONFLICT, req);
+		} else if (ex instanceof RidetrackConflictException) {
+			RidetrackConflictException conflictException = (RidetrackConflictException) ex;
+			String constraintName = conflictException.getConflictingProperty();
+			String errorCode = messageService.translateCodeIntoMsg(constraintName);
+			String errorMsg = messageService.getConstraintErrorCode(constraintName);
+			return buildResponseEntity(errorCode, errorMsg, HttpStatus.CONFLICT, req);
 		}
 
-		return new ResponseEntity<>(restErrorInfo, new HttpHeaders(), HttpStatus.CONFLICT);
+		return buildResponseEntity("error occurred", HttpStatus.CONFLICT, ex, req);
 	}
 
 	@ExceptionHandler({Exception.class})
-	public ResponseEntity<Object> handleAll(Exception ex, WebRequest req) {
+	public ResponseEntity<RestErrorInfo> handleAll(Exception ex, WebRequest req) {
+		return buildResponseEntity("error occurred", HttpStatus.INTERNAL_SERVER_ERROR, ex, req);
+	}
+
+	@ExceptionHandler({RidetrackValidationException.class})
+	public ResponseEntity<RestErrorInfo> handleValidationException(RidetrackValidationException ex,
+		WebRequest req) {
+		String errorCode = "error.rest." + ex.getEntityName() + "." + ex.getProperty() + ".nonValid";
+		return buildResponseEntity(errorCode, HttpStatus.BAD_REQUEST, ex, req);
+	}
+
+	@ExceptionHandler({RidetrackNotFoundException.class})
+	public ResponseEntity<RestErrorInfo> handleNotFoundException(RidetrackNotFoundException ex,
+		WebRequest req) {
+		return buildResponseEntity("error.rest.notFound", HttpStatus.NOT_FOUND, ex, req);
+	}
+
+	private ResponseEntity<RestErrorInfo> buildResponseEntity(String errorCode, HttpStatus status,
+		Exception ex, WebRequest request) {
+		return buildResponseEntity(ex.getLocalizedMessage(), errorCode, status, request);
+	}
+
+	private ResponseEntity<RestErrorInfo> buildResponseEntity(String errorCode, String errorMsg,
+		HttpStatus status, WebRequest request) {
 		RestErrorInfo restErrorInfo = RestErrorInfo.builder()
-			.path(req.getContextPath())
-			.message(ex.getLocalizedMessage())
-			.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+			.path(request.getContextPath())
+			.message(errorMsg)
+			.status(status.value())
 			.timestamp(OffsetDateTime.now().toString())
-			.error("error occurred")
+			.error(errorCode)
 			.build();
+
 		return new ResponseEntity<>(
-			restErrorInfo, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+			restErrorInfo, new HttpHeaders(), status);
 	}
 
 

@@ -1,6 +1,6 @@
 package com.ensimag.ridetrack.services.impl;
 
-import com.ensimag.ridetrack.exceptions.RidetrackException;
+import com.ensimag.ridetrack.exception.RidetrackException;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.User;
 import com.ensimag.ridetrack.repository.SpaceRepository;

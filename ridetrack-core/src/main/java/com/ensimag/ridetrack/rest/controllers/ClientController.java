@@ -1,16 +1,16 @@
-package com.ensimag.ridetrack.controllers;
+package com.ensimag.ridetrack.rest.controllers;
 
 import com.ensimag.ridetrack.auth.AuthenticationService;
 import com.ensimag.ridetrack.auth.SuperRideTrackUser;
 import com.ensimag.ridetrack.dto.ClientDef;
+import com.ensimag.ridetrack.exception.RidetrackConflictException;
+import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
+import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
 import com.ensimag.ridetrack.services.ClientManager;
-import com.ensimag.ridetrack.validation.ValidatorHelper;
 import java.net.URI;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,25 +30,21 @@ public class ClientController {
 
 	private final ClientManager clientManager;
 
-	private final ValidatorHelper validator;
-
 	private final AuthenticationService authenticationService;
 
-	public ClientController(ClientManager clientManager, ValidatorHelper validator,
-		AuthenticationService authenticationService) {
+	public ClientController(ClientManager clientManager, AuthenticationService authenticationService) {
 		this.clientManager = clientManager;
-		this.validator = validator;
 		this.authenticationService = authenticationService;
 	}
 
 	@PostMapping(path = "/")
 	public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDef clientDef) {
-
-		if (clientManager.findClientByClientName(clientDef.getClientName()).isPresent()) {
-			log.error("Client {} already exists", clientDef.getClientName());
+		if (clientManager.clientExists(clientDef)) {
+			log.warn("Client {} already exists", clientDef.getClientName());
+			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
 		}
 		log.info("Creating client : {}", clientDef.getClientName());
-		Client createdClient = validateAndCreateClient(clientDef);
+		Client createdClient = clientManager.createClient(clientDef);
 		log.debug("Created client : {}", clientDef.getClientName());
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -63,7 +59,7 @@ public class ClientController {
 	public ResponseEntity<Client> getClient(@PathVariable(name = "clientName") String clientName) {
 		Client client = clientManager.findClientByClientName(clientName)
 			.orElseThrow(
-				() -> new ResourceNotFoundException("Client not found on ::" + clientName));
+				() -> new RidetrackNotFoundException("Client" + clientName + " not found"));
 		return ResponseEntity.ok()
 			.body(client);
 	}
@@ -77,14 +73,5 @@ public class ClientController {
 		clientManager.deleteClient(clientName);
 	}
 
-	private Client validateAndCreateClient(ClientDef clientDef)  {
-		if (Objects.isNull(clientDef.getClientName()) || !validator.validateUsername(clientDef.getClientName())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong client name");
-		}
-		if (Objects.isNull(clientDef.getFullName())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong client full name");
-		}
-		return clientManager.createClient(clientDef);
-	}
 
 }

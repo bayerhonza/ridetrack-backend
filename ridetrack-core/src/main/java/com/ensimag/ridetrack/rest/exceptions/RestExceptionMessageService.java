@@ -1,4 +1,4 @@
-package com.ensimag.ridetrack.exceptions;
+package com.ensimag.ridetrack.rest.exceptions;
 
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
 import java.util.Map;

@@ -27,6 +27,10 @@ public class ClientManager {
 		return newClient;
 	}
 
+	public boolean clientExists(ClientDef clientDef) {
+		return clientRepository.findByClientName(clientDef.getClientName()).isPresent();
+	}
+
 	public Optional<Client> findClientByClientName(String clientName) {
 		return clientRepository.findByClientName(clientName);
 	}
@@ -34,5 +38,6 @@ public class ClientManager {
 	public void deleteClient(String clientName) {
 		clientRepository.deleteClientByClientName(clientName);
 	}
+
 
 }

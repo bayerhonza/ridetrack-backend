@@ -9,7 +9,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	
-	<artifactId>ridetrack-ihm-api</artifactId>
+	<artifactId>ridetrack-api</artifactId>
 
 
 </project>
