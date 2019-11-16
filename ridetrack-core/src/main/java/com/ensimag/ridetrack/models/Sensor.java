@@ -8,17 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sensors")
 public class Sensor extends AbstractTimestampEntity {
 
   @Id
-  @NotNull
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_sensor")
-  private long id;
+  private Long id;
 
   @OneToOne(mappedBy = "sensor")
   private Device device;

@@ -23,7 +23,7 @@ public class ClientManager {
 			.fullName(clientDef.getFullName())
 			.build();
 
-		clientRepository.save(newClient);
+		clientRepository.saveAndFlush(newClient);
 		return newClient;
 	}
 

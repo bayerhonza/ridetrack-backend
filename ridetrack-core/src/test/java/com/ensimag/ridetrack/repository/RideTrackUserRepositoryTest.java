@@ -28,7 +28,7 @@ public class RideTrackUserRepositoryTest extends AbstractRepositoryTest {
   @Test
   @DisplayName("Test Spring Data for Client")
   @Order(1)
-  public void testClient() {
+  public void testUser() {
     User u1 = new User();
     u1.setName("test1");
     u1.setUsername("username1");

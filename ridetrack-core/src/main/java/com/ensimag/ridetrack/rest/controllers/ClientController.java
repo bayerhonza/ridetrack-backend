@@ -7,10 +7,12 @@ import com.ensimag.ridetrack.exception.RidetrackConflictException;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
+import com.ensimag.ridetrack.repository.ClientRepository;
 import com.ensimag.ridetrack.services.ClientManager;
 import java.net.URI;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,11 +32,18 @@ public class ClientController {
 
 	private final ClientManager clientManager;
 
+	private final ClientRepository clientRepository;
+
 	private final AuthenticationService authenticationService;
 
-	public ClientController(ClientManager clientManager, AuthenticationService authenticationService) {
+	@Autowired
+	public ClientController(
+		ClientManager clientManager,
+		AuthenticationService authenticationService,
+		ClientRepository clientRepository) {
 		this.clientManager = clientManager;
 		this.authenticationService = authenticationService;
+		this.clientRepository = clientRepository;
 	}
 
 	@PostMapping(path = "/")

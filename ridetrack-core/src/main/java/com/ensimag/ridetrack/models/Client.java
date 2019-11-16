@@ -4,6 +4,7 @@ import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_CLIE
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +21,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +37,7 @@ public class Client extends AbstractTimestampEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_client", unique = true)
-  private long id;
+  private Long id;
 
   @NotBlank
   @Column(name = "client_name")
@@ -45,7 +47,7 @@ public class Client extends AbstractTimestampEntity {
   @Column(name = "full_name")
   private String fullName;
 
-  @OneToMany(mappedBy = "owner")
+  @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
   private final Set<Space> spaces = new HashSet<>();
 
 }

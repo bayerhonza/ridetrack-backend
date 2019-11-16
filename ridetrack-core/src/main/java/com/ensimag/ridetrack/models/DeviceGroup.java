@@ -5,6 +5,7 @@ import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVI
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,9 +31,8 @@ import lombok.Setter;
 public class DeviceGroup extends AbstractTimestampEntity {
 
   @Id
-  @NotNull
   @Column(name = "id_dev_group")
-  private long id;
+  private Long id;
 
 
   @Column(name = "name")
@@ -40,13 +40,11 @@ public class DeviceGroup extends AbstractTimestampEntity {
 
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "id_space")
+  @JoinColumn(name = "id_space", foreignKey = @ForeignKey(name = "fk_devgroup_id_space"))
   private Space space;
-
-  @OneToMany(mappedBy = "space")
-  private Set<User> users;
 
   @OneToMany(mappedBy = "deviceGroup")
   private Set<Device> devices;
+
 
 }

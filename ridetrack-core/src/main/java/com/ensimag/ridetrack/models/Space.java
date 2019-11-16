@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +41,7 @@ public class Space extends AbstractTimestampEntity {
   @NotNull
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_space")
-  private long id;
+  private Long id;
 
   @NotBlank
   @Column(name = "name")
@@ -48,7 +49,7 @@ public class Space extends AbstractTimestampEntity {
 
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "client_id")
+  @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_space_client_id"))
   private Client owner;
 
   @OneToMany(mappedBy = "space")

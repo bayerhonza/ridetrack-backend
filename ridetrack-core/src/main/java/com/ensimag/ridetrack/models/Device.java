@@ -5,6 +5,7 @@ import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVI
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,9 +20,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "device", uniqueConstraints = {
-    @UniqueConstraint(name = UQ_DEVICE_DEVICE_UID, columnNames = {"device_uid"})
-})
+@Table(
+    name = "device",
+    uniqueConstraints = {
+        @UniqueConstraint(name = UQ_DEVICE_DEVICE_UID, columnNames = {"device_uid"})
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,10 +33,15 @@ public class Device extends AbstractTimestampEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id_device", nullable = false)
-  private long id;
+  @Column(name = "id_device")
+  private Long id;
 
   @OneToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(
+      name = "id_sensor",
+      referencedColumnName = "id_sensor",
+      foreignKey = @ForeignKey(name = "fk_device_sensor")
+  )
   private Sensor sensor;
 
   @NotNull
@@ -40,7 +49,7 @@ public class Device extends AbstractTimestampEntity {
   private String deviceUid;
 
   @ManyToOne
-  @JoinColumn(name = "id_device_group")
+  @JoinColumn(name = "id_device_group", foreignKey = @ForeignKey(name = "fk_device_id_device_group"))
   private DeviceGroup deviceGroup;
 
 }

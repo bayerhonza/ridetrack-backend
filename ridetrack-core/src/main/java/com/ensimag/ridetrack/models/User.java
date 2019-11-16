@@ -3,18 +3,16 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_USER_USERNAME;
 
-import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
@@ -33,16 +31,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user", uniqueConstraints = {
-    @UniqueConstraint(name = UQ_USER_USERNAME, columnNames = {"username"})
-})
+@Table(
+    name = "user",
+    uniqueConstraints = {
+        @UniqueConstraint(name = UQ_USER_USERNAME, columnNames = {"username"})
+    }
+)
 public class User extends AbstractTimestampEntity {
 
   @Id
   @NotNull(message = "id cannot be empty")
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_user")
-  private long id;
+  private Long id;
 
   @NotBlank(message = "username cannot be empty")
   @Size(max = 100)
@@ -55,12 +56,12 @@ public class User extends AbstractTimestampEntity {
 
   @NotBlank(message = "name cannot be empty")
   @Size(max = 100)
-  @Column(name = "name", nullable = false)
+  @Column(name = "name")
   private String name;
 
   @NotBlank(message = "surname cannot be empty")
   @Size(max = 100)
-  @Column(name = "surname", nullable = false)
+  @Column(name = "surname")
   private String surname;
 
   @Email
@@ -68,17 +69,13 @@ public class User extends AbstractTimestampEntity {
   private String email;
 
   @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "id_space")
+  @JoinColumn(name = "id_space", foreignKey = @ForeignKey(name = "fk_user_id_space"))
   private Space space;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinTable(
-      name = "user_permissions_mapping",
-      joinColumns = {@JoinColumn(name = "id_user", referencedColumnName = "id_user")}
-  )
-  @MapKeyJoinColumn(name = "id_group")
-  private Map<DeviceGroup, DeviceGroupPermissions> deviceGroupPermissions;
+  private boolean isAdmin;
 
-
+  @OneToOne
+  @JoinColumn(name = "id_user_configuration", foreignKey = @ForeignKey(name = "fk_user_user_config"))
+  private UserConfiguration userConfiguration;
 
 }
