@@ -1,7 +1,7 @@
 package com.ensimag.ridetrack.rest.controllers;
 
 import com.ensimag.ridetrack.auth.AuthenticationService;
-import com.ensimag.ridetrack.dto.SpaceDef;
+import com.ensimag.ridetrack.dto.SpaceDTO;
 import com.ensimag.ridetrack.services.SpaceManager;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class SpaceController {
 	}
 
 	@PostMapping(path = "/")
-	public ResponseEntity<Object> createSpace(@Valid @RequestBody SpaceDef spaceDef) {
+	public ResponseEntity<Object> createSpace(@Valid @RequestBody SpaceDTO spaceDTO) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

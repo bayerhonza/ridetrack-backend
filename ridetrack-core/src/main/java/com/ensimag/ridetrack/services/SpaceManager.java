@@ -1,6 +1,6 @@
 package com.ensimag.ridetrack.services;
 
-import com.ensimag.ridetrack.dto.SpaceDef;
+import com.ensimag.ridetrack.dto.SpaceDTO;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,9 @@ public class SpaceManager {
 		this.spaceRepository = spaceRepository;
 	}
 
-	public Space createSpace(SpaceDef spaceDef) {
+	public Space createSpace(SpaceDTO spaceDTO) {
 		Space newSpace = Space.builder()
-			.name(spaceDef.getName())
+			.name(spaceDTO.getName())
 			.build();
 
 		spaceRepository.save(newSpace);
