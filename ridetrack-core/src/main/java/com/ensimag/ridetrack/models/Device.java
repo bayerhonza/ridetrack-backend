@@ -52,4 +52,7 @@ public class Device extends AbstractTimestampEntity {
   @JoinColumn(name = "id_device_group", foreignKey = @ForeignKey(name = "fk_device_id_device_group"))
   private DeviceGroup deviceGroup;
 
+  @OneToOne(mappedBy = "device")
+  private DeviceData deviceData;
+
 }

@@ -7,7 +7,6 @@ import com.ensimag.ridetrack.exception.RidetrackConflictException;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
-import com.ensimag.ridetrack.repository.ClientRepository;
 import com.ensimag.ridetrack.services.ClientManager;
 import java.net.URI;
 import javax.validation.Valid;
@@ -32,36 +31,36 @@ public class ClientController {
 
 	private final ClientManager clientManager;
 
-	private final ClientRepository clientRepository;
-
 	private final AuthenticationService authenticationService;
 
 	@Autowired
 	public ClientController(
 		ClientManager clientManager,
-		AuthenticationService authenticationService,
-		ClientRepository clientRepository) {
+		AuthenticationService authenticationService) {
 		this.clientManager = clientManager;
 		this.authenticationService = authenticationService;
-		this.clientRepository = clientRepository;
 	}
 
 	@PostMapping(path = "/")
 	public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDef clientDef) {
-		if (clientManager.clientExists(clientDef)) {
+		if (clientManager.clientExists(clientDef.getClientName())) {
 			log.warn("Client {} already exists", clientDef.getClientName());
 			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
 		}
 		log.info("Creating client : {}", clientDef.getClientName());
-		Client createdClient = clientManager.createClient(clientDef);
+		Client newClient = Client.builder()
+			.fullName(clientDef.getFullName())
+			.clientName(clientDef.getClientName())
+			.build();
+		clientManager.createClient(newClient);
 		log.debug("Created client : {}", clientDef.getClientName());
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 			.path("/{id}")
-			.buildAndExpand(createdClient.getId())
+			.buildAndExpand(newClient.getId())
 			.toUri();
 		return ResponseEntity.created(uri)
-			.body(createdClient);
+			.body(newClient);
 	}
 
 	@GetMapping("/{clientName}")

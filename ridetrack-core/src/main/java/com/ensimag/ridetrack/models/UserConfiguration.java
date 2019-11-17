@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "user_configuration")
-public class UserConfiguration {
+public class UserConfiguration extends AbstractTimestampEntity{
 
 	@Id
 	@Column(name = "id_configuration")

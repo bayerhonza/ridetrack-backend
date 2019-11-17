@@ -36,7 +36,7 @@ public class Client extends AbstractTimestampEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id_client", unique = true)
+  @Column(name = "id_client")
   private Long id;
 
   @NotBlank

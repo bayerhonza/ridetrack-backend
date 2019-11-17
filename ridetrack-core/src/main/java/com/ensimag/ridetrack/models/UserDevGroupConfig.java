@@ -27,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @IdClass(UserDevGroupConfigPK.class)
-public class UserDevGroupConfig {
+public class UserDevGroupConfig extends AbstractTimestampEntity {
 
 	@Id
 	@Column(name = "id_user_config")
@@ -43,7 +43,6 @@ public class UserDevGroupConfig {
 
 	@ManyToOne
 	@JoinColumn(name = "id_device_group", nullable = false, updatable = false, insertable = false)
-
 	private DeviceGroup deviceGroup;
 
 	@ElementCollection(targetClass = Operation.class)

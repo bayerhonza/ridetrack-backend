@@ -1,6 +1,5 @@
 package com.ensimag.ridetrack.services;
 
-import com.ensimag.ridetrack.dto.ClientDef;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.repository.ClientRepository;
 import java.util.Optional;
@@ -17,18 +16,13 @@ public class ClientManager {
 		this.clientRepository = clientRepository;
 	}
 
-	public Client createClient(ClientDef clientDef) {
-		Client newClient = Client.builder()
-			.clientName(clientDef.getClientName())
-			.fullName(clientDef.getFullName())
-			.build();
-
+	public Client createClient(Client newClient) {
 		clientRepository.saveAndFlush(newClient);
 		return newClient;
 	}
 
-	public boolean clientExists(ClientDef clientDef) {
-		return clientRepository.findByClientName(clientDef.getClientName()).isPresent();
+	public boolean clientExists(String clientName) {
+		return clientRepository.findByClientName(clientName).isPresent();
 	}
 
 	public Optional<Client> findClientByClientName(String clientName) {

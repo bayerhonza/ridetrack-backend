@@ -3,29 +3,18 @@ package com.ensimag.ridetrack.models;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @MappedSuperclass
 public class AbstractTimestampEntity {
 
 	@Column(name = "created")
+	@CreationTimestamp
 	private ZonedDateTime created;
 
 	@Column(name = "updated")
+	@UpdateTimestamp
 	private ZonedDateTime updated;
-
-	@PrePersist
-	protected void onCreate() {
-		created = ZonedDateTime.now();
-		if (updated == null) {
-			updated = created;
-		}
-	}
-
-	@PostUpdate
-	protected void onUpdate() {
-		updated = ZonedDateTime.now();
-	}
 
 }

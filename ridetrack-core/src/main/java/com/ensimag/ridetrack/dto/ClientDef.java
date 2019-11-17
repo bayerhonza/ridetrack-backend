@@ -16,7 +16,6 @@ public class ClientDef {
 	@NotBlank(message = "client name cannot be empty")
 	private String clientName;
 
-	@Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Non-valid username")
 	@NotBlank(message = "full name cannot be empty")
 	private String fullName;
 }
