@@ -16,4 +16,6 @@ public class SpaceDTO {
 	@NotBlank(message = "client name cannot be empty")
 	private String clientName;
 
+
+
 }

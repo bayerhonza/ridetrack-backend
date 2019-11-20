@@ -1,6 +1,7 @@
 package com.ensimag.ridetrack.services;
 
 import com.ensimag.ridetrack.models.Client;
+import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.repository.ClientRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,17 @@ public class ClientManager {
 
 	private final ClientRepository clientRepository;
 
-	public ClientManager(ClientRepository clientRepository) {
+	private final SpaceManager spaceManager;
+
+	public ClientManager(ClientRepository clientRepository,
+		SpaceManager spaceManager) {
 		this.clientRepository = clientRepository;
+		this.spaceManager = spaceManager;
 	}
 
-	public Client createClient(Client newClient) {
-		clientRepository.saveAndFlush(newClient);
-		return newClient;
+	public void createClient(Client newClient) {
+		clientRepository.save(newClient);
+		Space defaultSpace = spaceManager.createDefaultSpaceForClient(newClient);
 	}
 
 	public boolean clientExists(String clientName) {
