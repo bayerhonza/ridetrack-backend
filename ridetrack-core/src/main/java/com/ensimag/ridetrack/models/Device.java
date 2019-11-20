@@ -2,6 +2,7 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_DEVICE_UID;
 
+import java.time.ZonedDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,8 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(
@@ -29,12 +32,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Device extends AbstractTimestampEntity {
+public class Device {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_device")
   private Long id;
+
+  @CreationTimestamp
+  @Column(name = "createdAt")
+  private ZonedDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updatedAt")
+  private ZonedDateTime updatedAt;
 
   @OneToOne(cascade = {CascadeType.ALL})
   @JoinColumn(

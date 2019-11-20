@@ -3,6 +3,7 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_USER_USERNAME;
 
+import java.time.ZonedDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -37,13 +40,22 @@ import lombok.Setter;
         @UniqueConstraint(name = UQ_USER_USERNAME, columnNames = {"username"})
     }
 )
-public class User extends AbstractTimestampEntity {
+public class User {
 
   @Id
   @NotNull(message = "id cannot be empty")
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_user")
   private Long id;
+
+
+  @CreationTimestamp
+  @Column(name = "createdAt")
+  private ZonedDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updatedAt")
+  private ZonedDateTime updatedAt;
 
   @NotBlank(message = "username cannot be empty")
   @Size(max = 100)

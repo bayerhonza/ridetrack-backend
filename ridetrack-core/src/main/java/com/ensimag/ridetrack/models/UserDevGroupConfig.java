@@ -1,6 +1,7 @@
 package com.ensimag.ridetrack.models;
 
 import com.ensimag.ridetrack.models.constants.Operation;
+import java.time.ZonedDateTime;
 import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -19,6 +20,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
 @Setter
@@ -27,11 +30,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @IdClass(UserDevGroupConfigPK.class)
-public class UserDevGroupConfig extends AbstractTimestampEntity {
+public class UserDevGroupConfig {
 
 	@Id
 	@Column(name = "id_user_config")
 	private Long userConfigId;
+
+	@CreationTimestamp
+	@Column(name = "createdAt")
+	private ZonedDateTime createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updatedAt")
+	private ZonedDateTime updatedAt;
 
 	@Id
 	@Column(name = "id_device_group")

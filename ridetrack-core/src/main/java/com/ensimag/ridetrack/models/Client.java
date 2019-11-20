@@ -2,6 +2,7 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_CLIENT_CLIENT_NAME;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -16,14 +17,14 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
-@Getter
-@Setter
-@Builder
+@Data
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -32,7 +33,7 @@ import lombok.Setter;
         @UniqueConstraint(columnNames = {"client_name"}, name = UQ_CLIENT_CLIENT_NAME)
     }
 )
-public class Client extends AbstractTimestampEntity {
+public class Client {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,6 +47,14 @@ public class Client extends AbstractTimestampEntity {
   @NotBlank
   @Column(name = "full_name")
   private String fullName;
+
+  @CreationTimestamp
+  @Column(name = "createdAt")
+  private ZonedDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updatedAt")
+  private ZonedDateTime updatedAt;
 
   @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
   private final Set<Space> spaces = new HashSet<>();

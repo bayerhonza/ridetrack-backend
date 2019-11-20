@@ -2,6 +2,7 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_GROUP_SPACE_GROUP_NAME;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,9 +14,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(
@@ -25,15 +29,23 @@ import lombok.Setter;
             name = UQ_DEVICE_GROUP_SPACE_GROUP_NAME, columnNames = {"name", "id_space"}),
     }
 )
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class DeviceGroup extends AbstractTimestampEntity {
+public class DeviceGroup {
 
   @Id
   @Column(name = "id_dev_group")
   private Long id;
 
+  @CreationTimestamp
+  @Column(name = "createdAt")
+  private ZonedDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updatedAt")
+  private ZonedDateTime updatedAt;
 
   @Column(name = "name")
   private String name;

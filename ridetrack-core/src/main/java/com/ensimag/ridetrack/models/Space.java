@@ -2,6 +2,7 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_SPACE_CLIENT_SPACE_NAME;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -19,9 +20,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(
@@ -30,12 +34,12 @@ import lombok.Setter;
         @UniqueConstraint(name = UQ_SPACE_CLIENT_SPACE_NAME, columnNames = {"name", "client_id"})
     }
 )
-@Getter
-@Setter
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Space extends AbstractTimestampEntity {
+@Builder(toBuilder = true)
+public class Space {
 
   @Id
   @NotNull
@@ -43,16 +47,32 @@ public class Space extends AbstractTimestampEntity {
   @Column(name = "id_space")
   private Long id;
 
+  @CreationTimestamp
+  @Column(name = "createdAt")
+  private ZonedDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updatedAt")
+  private ZonedDateTime updatedAt;
+
   @NotBlank
   @Column(name = "name")
   private String name;
 
   @NotNull
   @ManyToOne
+  @Cascade(value = CascadeType.PERSIST)
   @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_space_client_id"))
   private Client owner;
 
   @OneToMany(mappedBy = "space")
+  private Set<DeviceGroup> deviceGroups = new HashSet<>();
+
+  @OneToMany(mappedBy = "space")
   private final Set<User> users = new HashSet<>();
+
+  public void addDeviceGroup(DeviceGroup deviceGroup) {
+    this.deviceGroups.add(deviceGroup);
+  }
 
 }
