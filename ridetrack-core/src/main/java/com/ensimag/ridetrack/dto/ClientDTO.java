@@ -20,5 +20,6 @@ public class ClientDTO {
 	@NotBlank(message = "full name cannot be empty")
 	private String fullName;
 
-	private Set<SpaceDTO> spaces;
+	private Set<String> spaces;
+
 }

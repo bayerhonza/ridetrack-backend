@@ -80,6 +80,13 @@
       <version>${swagger.version}</version>
     </dependency>
 
+		<!-- Mapstruct -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+
 		<!-- Hibernate -->
 		<!-- Hibernate Validator -->
 		<dependency>

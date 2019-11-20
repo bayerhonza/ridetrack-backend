@@ -5,11 +5,11 @@ import com.ensimag.ridetrack.auth.SuperRideTrackUser;
 import com.ensimag.ridetrack.dto.ClientDTO;
 import com.ensimag.ridetrack.exception.RidetrackConflictException;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
+import com.ensimag.ridetrack.mappers.ClientMapper;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
 import com.ensimag.ridetrack.services.ClientManager;
 import java.net.URI;
-import java.util.Collections;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +34,17 @@ public class ClientController {
 
 	private final AuthenticationService authenticationService;
 
+	private final ClientMapper clientMapper;
+
 	@Autowired
 	public ClientController(
 		ClientManager clientManager,
-		AuthenticationService authenticationService) {
+		AuthenticationService authenticationService,
+		ClientMapper clientMapper) {
 		this.clientManager = clientManager;
 		this.authenticationService = authenticationService;
+		this.clientMapper = clientMapper;
+
 	}
 
 	@PostMapping(path = "/")
@@ -49,10 +54,10 @@ public class ClientController {
 			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
 		}
 		log.info("Creating client : {}", clientDTO.getClientName());
-		Client newClient = Client.builder()
-			.fullName(clientDTO.getFullName())
-			.clientName(clientDTO.getClientName())
-			.build();
+		Client newClient = clientMapper.toClient(clientDTO);
+
+		newClient.setFullName(clientDTO.getFullName());
+		newClient.setClientName(clientDTO.getClientName());
 		clientManager.createClient(newClient);
 		log.debug("Created client : {}", clientDTO.getClientName());
 
@@ -60,10 +65,7 @@ public class ClientController {
 			.path("/{id}")
 			.buildAndExpand(newClient.getId())
 			.toUri();
-		ClientDTO resultClientDTO = new ClientDTO();
-		resultClientDTO.setClientName(newClient.getClientName());
-		resultClientDTO.setFullName(newClient.getFullName());
-		resultClientDTO.setSpaces(Collections.emptySet());
+		ClientDTO resultClientDTO = clientMapper.toClientDTO(newClient);
 		return ResponseEntity.created(uri)
 			.body(resultClientDTO);
 	}
