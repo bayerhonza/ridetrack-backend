@@ -1,0 +1,22 @@
+version: '3'
+services:
+  db:
+    image: "mariadb/server:10.3"
+    container_name: "mariadb-ridetrack"
+    volumes:
+      - /ridetrack/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=ridetrack
+      - MYSQL_USER=rt_app
+      - MYSQL_PASSWORD=toto
+  ridetrack:
+    container_name: "ridetrack"
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - /ridetrack/appdata:/ridetrack/appdata
+    depends_on:
+      - db
