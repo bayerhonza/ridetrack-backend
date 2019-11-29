@@ -11,13 +11,6 @@
   
   <artifactId>ridetrack-radio-lorawan</artifactId>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.ensimag.ridetrack</groupId>
-      <artifactId>ridetrack-radio</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
 
 
 </project>
