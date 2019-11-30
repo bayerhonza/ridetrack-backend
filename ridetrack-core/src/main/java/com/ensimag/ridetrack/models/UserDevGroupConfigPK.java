@@ -1,7 +1,9 @@
 package com.ensimag.ridetrack.models;
 
 import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class UserDevGroupConfigPK implements Serializable {
 
 	private final Long userConfigId;
