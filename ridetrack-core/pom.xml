@@ -56,13 +56,6 @@
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
-		<!-- Spring Data REST WebMVC -->
-		<!--<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-rest-webmvc</artifactId>
-		</dependency>-->
-
-
 		<!-- Swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
