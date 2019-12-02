@@ -22,12 +22,12 @@ public class Sensor {
   private Long id;
 
   @CreationTimestamp
-  @Column(name = "createdAt")
-  private ZonedDateTime createdAt;
+ @Column(name = "created_at")
+private ZonedDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updatedAt")
-  private ZonedDateTime updatedAt;
+ @Column(name = "updated_at")
+private ZonedDateTime updatedAt;
 
   @OneToOne(mappedBy = "sensor")
   private Device device;

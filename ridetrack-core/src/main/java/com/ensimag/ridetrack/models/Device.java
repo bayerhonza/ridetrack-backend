@@ -3,6 +3,7 @@ package com.ensimag.ridetrack.models;
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_DEVICE_UID;
 
 import java.time.ZonedDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,11 +17,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(
@@ -40,12 +43,12 @@ public class Device {
   private Long id;
 
   @CreationTimestamp
-  @Column(name = "createdAt")
-  private ZonedDateTime createdAt;
+ @Column(name = "created_at")
+private ZonedDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updatedAt")
-  private ZonedDateTime updatedAt;
+ @Column(name = "updated_at")
+private ZonedDateTime updatedAt;
 
   @OneToOne(cascade = {CascadeType.ALL})
   @JoinColumn(

@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ensimag.ridetrack</groupId>
-			<artifactId>ridetrack-radio-lorawan</artifactId>
+			<artifactId>ridetrack-rest-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
@@ -54,6 +54,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${json-jwt.version}</version>
 		</dependency>
 
 		<!-- Swagger -->
@@ -154,7 +164,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-	
+
 	</dependencies>
 
 

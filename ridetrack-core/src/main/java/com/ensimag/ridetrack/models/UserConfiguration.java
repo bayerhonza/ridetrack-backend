@@ -34,11 +34,11 @@ public class UserConfiguration {
 	private Long id;
 
 	@CreationTimestamp
-	@Column(name = "createdAt")
+	@Column(name = "created_at")
 	private ZonedDateTime createdAt;
 
 	@UpdateTimestamp
-	@Column(name = "updatedAt")
+	@Column(name = "updated_at")
 	private ZonedDateTime updatedAt;
 
 	@OneToOne(mappedBy = "userConfiguration")

@@ -4,14 +4,19 @@ package com.ensimag.ridetrack.models;
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_USER_USERNAME;
 
 import java.time.ZonedDateTime;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,13 +25,15 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -41,50 +48,64 @@ import org.hibernate.annotations.UpdateTimestamp;
     }
 )
 public class User {
-
+  
   @Id
   @NotNull(message = "id cannot be empty")
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_user")
   private Long id;
-
-
+  
   @CreationTimestamp
-  @Column(name = "createdAt")
-  private ZonedDateTime createdAt;
-
+ @Column(name = "created_at")
+private ZonedDateTime createdAt;
+  
   @UpdateTimestamp
-  @Column(name = "updatedAt")
-  private ZonedDateTime updatedAt;
-
+ @Column(name = "updated_at")
+private ZonedDateTime updatedAt;
+  
   @NotBlank(message = "username cannot be empty")
   @Size(max = 100)
   @Column(name = "username")
   private String username;
-
+  
   @NotBlank(message = "password cannot be empty")
   @Column(name = "hash_password")
   private String hashPassword;
-
+  
   @NotBlank(message = "name cannot be empty")
   @Size(max = 100)
   @Column(name = "name")
   private String name;
-
+  
   @NotBlank(message = "surname cannot be empty")
   @Size(max = 100)
   @Column(name = "surname")
   private String surname;
-
+  
   @Email
   @Column(name = "email")
   private String email;
-
+  
   @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "id_space", foreignKey = @ForeignKey(name = "fk_user_id_space"))
   private Space space;
-
-  private boolean isAdmin;
+  
+  @Column(name = "enabled")
+  private boolean enabled;
+  
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_role",
+      joinColumns = @JoinColumn(
+          name = "id_user",
+          referencedColumnName = "id_user",
+          foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_USER")),
+      inverseJoinColumns = @JoinColumn(
+          name = "id_role",
+          referencedColumnName = "id_role",
+          foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_ROLE"))
+  )
+  private Set<Role> roles;
 
   @OneToOne
   @JoinColumn(name = "id_user_configuration", foreignKey = @ForeignKey(name = "fk_user_user_config"))

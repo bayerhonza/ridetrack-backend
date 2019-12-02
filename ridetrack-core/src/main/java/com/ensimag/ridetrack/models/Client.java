@@ -52,12 +52,12 @@ public class Client {
   private String fullName;
 
   @CreationTimestamp
-  @Column(name = "createdAt")
-  private ZonedDateTime createdAt;
+ @Column(name = "created_at")
+private ZonedDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updatedAt")
-  private ZonedDateTime updatedAt;
+ @Column(name = "updated_at")
+private ZonedDateTime updatedAt;
 
   @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
   private final Set<Space> spaces = new HashSet<>();

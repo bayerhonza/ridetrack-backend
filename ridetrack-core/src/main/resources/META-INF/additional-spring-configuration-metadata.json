@@ -1,6 +1,11 @@
 {
 	"properties": [
 		{
+			"name": "jwt.secret",
+			"type": "java.lang.String",
+			"description": "Secret for Jason Web Token (JWT)."
+		},
+		{
 			"name": "ridetrack.ttn.region",
 			"type": "java.lang.String"
 		},
@@ -10,7 +15,7 @@
 		},
 		{
 			"name": "ridetrack.ttn.accessKey",
-			"type" : "java.lang.String"
+			"type": "java.lang.String"
 		},
 		{
 			"name": "application.name",
