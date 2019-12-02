@@ -1,11 +1,9 @@
 package com.ensimag.ridetrack.rest.exceptions;
 
-import com.ensimag.ridetrack.exception.RidetrackConflictException;
-import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
-import com.ensimag.ridetrack.exception.RidetrackValidationException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -23,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.ensimag.ridetrack.exception.RestException;
+import com.ensimag.ridetrack.exception.RidetrackConflictException;
+import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
+import com.ensimag.ridetrack.exception.RidetrackValidationException;
 
 @ControllerAdvice(annotations = RestController.class)
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -108,18 +111,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			String errorMsg = messageService.getConstraintErrorCode(constraintName);
 			return buildResponseEntity(errorCode, errorMsg, HttpStatus.CONFLICT, req);
 		}
-
 		return buildResponseEntity("error occurred", HttpStatus.CONFLICT, ex, req);
 	}
-
-	@ExceptionHandler({Exception.class})
+	
+	@ExceptionHandler({ RestException.class })
+	public ResponseEntity<RestErrorInfo> handleHttpRestException(RestException ex, WebRequest req) {
+		return buildResponseEntity(ex.getLocalizedMessage(), ex.getStatusCode(), ex, req);
+	}
+	
+	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<RestErrorInfo> handleAll(Exception ex, WebRequest req) {
 		return buildResponseEntity("error occurred", HttpStatus.INTERNAL_SERVER_ERROR, ex, req);
 	}
-
-	@ExceptionHandler({RidetrackValidationException.class})
+	
+	@ExceptionHandler({ RidetrackValidationException.class })
 	public ResponseEntity<RestErrorInfo> handleValidationException(RidetrackValidationException ex,
-		WebRequest req) {
+			WebRequest req) {
 		String errorCode = "error.rest." + ex.getEntityName() + "." + ex.getProperty() + ".nonValid";
 		return buildResponseEntity(errorCode, HttpStatus.BAD_REQUEST, ex, req);
 	}

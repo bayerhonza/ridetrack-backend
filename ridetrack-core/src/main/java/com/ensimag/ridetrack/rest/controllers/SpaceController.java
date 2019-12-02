@@ -1,37 +1,117 @@
 package com.ensimag.ridetrack.rest.controllers;
 
-import com.ensimag.ridetrack.auth.AuthenticationService;
-import com.ensimag.ridetrack.dto.SpaceDTO;
-import com.ensimag.ridetrack.services.SpaceManager;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.ensimag.ridetrack.dto.SpaceDTO;
+import com.ensimag.ridetrack.exception.RidetrackConflictException;
+import com.ensimag.ridetrack.mappers.SpaceMapper;
+import com.ensimag.ridetrack.models.Client;
+import com.ensimag.ridetrack.models.Space;
+import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
+import com.ensimag.ridetrack.rest.api.RestPaths;
+import com.ensimag.ridetrack.services.ClientManager;
+import com.ensimag.ridetrack.services.SpaceManager;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/space")
+@RequestMapping(RestPaths.API_PATH)
 @Slf4j
 public class SpaceController {
-
-	private final SpaceManager spaceManager;
-
-
-	private final AuthenticationService authenticationService;
-
-	public SpaceController(SpaceManager spaceManager,
-		AuthenticationService authenticationService) {
-		this.spaceManager = spaceManager;
-		this.authenticationService = authenticationService;
+	
+	@Autowired
+	private SpaceManager spaceManager;
+	
+	@Autowired
+	private ClientManager clientManager;
+	
+	@Autowired
+	private SpaceMapper spaceMapper;
+	
+	@GetMapping("/spaces/{clientName}")
+	public List<SpaceDTO> getAllSpacesOfClient(
+			@PathVariable("clientName") String clientName) {
+		Client client = clientManager.findClientOrThrow(clientName);
+		return spaceManager.findAllSpacesOfClient(client).stream()
+				.map(spaceMapper::toSpaceDTO)
+				.collect(Collectors.toList());
 	}
-
-	@PostMapping(path = "/")
-	public ResponseEntity<Object> createSpace(@Valid @RequestBody SpaceDTO spaceDTO) {
-		return new ResponseEntity<>(HttpStatus.OK);
+	
+	@GetMapping("/space/{clientName}/{spaceName}")
+	public List<SpaceDTO> getSpacesOfClient(
+			@PathVariable("clientName") String clientName,
+			@PathVariable("spaceName") String spaceName) {
+		Client client = clientManager.findClientOrThrow(clientName);
+		return spaceManager.findSpaceOfClient(client, spaceName).stream()
+				.map(spaceMapper::toSpaceDTO)
+				.collect(Collectors.toList());
 	}
-
-
+	
+	@PostMapping(path = "/space")
+	public ResponseEntity<SpaceDTO> createSpace(@Valid @RequestBody SpaceDTO spaceDTO) {
+		if (spaceManager.spaceExistsForClient(spaceDTO.getClientName(), spaceDTO.getName())) {
+			log.warn("Space {} of {} already exists", spaceDTO.getName(), spaceDTO.getClientName());
+			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
+		}
+		
+		log.info("Creating space {} of {}", spaceDTO.getName(), spaceDTO.getClientName());
+		Space newSpace = spaceMapper.toSpace(spaceDTO);
+		
+		Client owner = clientManager.findClientOrThrow(spaceDTO.getClientName());
+		spaceManager.createSpace(owner, newSpace);
+		log.debug("Created space : {}", newSpace.getName());
+		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(newSpace.getId())
+				.toUri();
+		return ResponseEntity.created(uri)
+				.body(spaceMapper.toSpaceDTO(newSpace));
+	}
+	
+	@PutMapping("/space/{clientName}/{spaceName}")
+	public ResponseEntity<SpaceDTO> updateSpace(@PathVariable("clientName") String clientName,
+			@PathVariable("spaceName") String spaceName,
+			@Valid @RequestBody SpaceDTO spaceDetails) {
+		Client client = clientManager.findClientOrThrow(clientName);
+		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
+		space.setName(spaceDetails.getName());
+		log.info("Updating space {}", space);
+		Space updatedSpace = spaceManager.updateSpace(space);
+		return ResponseEntity.ok(spaceMapper.toSpaceDTO(updatedSpace));
+	}
+	
+	@DeleteMapping("/space/{clientName}/{spaceName}")
+	public Map<String, Boolean> delete(
+			@PathVariable(name = "clientName") String clientName,
+			@PathVariable(name = "spaceName") String spaceName) {
+			
+		log.info("Deleting space {}", spaceName);
+		Client client = clientManager.findClientOrThrow(clientName);
+		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
+		spaceManager.deleteSpace(space);
+		
+		
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("deleted", Boolean.TRUE);
+		return response;
+	}
+	
 }

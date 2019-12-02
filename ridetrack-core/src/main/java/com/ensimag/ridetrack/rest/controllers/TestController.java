@@ -1,11 +1,15 @@
 package com.ensimag.ridetrack.rest.controllers;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ensimag.ridetrack.rest.api.RestPaths;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping(RestPaths.API_PATH)
 public class TestController {
 
     @GetMapping("/test")

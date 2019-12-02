@@ -1,9 +1,9 @@
 package com.ensimag.ridetrack.dto;
 
 
-import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,5 @@ public class ClientDTO {
 
 	@NotBlank(message = "full name cannot be empty")
 	private String fullName;
-
-	private Set<String> spaces;
 
 }
