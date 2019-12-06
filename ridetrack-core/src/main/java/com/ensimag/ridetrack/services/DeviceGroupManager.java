@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class DeviceGroupManager {
 
-	private static final String DEFAULT_DEVICE_GROUP_NAME = "default_group";
+	public static final String DEFAULT_DEVICE_GROUP_NAME = "default_group";
 
 	private final DeviceGroupRepository deviceGroupRepository;
 
