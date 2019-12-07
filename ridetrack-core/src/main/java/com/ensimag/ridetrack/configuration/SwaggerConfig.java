@@ -10,11 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
@@ -39,13 +40,11 @@ public class SwaggerConfig {
 	@Value("${build.version}")
 	private String buildVersion;
 	
-	@Value("${build.timestamp}")
-	private String buildTimestamp;
-	
 	@Bean
 	public Docket api() {
 		log.debug("Starting Swagger");
 		Docket docket = new Docket(DocumentationType.SWAGGER_2)
+				.ignoredParameterTypes(AuthenticationPrincipal.class)
 				.apiInfo(getApiInfo())
 				.pathMapping("/")
 				.genericModelSubstitutes(ResponseEntity.class)
@@ -54,7 +53,7 @@ public class SwaggerConfig {
 				.useDefaultResponseMessages(false);
 		
 		docket = docket.select()
-				.paths(PathSelectors.any())
+				.apis(RequestHandlerSelectors.basePackage("com.ensimag.ridetrack"))
 				.build();
 		log.debug("Started Swagger");
 		return docket;
@@ -64,7 +63,7 @@ public class SwaggerConfig {
 		return new ApiInfo(
 			applicationName,
 			"This is RideTrack, application for tracking things.",
-			buildVersion.concat(" ").concat(buildTimestamp),
+			buildVersion,
 			"",
 			new Contact("RideTrack", "","jan.bayer@grenoble-inp.org"),
 			"",

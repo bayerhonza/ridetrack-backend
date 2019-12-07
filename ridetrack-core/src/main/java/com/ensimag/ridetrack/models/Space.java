@@ -68,6 +68,7 @@ private ZonedDateTime createdAt;
   private Client owner;
 
   @OneToMany(mappedBy = "space")
+  @Builder.Default
   private Set<DeviceGroup> deviceGroups = new HashSet<>();
 
   @OneToMany(mappedBy = "space")
