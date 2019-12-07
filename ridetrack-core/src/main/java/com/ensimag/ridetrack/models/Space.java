@@ -33,10 +33,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-    name = "space",
-    uniqueConstraints = {
-        @UniqueConstraint(name = UQ_SPACE_CLIENT_SPACE_NAME, columnNames = {"name", "client_id"})
-    }
+		name = "space",
+		uniqueConstraints = {
+				@UniqueConstraint(name = UQ_SPACE_CLIENT_SPACE_NAME, columnNames = { "name", "client_id" })
+		}
 )
 
 @Data
@@ -44,45 +44,45 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Space {
-
-  @Id
-  @NotNull
-  @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-  @GenericGenerator(name = "native", strategy = "native")
-  @Column(name = "id_space")
-  private Long id;
-
-  @CreationTimestamp
- @Column(name = "created_at")
-private ZonedDateTime createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")private ZonedDateTime updatedAt;
-
-  @NotBlank
-  @Column(name = "name")
-  private String name;
-
-  @NotNull
-  @ManyToOne
-  @Cascade(value = CascadeType.PERSIST)
-  @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_space_client_id"))
-  private Client owner;
-
-  @OneToMany(mappedBy = "space")
-  @Builder.Default
-  private Set<DeviceGroup> deviceGroups = new HashSet<>();
-
-  @OneToMany(mappedBy = "space")
-  private final Set<User> users = new HashSet<>();
-
-  public void addDeviceGroup(DeviceGroup deviceGroup) {
-    this.deviceGroups.add(deviceGroup);
-  }
-  
-  @Override
-  public String toString() {
-    return "Space[name=" + name +",owner=" + owner.getClientName() + "]";
-  }
-
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+	@Column(name = "id_space")
+	private Long id;
+	
+	@CreationTimestamp
+	@Column(name = "created_at")
+	private ZonedDateTime createdAt;
+	
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	private ZonedDateTime updatedAt;
+	
+	@NotBlank
+	@Column(name = "name")
+	private String name;
+	
+	@NotNull
+	@ManyToOne
+	@Cascade(value = CascadeType.PERSIST)
+	@JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_space_client_id"))
+	private Client owner;
+	
+	@OneToMany(mappedBy = "space")
+	@Builder.Default
+	private Set<DeviceGroup> deviceGroups = new HashSet<>();
+	
+	@OneToMany(mappedBy = "space")
+	private final Set<User> users = new HashSet<>();
+	
+	public void addDeviceGroup(DeviceGroup deviceGroup) {
+		this.deviceGroups.add(deviceGroup);
+	}
+	
+	@Override
+	public String toString() {
+		return "Space[name=" + name + ",owner=" + owner.getClientName() + "]";
+	}
+	
 }

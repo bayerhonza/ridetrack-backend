@@ -41,73 +41,73 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Table(
-    name = "user",
-    uniqueConstraints = {
-        @UniqueConstraint(name = UQ_USER_USERNAME, columnNames = {"username"})
-    }
+		name = "user",
+		uniqueConstraints = {
+				@UniqueConstraint(name = UQ_USER_USERNAME, columnNames = { "username" })
+		}
 )
 public class User {
-  
-  @Id
-  @Column(name = "id_user")
-  @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-  @GenericGenerator(name = "native", strategy = "native")
-  private Long id;
-  
-  @CreationTimestamp
- @Column(name = "created_at")
-private ZonedDateTime createdAt;
-  
-  @UpdateTimestamp
- @Column(name = "updated_at")
-private ZonedDateTime updatedAt;
-  
-  @NotBlank(message = "username cannot be empty")
-  @Size(max = 100)
-  @Column(name = "username")
-  private String username;
-  
-  @NotBlank(message = "password cannot be empty")
-  @Column(name = "password")
-  private String password;
-  
-  @NotBlank(message = "name cannot be empty")
-  @Size(max = 100)
-  @Column(name = "name")
-  private String name;
-  
-  @NotBlank(message = "surname cannot be empty")
-  @Size(max = 100)
-  @Column(name = "surname")
-  private String surname;
-  
-  @Email
-  @Column(name = "email")
-  private String email;
-  
-  @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "id_space", foreignKey = @ForeignKey(name = "fk_user_id_space"))
-  private Space space;
-  
-  @Column(name = "enabled")
-  private boolean enabled;
-  
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "user_role",
-      joinColumns = @JoinColumn(
-          name = "id_user",
-          referencedColumnName = "id_user",
-          foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_USER")),
-      inverseJoinColumns = @JoinColumn(
-          name = "id_role",
-          referencedColumnName = "id_role",
-          foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_ROLE"))
-  )
-  private Set<Role> roles;
-
-  @OneToOne
-  @JoinColumn(name = "id_user_configuration", foreignKey = @ForeignKey(name = "fk_user_user_config"))
-  private UserConfiguration userConfiguration;
-
+	
+	@Id
+	@Column(name = "id_user")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+	private Long id;
+	
+	@CreationTimestamp
+	@Column(name = "created_at")
+	private ZonedDateTime createdAt;
+	
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	private ZonedDateTime updatedAt;
+	
+	@NotBlank(message = "username cannot be empty")
+	@Size(max = 100)
+	@Column(name = "username")
+	private String username;
+	
+	@NotBlank(message = "password cannot be empty")
+	@Column(name = "password")
+	private String password;
+	
+	@NotBlank(message = "name cannot be empty")
+	@Size(max = 100)
+	@Column(name = "name")
+	private String name;
+	
+	@NotBlank(message = "surname cannot be empty")
+	@Size(max = 100)
+	@Column(name = "surname")
+	private String surname;
+	
+	@Email
+	@Column(name = "email")
+	private String email;
+	
+	@ManyToOne(cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "id_space", foreignKey = @ForeignKey(name = "fk_user_id_space"))
+	private Space space;
+	
+	@Column(name = "enabled")
+	private boolean enabled;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "user_role",
+			joinColumns = @JoinColumn(
+					name = "id_user",
+					referencedColumnName = "id_user",
+					foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_USER")),
+			inverseJoinColumns = @JoinColumn(
+					name = "id_role",
+					referencedColumnName = "id_role",
+					foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_ROLE"))
+	)
+	private Set<Role> roles;
+	
+	@OneToOne
+	@JoinColumn(name = "id_user_configuration", foreignKey = @ForeignKey(name = "fk_user_user_config"))
+	private UserConfiguration userConfiguration;
+	
 }
