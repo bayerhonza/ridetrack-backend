@@ -38,7 +38,7 @@ class RtUserManagerTest {
 
 		UserDetails userDetails = instance.loadUserByUsername("tesing");
 
-		assertEquals(2, userDetails.getAuthorities().size());
+		assertEquals(3, userDetails.getAuthorities().size());
 	}
 
 }
