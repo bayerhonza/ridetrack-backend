@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ensimag.ridetrack.models.Privilege;
 import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.User;
 import com.ensimag.ridetrack.repository.UserRepository;
@@ -43,9 +42,12 @@ public class RtUserManager implements UserDetailsService, UserDetailsPasswordSer
 		return new ArrayList<>(getPrivileges(user.getRoles()));
 	}
 
-	private List<Privilege> getPrivileges(Collection<Role> roles) {
-		List<Privilege> privileges = new ArrayList<>();
-		roles.forEach(role -> privileges.addAll(role.getPrivileges()));
+	private List<GrantedAuthority> getPrivileges(Collection<Role> roles) {
+		List<GrantedAuthority> privileges = new ArrayList<>();
+		roles.forEach(role -> {
+			privileges.add(role);
+			privileges.addAll(role.getPrivileges());
+		});
 		return privileges;
 	}
 	
