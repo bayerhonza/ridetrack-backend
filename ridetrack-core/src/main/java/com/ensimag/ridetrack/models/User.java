@@ -1,6 +1,5 @@
 package com.ensimag.ridetrack.models;
 
-
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_USER_USERNAME;
 
 import java.time.ZonedDateTime;
@@ -23,10 +22,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
@@ -50,9 +49,9 @@ import lombok.Setter;
 public class User {
   
   @Id
-  @NotNull(message = "id cannot be empty")
-  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_user")
+  @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+  @GenericGenerator(name = "native", strategy = "native")
   private Long id;
   
   @CreationTimestamp
