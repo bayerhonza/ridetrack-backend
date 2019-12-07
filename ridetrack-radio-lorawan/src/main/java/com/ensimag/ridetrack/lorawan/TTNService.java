@@ -1,4 +1,4 @@
-package radio;
+package com.ensimag.ridetrack.lorawan;
 
 import java.net.URISyntaxException;
 
