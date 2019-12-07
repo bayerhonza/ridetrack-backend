@@ -6,33 +6,35 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ensimag.ridetrack.models.Privilege;
 import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.User;
 import com.ensimag.ridetrack.repository.UserRepository;
 
 @Service
 @Primary
-public class RtUserDetailsService implements UserDetailsService {
-
+public class RtUserManager implements UserDetailsService, UserDetailsPasswordService {
+	
 	private final UserRepository userRepository;
-
-	public RtUserDetailsService(@Autowired UserRepository userRepository) {
+	
+	public RtUserManager(
+			@Autowired UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
 		return new org.springframework.security.core.userdetails.User(
 			user.getUsername(),
-			user.getHashPassword(),
+			user.getPassword(),
 			getAuthorities(user));
 	}
 
@@ -40,9 +42,23 @@ public class RtUserDetailsService implements UserDetailsService {
 		return new ArrayList<>(getPrivileges(user.getRoles()));
 	}
 
-	private List<Privilege> getPrivileges(Collection<Role> roles) {
-		List<Privilege> privileges = new ArrayList<>();
-		roles.forEach(role -> privileges.addAll(role.getPrivileges()));
+	private List<GrantedAuthority> getPrivileges(Collection<Role> roles) {
+		List<GrantedAuthority> privileges = new ArrayList<>();
+		roles.forEach(role -> {
+			privileges.add(role);
+			privileges.addAll(role.getPrivileges());
+		});
 		return privileges;
+	}
+	
+	@Override
+	public UserDetails updatePassword(UserDetails user, String newPassword) {
+		User rtUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new BadCredentialsException(user.getUsername()));
+		if (!user.getPassword().equals(newPassword)) {
+			rtUser.setPassword(newPassword);
+			userRepository.saveAndFlush(rtUser);
+		}
+		return user;
+		
 	}
 }

@@ -69,8 +69,8 @@ private ZonedDateTime updatedAt;
   private String username;
   
   @NotBlank(message = "password cannot be empty")
-  @Column(name = "hash_password")
-  private String hashPassword;
+  @Column(name = "password")
+  private String password;
   
   @NotBlank(message = "name cannot be empty")
   @Size(max = 100)

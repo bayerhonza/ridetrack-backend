@@ -2,28 +2,25 @@ package com.ensimag.ridetrack.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.ensimag.ridetrack.jwt.JwtAuthenticationEntryPoint;
-import com.ensimag.ridetrack.jwt.JwtRequestFilter;
+import com.ensimag.ridetrack.auth.RtUserManager;
+import com.ensimag.ridetrack.auth.TokenProvider;
+import com.ensimag.ridetrack.jwt.RtAuthenticationEntryPoint;
+import com.ensimag.ridetrack.auth.TokenRequestFilter;
 
-@EnableWebSecurity(debug = true)
-@EnableGlobalMethodSecurity(
-		securedEnabled = true,
-		jsr250Enabled = true,
-		prePostEnabled = true
-)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String[] AUTH_WHITELIST = {
 			"/v2/api-docs",
@@ -36,17 +33,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			"/"
 	};
 	
-	private final JwtRequestFilter jwtRequestFilter;
+	private final RtAuthenticationEntryPoint authEntryPoint;
 	
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final TokenProvider tokenProvider;
 	
-	public WebSecurityConfig(
-			@Autowired JwtRequestFilter jwtRequestFilter,
-			@Autowired JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-		this.jwtRequestFilter = jwtRequestFilter;
-		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+	public SecurityConfig(
+			@Autowired TokenProvider tokenProvider,
+			@Autowired RtAuthenticationEntryPoint authEntryPoint) {
+		this.authEntryPoint = authEntryPoint;
+		this.tokenProvider = tokenProvider;
 	}
-	
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -55,27 +51,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
+		// @formatter:off
 		httpSecurity
 				.csrf()
 					.disable()
-				.authorizeRequests()
-					.antMatchers("/authenticate").permitAll()
-					.antMatchers(AUTH_WHITELIST).permitAll()
-					.antMatchers("/actuator/**").hasRole("ADMIN")
-					.anyRequest().authenticated()
-					.and()
-				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-				.exceptionHandling()
-					.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-					.and()
 				.sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+					.exceptionHandling().authenticationEntryPoint(authEntryPoint)
+				.and()
+					.addFilterBefore(new TokenRequestFilter("/api/**", tokenProvider, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
+				.authorizeRequests()
+					.antMatchers(HttpMethod.POST,"/authenticate").permitAll()
+				.anyRequest().authenticated();
+		// @formatter:on
 	}
 	
+	@Override
+	public void configure(WebSecurity webSecurity) {
+		webSecurity
+				.ignoring().antMatchers(AUTH_WHITELIST);
+	}
 	
 	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsService userDetailsService) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	public void configureGlobal(AuthenticationManagerBuilder auth, RtUserManager userDetailsService) throws Exception {
+		auth.userDetailsService(userDetailsService).userDetailsPasswordManager(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 	
 	@Bean

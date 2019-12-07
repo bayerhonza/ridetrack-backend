@@ -3,6 +3,7 @@ package com.ensimag.ridetrack.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.repository.ClientRepository;
 
 @Service
+@PreAuthorize("hasRole('ADMIN')")
 @Transactional
 public class ClientManager {
 
@@ -32,15 +34,15 @@ public class ClientManager {
 	public Client updateClient(Client client) {
 		return clientRepository.save(client);
 	}
-
+	
 	public boolean clientExists(String clientName) {
 		return clientRepository.findByClientName(clientName).isPresent();
 	}
-
+	
 	public Optional<Client> findClientByClientName(String clientName) {
 		return clientRepository.findByClientName(clientName);
 	}
-
+	
 	public void deleteClient(Client client) {
 		clientRepository.delete(client);
 	}

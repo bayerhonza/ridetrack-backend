@@ -1,9 +1,9 @@
 package com.ensimag.ridetrack.models;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +16,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.springframework.security.core.GrantedAuthority;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +29,7 @@ import lombok.Setter;
 	name = "UQ_ROLE_ROLE_NAME",
 	columnNames = {"role_name"}
 ))
-public class Role implements Serializable {
+public class Role implements GrantedAuthority {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -77,5 +80,9 @@ public class Role implements Serializable {
 		}
 		privileges.add(privilege);
 	}
-
+	
+	@Override
+	public String getAuthority() {
+		return name;
+	}
 }

@@ -49,7 +49,7 @@ public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
 				.name("Admin")
 				.surname("Ridetrack")
 				.username("administrator")
-				.hashPassword(passwordEncoder.encode("hashedPassword"))
+				.password(passwordEncoder.encode("toto"))
 				.email("jan.bayer@grenole-inpr.org")
 				.roles(Set.of(adminRole))
 				.enabled(true)

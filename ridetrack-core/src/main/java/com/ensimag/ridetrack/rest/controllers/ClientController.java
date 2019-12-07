@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.ensimag.ridetrack.auth.AuthenticationService;
 import com.ensimag.ridetrack.dto.ClientDTO;
 import com.ensimag.ridetrack.exception.RidetrackConflictException;
 import com.ensimag.ridetrack.mappers.ClientMapper;
@@ -42,7 +41,6 @@ public class ClientController {
 	@Autowired
 	public ClientController(
 			ClientManager clientManager,
-			AuthenticationService authenticationService,
 			ClientMapper clientMapper) {
 		this.clientManager = clientManager;
 		this.clientMapper = clientMapper;
