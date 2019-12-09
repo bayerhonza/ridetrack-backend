@@ -10,10 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.repository.ClientRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @PreAuthorize("hasRole('ADMIN')")
 @Transactional
+@Slf4j
 public class ClientManager {
 
 	private final ClientRepository clientRepository;
@@ -27,11 +29,13 @@ public class ClientManager {
 	}
 	
 	public void createClient(Client newClient) {
+		log.info("Creating client '{}'", newClient.getClientName());
 		clientRepository.save(newClient);
 		spaceManager.createDefaultSpaceForClient(newClient);
 	}
 	
 	public Client updateClient(Client client) {
+		log.info("Updating client '{}'", client.getClientName());
 		return clientRepository.save(client);
 	}
 	
@@ -44,6 +48,8 @@ public class ClientManager {
 	}
 	
 	public void deleteClient(Client client) {
+		log.info("Removing client '{}'", client.getClientName());
+		spaceManager.deleteClientSpaces(client);
 		clientRepository.delete(client);
 	}
 	

@@ -67,16 +67,16 @@ public class SpaceController {
 	@PostMapping(path = "/space")
 	public ResponseEntity<SpaceDTO> createSpace(@Valid @RequestBody SpaceDTO spaceDTO) {
 		if (spaceManager.spaceExistsForClient(spaceDTO.getClientName(), spaceDTO.getName())) {
-			log.warn("Space {} of {} already exists", spaceDTO.getName(), spaceDTO.getClientName());
+			log.warn("Space '{}@{}' already exists", spaceDTO.getName(), spaceDTO.getClientName());
 			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
 		}
 		
-		log.info("Creating space {} of {}", spaceDTO.getName(), spaceDTO.getClientName());
+		log.info("Creating space '{}@{}'", spaceDTO.getName(), spaceDTO.getClientName());
 		Space newSpace = spaceMapper.toSpace(spaceDTO);
 		
 		Client owner = clientManager.findClientOrThrow(spaceDTO.getClientName());
 		spaceManager.createSpace(owner, newSpace);
-		log.debug("Created space : {}", newSpace.getName());
+		log.debug("Created space '{}'", newSpace.getName());
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")

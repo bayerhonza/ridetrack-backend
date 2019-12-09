@@ -5,29 +5,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
+import org.springframework.security.authentication.CredentialsExpiredException;
 
 import com.ensimag.ridetrack.auth.TokenProvider;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 
-@Component
 @Slf4j
 public class JwtTokenProvider implements TokenProvider {
 	
 	private JwtConfiguration jwtConfiguration;
 	
-	public JwtTokenProvider(@Autowired JwtConfiguration jwtConfiguration) {
+	public JwtTokenProvider(JwtConfiguration jwtConfiguration) {
 		this.jwtConfiguration = jwtConfiguration;
+	}
+	
+	public static JwtTokenProvider buildFrom(JwtConfiguration jwtConfiguration) {
+		return new JwtTokenProvider(jwtConfiguration);
 	}
 	
 	@Override
 	public String getUsernameFromToken(String token) {
+		validateToken(token);
 		return getClaimFromToken(token, Claims::getSubject);
 	}
 	
@@ -47,9 +51,13 @@ public class JwtTokenProvider implements TokenProvider {
 	 * @throws io.jsonwebtoken.JwtException if not valid token
 	 */
 	private Jws<Claims> parseToken(String token) {
-		return Jwts.parser()
-				.setSigningKey(jwtConfiguration.getSecret())
-				.parseClaimsJws(token);
+		try {
+			return Jwts.parser()
+					.setSigningKey(jwtConfiguration.getSecret())
+					.parseClaimsJws(token);
+		} catch (ExpiredJwtException ex) {
+			throw new CredentialsExpiredException("JWT token expired");
+		}
 	}
 	
 	@Override
@@ -71,7 +79,7 @@ public class JwtTokenProvider implements TokenProvider {
 	}
 	
 	@Override
-	public void validateToken(String token){
+	public void validateToken(String token) {
 		parseToken(token);
 	}
 }

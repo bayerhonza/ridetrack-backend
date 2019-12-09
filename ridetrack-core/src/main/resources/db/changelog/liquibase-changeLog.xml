@@ -1,11 +1,225 @@
-<databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
-   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-   http://www.liquibase.org/xml/ns/dbchangelog
-   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-
-
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.7.xsd">
+	
+	<property name="autoIncrement" value="true" dbms="mysql,mariadb"/>
+	<property name="autoIncrement" value="false" dbms="!mysql,!mariadb"/>
+	
+	<changeSet author="jan.bayer (generated)" id="2019-12-08#1" dbms="!mysql,!mariadb">
+		
+		
+		<createSequence sequenceName="client_sequence"/>
+		<createSequence sequenceName="device_data_sequence"/>
+		<createSequence sequenceName="device_group_sequence"/>
+		<createSequence sequenceName="device_sequence"/>
+		<createSequence sequenceName="privilege_sequence"/>
+		<createSequence sequenceName="role_sequence"/>
+		<createSequence sequenceName="sensor_sequence"/>
+		<createSequence sequenceName="space_sequence"/>
+		<createSequence sequenceName="user_conf_sequence"/>
+		<createSequence sequenceName="user_sequence"/>
+	
+	</changeSet>
+	<changeSet id="2019-12-08#2" author="jan.bayer (generated)">
+		
+		<createTable tableName="client">
+			<column name="id_client" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="client_pkey"/>
+			</column>
+			<column name="client_name" type="VARCHAR(255)"/>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="full_name" type="VARCHAR(255)"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+		</createTable>
+		
+		<createTable tableName="device">
+			<column name="id_device" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="device_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="device_uid" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="updated_at" type="TIMESTAMP"/>
+			<column name="id_device_group" type="BIGINT"/>
+			<column name="id_sensor" type="BIGINT"/>
+		</createTable>
+		
+		<createTable tableName="device_data">
+			<column name="id_device_data" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="device_data_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+			<column name="x_coord" type="BIGINT"/>
+			<column name="y_coord" type="BIGINT"/>
+			<column name="z_coord" type="BIGINT"/>
+			<column name="id_device" type="BIGINT"/>
+		</createTable>
+		
+		<createTable tableName="device_group">
+			<column name="id_dev_group" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="device_group_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="name" type="VARCHAR(255)"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+			<column name="id_space" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		
+		<createTable tableName="privilege">
+			<column name="id_privilege" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="privilege_pkey"/>
+			</column>
+			<column name="privilege_name" type="VARCHAR(255)"/>
+		</createTable>
+		
+		<createTable tableName="role">
+			<column name="id_role" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="role_pkey"/>
+			</column>
+			<column name="role_name" type="VARCHAR(255)"/>
+		</createTable>
+		
+		<createTable tableName="role_privilege">
+			<column name="id_role" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="role_privilege_pkey"/>
+			</column>
+			<column name="id_privilege" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="role_privilege_pkey"/>
+			</column>
+		</createTable>
+		
+		<createTable tableName="sensors">
+			<column name="id_sensor" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="sensors_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="device_uid" type="VARCHAR(255)"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+		</createTable>
+		
+		<createTable tableName="space">
+			<column name="id_space" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="space_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="name" type="VARCHAR(255)"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+			<column name="client_id" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+		
+		<createTable tableName="user_configuration" autoIncrement="${autoIncrement}">
+			<column name="id_configuration" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_configuration_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+		</createTable>
+		
+		<createTable tableName="user_dev_group_config" autoIncrement="${autoIncrement}">
+			<column name="id_device_group" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_dev_group_config_pkey"/>
+			</column>
+			<column name="id_user_config" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_dev_group_config_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+		</createTable>
+		
+		<createTable tableName="user_role">
+			<column name="id_user" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="user_role_pkey"/>
+			</column>
+			<column name="id_role" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_role_pkey"/>
+			</column>
+		</createTable>
+		
+		<createTable tableName="users">
+			<column name="id_user" type="BIGINT" autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" primaryKeyName="users_pkey"/>
+			</column>
+			<column name="created_at" type="TIMESTAMP"/>
+			<column name="email" type="VARCHAR(255)"/>
+			<column name="enabled" type="BOOLEAN"/>
+			<column name="name" type="VARCHAR(100)"/>
+			<column name="password" type="VARCHAR(255)"/>
+			<column name="surname" type="VARCHAR(100)"/>
+			<column name="updated_at" type="TIMESTAMP"/>
+			<column name="username" type="VARCHAR(100)"/>
+			<column name="id_space" type="BIGINT"/>
+			<column name="id_user_configuration" type="BIGINT"/>
+		</createTable>
+		
+		<addUniqueConstraint columnNames="client_name" constraintName="uq_client_client_name" tableName="client"/>
+		
+		<addUniqueConstraint columnNames="device_uid" constraintName="uq_device_device_uid" tableName="device"/>
+		
+		<addUniqueConstraint columnNames="name, id_space" constraintName="uq_device_group_space_group_name" tableName="device_group"/>
+		<addUniqueConstraint columnNames="privilege_name" constraintName="uq_privilege_privilege_name" tableName="privilege"/>
+		<addUniqueConstraint columnNames="name, client_id" constraintName="uq_space_client_space_name" tableName="space"/>
+		<addUniqueConstraint columnNames="username" constraintName="uq_user_username" tableName="users"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_user_config"
+								 baseTableName="user_dev_group_config"
+								 constraintName="fk55vgkrw8r32swqw4m5j0wexnx"
+								 deferrable="false" initiallyDeferred="false"
+								 onDelete="NO ACTION"
+								 onUpdate="NO ACTION"
+								 referencedColumnNames="id_configuration"
+								 referencedTableName="user_configuration"
+								 validate="true"/>
+		<addForeignKeyConstraint baseColumnNames="id_space" baseTableName="device_group" constraintName="fk_devgroup_id_space" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_space"
+								 referencedTableName="space" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_device" baseTableName="device_data" constraintName="fk_device_data_device_id" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_device"
+								 referencedTableName="device" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_device_group" baseTableName="device" constraintName="fk_device_id_device_group"
+								 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+								 referencedColumnNames="id_dev_group" referencedTableName="device_group" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_sensor" baseTableName="device" constraintName="fk_device_sensor" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_sensor"
+								 referencedTableName="sensors" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_privilege" baseTableName="role_privilege" constraintName="fk_role_privilege_id_privilege"
+								 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+								 referencedColumnNames="id_privilege" referencedTableName="privilege" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_role" baseTableName="role_privilege" constraintName="fk_role_privilege_id_role"
+								 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+								 referencedColumnNames="id_role" referencedTableName="role" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="client_id" baseTableName="space" constraintName="fk_space_client_id" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_client"
+								 referencedTableName="client" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_space" baseTableName="users" constraintName="fk_user_id_space" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_space"
+								 referencedTableName="space" validate="true"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id_role" baseTableName="user_role" constraintName="fk_user_role_id_role" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_role"
+								 referencedTableName="role" validate="true"/>
+		<addForeignKeyConstraint baseColumnNames="id_user" baseTableName="user_role" constraintName="fk_user_role_id_user" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user"
+								 referencedTableName="users" validate="true"/>
+		<addForeignKeyConstraint baseColumnNames="id_user_configuration" baseTableName="users" constraintName="fk_user_user_config" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_configuration"
+								 referencedTableName="user_configuration" validate="true"/>
+		<addForeignKeyConstraint baseColumnNames="id_device_group" baseTableName="user_dev_group_config" constraintName="fkgd4u11kxebtemom7c399ml9id"
+								 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+								 referencedColumnNames="id_dev_group" referencedTableName="device_group" validate="true"/>
+	
+	</changeSet>
 </databaseChangeLog>

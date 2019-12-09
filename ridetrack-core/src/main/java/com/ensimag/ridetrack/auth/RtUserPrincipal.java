@@ -6,7 +6,6 @@ import java.util.Set;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
@@ -19,7 +18,7 @@ public class RtUserPrincipal implements UserDetails, CredentialsContainer {
 	
 	private String password;
 	
-	private final Set<SimpleGrantedAuthority> privileges;
+	private final Set<GrantedAuthority> privileges;
 	
 	private final boolean accountNonExpired;
 	
@@ -29,13 +28,13 @@ public class RtUserPrincipal implements UserDetails, CredentialsContainer {
 	
 	private final boolean enabled;
 	
-	public RtUserPrincipal(String username, String password, Set<SimpleGrantedAuthority> privileges) {
+	public RtUserPrincipal(String username, String password, Set<GrantedAuthority> privileges) {
 		this(username, password, true, true, true, true, privileges);
 	}
 	
 	public RtUserPrincipal(String username, String password, boolean enabled,
 			boolean accountNonExpired, boolean credentialsNonExpired,
-			boolean accountNonLocked, Set<SimpleGrantedAuthority> privileges) {
+			boolean accountNonLocked, Set<GrantedAuthority> privileges) {
 		
 		Assert.isTrue(!Strings.isEmpty(username),"Cannot pass null or empty values as username");
 		Assert.notNull(password,"Cannot pass null as password");

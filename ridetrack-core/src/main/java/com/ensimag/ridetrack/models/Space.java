@@ -2,10 +2,10 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_SPACE_CLIENT_SPACE_NAME;
 
-import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -20,17 +20,19 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@SuperBuilder(toBuilder = true)
 @Entity
 @Table(
 		name = "space",
@@ -38,26 +40,13 @@ import lombok.NoArgsConstructor;
 				@UniqueConstraint(name = UQ_SPACE_CLIENT_SPACE_NAME, columnNames = { "name", "client_id" })
 		}
 )
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-public class Space {
+public class Space extends AbstractTimestampedEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-	@GenericGenerator(name = "native", strategy = "native")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "space_sequence")
+	@GenericGenerator(name = "space_sequence", strategy = "native")
 	@Column(name = "id_space")
 	private Long id;
-	
-	@CreationTimestamp
-	@Column(name = "created_at")
-	private ZonedDateTime createdAt;
-	
-	@UpdateTimestamp
-	@Column(name = "updated_at")
-	private ZonedDateTime updatedAt;
 	
 	@NotBlank
 	@Column(name = "name")
@@ -65,24 +54,33 @@ public class Space {
 	
 	@NotNull
 	@ManyToOne
-	@Cascade(value = CascadeType.PERSIST)
 	@JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_space_client_id"))
 	private Client owner;
 	
-	@OneToMany(mappedBy = "space")
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
+	@EqualsAndHashCode.Exclude
 	@Builder.Default
 	private Set<DeviceGroup> deviceGroups = new HashSet<>();
 	
 	@OneToMany(mappedBy = "space")
-	private final Set<User> users = new HashSet<>();
+	@EqualsAndHashCode.Exclude
+	private final Set<SpaceUser> users = new HashSet<>();
 	
 	public void addDeviceGroup(DeviceGroup deviceGroup) {
 		this.deviceGroups.add(deviceGroup);
 	}
 	
+	public void addUser(SpaceUser user) {
+		users.add(user);
+	}
+	
 	@Override
 	public String toString() {
 		return "Space[name=" + name + ",owner=" + owner.getClientName() + "]";
+	}
+	
+	public Space() {
+		// no-arg constructor
 	}
 	
 }

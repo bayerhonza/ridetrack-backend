@@ -33,8 +33,8 @@ import lombok.Setter;
 public class Role implements GrantedAuthority {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-	@GenericGenerator(name = "native", strategy = "native")
+	@GeneratedValue(strategy= GenerationType.AUTO, generator="role_sequence")
+	@GenericGenerator(name = "role_sequence", strategy = "native")
 	@Column(name = "id_role")
 	private Long id;
 

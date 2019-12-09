@@ -11,10 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -27,13 +29,20 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenRequestFilter extends GenericFilterBean {
 	
 	private final TokenProvider tokenProvider;
+	
 	private final UserDetailsService userDetailsService;
+	
+	private final AuthenticationEntryPoint entryPoint;
 	
 	private final RequestMatcher requiresAuthenticationRequestMatcher;
 	
-	public TokenRequestFilter(String antPattern, TokenProvider tokenProvider, UserDetailsService userDetailsService) {
+	public TokenRequestFilter(String antPattern,
+			TokenProvider tokenProvider,
+			UserDetailsService userDetailsService,
+			AuthenticationEntryPoint entryPoint) {
 		this.tokenProvider = tokenProvider;
 		this.userDetailsService = userDetailsService;
+		this.entryPoint = entryPoint;
 		requiresAuthenticationRequestMatcher = new AntPathRequestMatcher(antPattern);
 	}
 	
@@ -53,17 +62,27 @@ public class TokenRequestFilter extends GenericFilterBean {
 			chain.doFilter(request, response);
 			return;
 		}
-		
-		UserDetails principal = userDetailsService.loadUserByUsername(tokenProvider.getUsernameFromToken(jwtToken));
-		UsernamePasswordAuthenticationToken authToken =
-				new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-		authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-		
-		SecurityContext context = SecurityContextHolder.createEmptyContext();
-		context.setAuthentication(authToken);
-		SecurityContextHolder.setContext(context);
-		
-		chain.doFilter(request, response);
+		try {
+			tokenProvider.validateToken(jwtToken);
+			
+			UserDetails principal = userDetailsService.loadUserByUsername(tokenProvider.getUsernameFromToken(jwtToken));
+			UsernamePasswordAuthenticationToken authToken =
+					new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			
+			SecurityContext context = SecurityContextHolder.createEmptyContext();
+			context.setAuthentication(authToken);
+			SecurityContextHolder.setContext(context);
+			
+			chain.doFilter(request, response);
+		} catch (AuthenticationException ex) {
+			onAuthenticationFailure(request, response, ex);
+		}
+	}
+	
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException exception) throws IOException, ServletException {
+		entryPoint.commence(request, response, exception);
 	}
 	
 	protected boolean requiresAuthentication(HttpServletRequest request) {

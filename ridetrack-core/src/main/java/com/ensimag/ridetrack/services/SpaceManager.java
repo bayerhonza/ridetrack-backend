@@ -3,7 +3,6 @@ package com.ensimag.ridetrack.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +16,8 @@ import com.ensimag.ridetrack.repository.SpaceRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Scope("prototype")
-@Transactional
 @Slf4j
+@Transactional
 public class SpaceManager {
 
 	public static final String DEFAULT_SPACE_NAME = "rootSpace";
@@ -60,7 +58,7 @@ public class SpaceManager {
 	}
 	
 	public Space createSpace(Client client, String name) {
-		log.info("Creating space {} for {}", name, client.getClientName());
+		log.info("Creating space '{}@{}'", name, client.getClientName());
 		if (spaceRepository.findByOwnerAndName(client, name).isPresent()) {
 			log.error("Space {} of client {} already exists", name, client.getClientName());
 			throw new RidetrackConflictException(Space.class, RideTrackConstraint.UQ_SPACE_CLIENT_SPACE_NAME,
@@ -70,8 +68,12 @@ public class SpaceManager {
 				.name(name)
 				.owner(client)
 				.build();
+		
+		
 		spaceRepository.save(newSpace);
 		initNewSpace(newSpace);
+		
+		spaceRepository.save(newSpace);
 		return newSpace;
 	}
 	
@@ -83,6 +85,10 @@ public class SpaceManager {
 		Client client = space.getOwner();
 		client.removeSpace(space);
 		spaceRepository.delete(space);
+	}
+	
+	public void deleteClientSpaces(Client client) {
+		spaceRepository.deleteAllByOwnerClientName(client.getClientName());
 	}
 	
 	private void initNewSpace(Space space) {

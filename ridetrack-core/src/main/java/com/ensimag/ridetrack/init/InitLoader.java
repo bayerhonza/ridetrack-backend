@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.ensimag.ridetrack.models.Privilege;
 import com.ensimag.ridetrack.models.Role;
-import com.ensimag.ridetrack.models.User;
+import com.ensimag.ridetrack.models.SpaceUser;
 import com.ensimag.ridetrack.repository.PrivilegeRepository;
-import com.ensimag.ridetrack.repository.RoleRepository;
-import com.ensimag.ridetrack.repository.UserRepository;
+import com.ensimag.ridetrack.roles.RoleRepository;
+import com.ensimag.ridetrack.repository.RtUserRepository;
 
 @Component
 public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -28,14 +28,14 @@ public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
 	private PrivilegeRepository privilegeRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private RtUserRepository rtUserRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		if (alreadySetup || userRepository.findByUsername("administrator").isPresent()) {
+		if (alreadySetup || rtUserRepository.findByUsername("administrator").isPresent()) {
 			return;
 		}
 		Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
@@ -45,7 +45,7 @@ public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
 		Role adminRole = createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
 		createRoleIfNotFound("ROLE_USER",Set.of(readPrivilege));
 		
-		User user = User.builder()
+		SpaceUser user = SpaceUser.builder()
 				.name("Admin")
 				.surname("Ridetrack")
 				.username("administrator")
@@ -54,14 +54,14 @@ public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
 				.roles(Set.of(adminRole))
 				.enabled(true)
 				.build();
-		userRepository.save(user);
+		rtUserRepository.save(user);
 
 
 	}
 	
 	public Privilege createPrivilegeIfNotFound(String name) {
 		
-		Optional<Privilege> privilegeOpt = privilegeRepository.findByOperationName(name);
+		Optional<Privilege> privilegeOpt = privilegeRepository.findByPrivilegeName(name);
 		if (privilegeOpt.isEmpty()) {
 			return privilegeRepository.save(Privilege.of(name));
 		}

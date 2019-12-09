@@ -17,27 +17,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "operation", uniqueConstraints = @UniqueConstraint(
-    name = "UQ_PRIVILEGE_OPERATION_NAME", columnNames = {"operation_name"}
+@Table(name = "privilege", uniqueConstraints = @UniqueConstraint(
+    name = "UQ_PRIVILEGE_NAME", columnNames = {"privilege_name"}
 ))
 public class Privilege implements GrantedAuthority {
 
   private static final long serialVersionUID = -870668537914976236L;
 
   @Id
-  @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-  @GenericGenerator(name = "native", strategy = "native")
+  @GeneratedValue(strategy= GenerationType.AUTO, generator="privilege_sequence")
+  @GenericGenerator(name = "privilege_sequence", strategy = "native")
   @Column(name = "id_privilege")
   private Long id;
 
-  @Column(name = "operation_name")
-  private String operationName;
+  @Column(name = "privilege_name")
+  private String privilegeName;
 
   public Privilege() {
   }
 
-  public Privilege(String operationName) {
-    this.operationName = operationName;
+  public Privilege(String privilegeName) {
+    this.privilegeName = privilegeName;
   }
 
   public static Privilege of(String operationName) {
@@ -46,7 +46,7 @@ public class Privilege implements GrantedAuthority {
 
   @Override
   public String getAuthority() {
-    return operationName;
+    return privilegeName;
   }
 
 
@@ -57,7 +57,7 @@ public class Privilege implements GrantedAuthority {
     }
 
     if (obj instanceof Privilege) {
-      return operationName.equals(((Privilege) obj).operationName);
+      return privilegeName.equals(((Privilege) obj).privilegeName);
     }
 
     return false;
@@ -65,11 +65,11 @@ public class Privilege implements GrantedAuthority {
 
   @Override
   public int hashCode() {
-    return this.operationName.hashCode();
+    return this.privilegeName.hashCode();
   }
 
   @Override
   public String toString() {
-    return this.operationName;
+    return this.privilegeName;
   }
 }

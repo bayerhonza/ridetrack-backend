@@ -2,7 +2,6 @@ package com.ensimag.ridetrack.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,12 +11,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.ensimag.ridetrack.auth.RestAccessDeniedHandler;
 import com.ensimag.ridetrack.auth.RtUserManager;
 import com.ensimag.ridetrack.auth.TokenProvider;
-import com.ensimag.ridetrack.jwt.RtAuthenticationEntryPoint;
 import com.ensimag.ridetrack.auth.TokenRequestFilter;
+import com.ensimag.ridetrack.jwt.JwtConfiguration;
+import com.ensimag.ridetrack.jwt.JwtTokenProvider;
+import com.ensimag.ridetrack.jwt.RestAuthenticationEntryPoint;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -33,15 +36,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/"
 	};
 	
-	private final RtAuthenticationEntryPoint authEntryPoint;
+	private final RestAuthenticationEntryPoint authEntryPoint;
 	
 	private final TokenProvider tokenProvider;
 	
-	public SecurityConfig(
-			@Autowired TokenProvider tokenProvider,
-			@Autowired RtAuthenticationEntryPoint authEntryPoint) {
-		this.authEntryPoint = authEntryPoint;
-		this.tokenProvider = tokenProvider;
+	private final AccessDeniedHandler accessDeniedHandler;
+	
+	public SecurityConfig() {
+		this.authEntryPoint = new RestAuthenticationEntryPoint();
+		this.tokenProvider = JwtTokenProvider.buildFrom(new JwtConfiguration());
+		this.accessDeniedHandler = new RestAccessDeniedHandler();
 	}
 	
 	@Bean
@@ -58,11 +62,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement()
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-					.exceptionHandling().authenticationEntryPoint(authEntryPoint)
+					.exceptionHandling()
+						.accessDeniedHandler(accessDeniedHandler)
+						.authenticationEntryPoint(authEntryPoint)
 				.and()
-					.addFilterBefore(new TokenRequestFilter("/api/**", tokenProvider, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(new TokenRequestFilter("/api/**", tokenProvider, userDetailsService(), authEntryPoint), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
-					.antMatchers(HttpMethod.POST,"/authenticate").permitAll()
+					.antMatchers("/authenticate").permitAll()
 				.anyRequest().authenticated();
 		// @formatter:on
 	}
@@ -82,5 +88,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
+	}
+	
+	@Bean
+	public TokenProvider tokenProvider() {
+		return this.tokenProvider;
 	}
 }

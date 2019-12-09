@@ -20,6 +20,9 @@ public class AuthenticationService {
 	
 	private final AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private RtUserManager userDetailsService;
+	
 	public AuthenticationService(
 			@Autowired AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
@@ -30,13 +33,13 @@ public class AuthenticationService {
 			log.info("Authenticating user=[{}] using username-password.", username);
 			
 			log.debug("Before authentification: {}", SecurityContextHolder.getContext().getAuthentication());
-			
-			Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+			RtUserPrincipal userPrincipal = userDetailsService.loadUserByUsername(username);
+			Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userPrincipal, password));
 			SecurityContextHolder.getContext().setAuthentication(auth);
 			log.debug("After authentification: {}", SecurityContextHolder.getContext().getAuthentication());
 			
 		} catch (DisabledException e) {
-			throw new RestException(HttpStatus.UNAUTHORIZED, "User disabled");
+			throw new RestException(HttpStatus.UNAUTHORIZED, "SpaceUser disabled");
 		} catch (BadCredentialsException e) {
 			throw new RestException(HttpStatus.UNAUTHORIZED,"Invalid credetials");
 		}

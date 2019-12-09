@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 @ExtendWith(MockitoExtension.class)
 class TokenRequestFilterTest {
@@ -33,11 +34,14 @@ class TokenRequestFilterTest {
 	@Mock
 	private UserDetailsService userDetailsService;
 	
+	@Mock
+	private AuthenticationEntryPoint entryPoint;
+	
 	private TokenRequestFilter instance;
 	
 	@BeforeEach
 	public void setUp() {
-		instance = new TokenRequestFilter("/testing", tokenProvider, userDetailsService);
+		instance = new TokenRequestFilter("/testing", tokenProvider, userDetailsService, entryPoint);
 	}
 	
 	@Test

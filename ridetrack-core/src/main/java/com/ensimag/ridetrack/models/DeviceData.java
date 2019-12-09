@@ -1,7 +1,5 @@
 package com.ensimag.ridetrack.models;
 
-import java.time.ZonedDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -12,9 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,21 +21,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "device_data")
-public class DeviceData {
+public class DeviceData extends AbstractTimestampedEntity {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-	@GenericGenerator(name = "native", strategy = "native")
+	@GeneratedValue(strategy= GenerationType.AUTO, generator="device_data_sequence")
+	@GenericGenerator(name = "device_data_sequence", strategy = "native")
 	@Column(name = "id_device_data")
 	private Long id;
-
-	@CreationTimestamp
-	@Column(name = "created_at")
-	private ZonedDateTime createdAt;
-
-	@UpdateTimestamp
-	@Column(name = "updated_at")
-	private ZonedDateTime updatedAt;
 
 	@Column(name = "x_coord")
 	private Long xCoord;

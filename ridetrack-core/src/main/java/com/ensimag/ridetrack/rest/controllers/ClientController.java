@@ -38,10 +38,9 @@ public class ClientController {
 	
 	private final ClientMapper clientMapper;
 	
-	@Autowired
 	public ClientController(
-			ClientManager clientManager,
-			ClientMapper clientMapper) {
+			@Autowired ClientManager clientManager,
+			@Autowired ClientMapper clientMapper) {
 		this.clientManager = clientManager;
 		this.clientMapper = clientMapper;
 		
@@ -56,8 +55,6 @@ public class ClientController {
 		log.info("Creating client : {}", clientDTO.getClientName());
 		Client newClient = clientMapper.toClient(clientDTO);
 		
-		newClient.setFullName(clientDTO.getFullName());
-		newClient.setClientName(clientDTO.getClientName());
 		clientManager.createClient(newClient);
 		log.debug("Created client : {}", clientDTO.getClientName());
 		
@@ -91,7 +88,6 @@ public class ClientController {
 		client.setClientName(clientDetails.getClientName());
 		client.setFullName(clientDetails.getFullName());
 		
-		log.info("Updating client {}", clientName);
 		final Client updatedClient = clientManager.updateClient(client);
 		return ResponseEntity.ok(clientMapper.toClientDTO(updatedClient));
 	}

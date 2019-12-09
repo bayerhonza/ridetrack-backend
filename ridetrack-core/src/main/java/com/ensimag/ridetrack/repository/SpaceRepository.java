@@ -15,4 +15,6 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
 	Optional<Space> findByNameAndOwnerClientName(String clientName, String spaceName);
 	
 	List<Space> findAllByOwner(Client client);
+	
+	void deleteAllByOwnerClientName(String clientName);
 }
