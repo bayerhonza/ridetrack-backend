@@ -25,12 +25,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @AllArgsConstructor
 @SuperBuilder
-@Table(
-		name = "space_users",
-		uniqueConstraints = {
-				@UniqueConstraint(name = UQ_USER_USERNAME, columnNames = { "username" })
-		}
-)
+@Table(name = "space_users")
 @Entity
 @PrimaryKeyJoinColumn(name = "id_space_user", foreignKey = @ForeignKey(name = "FK_SPACE_USER_USER_ID"))
 public class SpaceUser extends RtUser {

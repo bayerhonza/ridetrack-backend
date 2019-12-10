@@ -1,7 +1,10 @@
 package com.ensimag.ridetrack.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +27,7 @@ import com.ensimag.ridetrack.jwt.RestAuthenticationEntryPoint;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
+
 	private static final String[] AUTH_WHITELIST = {
 			"/v2/api-docs",
 			"/swagger-resources",
@@ -41,10 +44,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final TokenProvider tokenProvider;
 	
 	private final AccessDeniedHandler accessDeniedHandler;
-	
-	public SecurityConfig() {
+
+	public SecurityConfig(@Autowired JwtConfiguration jwtConfiguration) {
 		this.authEntryPoint = new RestAuthenticationEntryPoint();
-		this.tokenProvider = JwtTokenProvider.buildFrom(new JwtConfiguration());
+		this.tokenProvider = JwtTokenProvider.buildFrom(jwtConfiguration);
 		this.accessDeniedHandler = new RestAccessDeniedHandler();
 	}
 	

@@ -42,7 +42,6 @@ public class SpaceUserController {
 	private ClientManager clientManager;
 	
 	@PostMapping("/space/{spaceName}/user")
-	@PreAuthorize("")
 	public SpaceUserDTO createUser(
 			@AuthenticationPrincipal RtUserPrincipal principal,
 			@PathVariable("spaceName") String spaceName,
