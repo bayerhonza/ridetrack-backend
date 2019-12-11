@@ -17,8 +17,7 @@ public interface SpaceMapper {
 	@Mapping(target = "owner", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "deviceGroups", ignore = true)
+	@Mapping(target = "oid", ignore = true)
 	Space toSpace(SpaceDTO spaceDTO);
 
 

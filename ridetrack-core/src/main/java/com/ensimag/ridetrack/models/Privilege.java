@@ -1,18 +1,18 @@
 package com.ensimag.ridetrack.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
+import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.SidType;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -20,20 +20,22 @@ import lombok.Setter;
 @Table(name = "privilege", uniqueConstraints = @UniqueConstraint(
     name = "UQ_PRIVILEGE_NAME", columnNames = {"privilege_name"}
 ))
-public class Privilege implements GrantedAuthority {
-
-  private static final long serialVersionUID = -870668537914976236L;
-
-  @Id
-  @GeneratedValue(strategy= GenerationType.AUTO, generator="privilege_sequence")
-  @GenericGenerator(name = "privilege_sequence", strategy = "native")
-  @Column(name = "id_privilege")
-  private Long id;
+@PrimaryKeyJoinColumn(name = "id_privilege", foreignKey = @ForeignKey(name = "FK_PRIVILEGE_SID"))
+public class Privilege extends AclSid implements GrantedAuthority {
 
   @Column(name = "privilege_name")
   private String privilegeName;
 
+  @CreationTimestamp
+  @Column(name = "created_at")
+  protected ZonedDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updated_at")
+  protected ZonedDateTime updatedAt;
+
   public Privilege() {
+    super(SidType.PRIVILEGE);
   }
 
   public Privilege(String privilegeName) {

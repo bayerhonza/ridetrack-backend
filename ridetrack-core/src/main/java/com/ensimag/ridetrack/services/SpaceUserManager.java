@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 @Slf4j
-public class ClientUserManager {
+public class SpaceUserManager {
 	
 	@Autowired
 	private PrivilegeRepository privilegeRepository;

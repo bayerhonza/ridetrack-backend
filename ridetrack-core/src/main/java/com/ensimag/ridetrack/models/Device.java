@@ -2,24 +2,18 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_DEVICE_UID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.ZonedDateTime;
 
 @Setter
 @Getter
@@ -30,13 +24,8 @@ import lombok.Setter;
                 @UniqueConstraint(name = UQ_DEVICE_DEVICE_UID, columnNames = { "device_uid" })
         }
 )
-public class Device extends AbstractTimestampedEntity{
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "device_sequence")
-	@GenericGenerator(name = "device_sequence", strategy = "native")
-	@Column(name = "id_device")
-	private Long id;
+@PrimaryKeyJoinColumn(name = "id_device", foreignKey = @ForeignKey(name = "FK_DEVICE_OID"))
+public class Device extends AclObjectIdentity {
 	
 	@OneToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(
@@ -56,9 +45,16 @@ public class Device extends AbstractTimestampedEntity{
 	
 	@OneToOne(mappedBy = "device")
 	private DeviceData deviceData;
+
+	@CreationTimestamp
+	@Column(name = "created_at")
+	protected ZonedDateTime createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	protected ZonedDateTime updatedAt;
 	
 	public Device() {
-	  // no-arg constructor
+		// no-arg constructor
     }
-	
 }

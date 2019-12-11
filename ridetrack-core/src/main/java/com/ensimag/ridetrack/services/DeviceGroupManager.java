@@ -29,7 +29,7 @@ public class DeviceGroupManager {
 	
 	public DeviceGroup createDeviceGroup(Space space, String name) {
 		log.info("Creating group '{} of space '{}@{}'", name, space.getName(), space.getOwner().getClientName());
-		DeviceGroup newDeviceGroup = DeviceGroup.builder()
+		DeviceGroup newDeviceGroup = new DeviceGroup().toBuilder()
 				.name(name)
 				.space(space)
 				.build();

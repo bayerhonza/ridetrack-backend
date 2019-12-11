@@ -34,7 +34,7 @@ public class RideTrackUserRepositoryTest extends AbstractRepositoryTest {
     u1.setPassword("abcde123456&é-è_è-('");
     entityManager.persist(u1);
     entityManager.flush();
-    assertNotEquals(0, u1.getUserId());
+    assertNotEquals(0, u1.getSid());
     System.out.print(u1.getUserId());
 
     Optional<RtUser> u1FreshOptional = rtUserRepository.findByUsername("username1");

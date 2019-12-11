@@ -1,37 +1,30 @@
 package com.ensimag.ridetrack.models;
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_USER_USERNAME;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.SidType;
+import org.hibernate.annotations.CreationTimestamp;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
 @Setter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
+@AllArgsConstructor
 @Table(
 		name = "rt_users",
 		uniqueConstraints = {
@@ -40,13 +33,9 @@ import lombok.experimental.SuperBuilder;
 )
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class RtUser extends AbstractTimestampedEntity {
-	
-	@Id
-	@Column(name = "id_user")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_sequence")
-	@GenericGenerator(name = "user_sequence", strategy = "native")
-	private Long userId;
+@PrimaryKeyJoinColumn(name = "id_user", foreignKey = @ForeignKey(name = "FK_USER_SID"))
+public abstract class RtUser extends AclSid {
+
 	
 	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9._-]{2,}$")
 	@Size(max = 100)
@@ -58,7 +47,15 @@ public abstract class RtUser extends AbstractTimestampedEntity {
 	private String password;
 	
 	@Column(name = "enabled")
-	private boolean enabled;
+	private boolean enabled = true;
+
+	@CreationTimestamp
+	@Column(name = "created_at")
+	protected ZonedDateTime createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	protected ZonedDateTime updatedAt;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -72,10 +69,23 @@ public abstract class RtUser extends AbstractTimestampedEntity {
 					referencedColumnName = "id_role",
 					foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID_ROLE"))
 	)
-	@Builder.Default
-	private Set<Role> roles = new HashSet<>();
+	private final Set<Role> roles = new HashSet<>();
 	
+	public void addRole(Role role) {
+		roles.add(role);
+	}
+	
+	public RtUser(String username, String password) {
+		this();
+		this.username = username;
+		this.password = password;
+	}
+
 	public RtUser() {
-		// no-arg constructor
+		super(SidType.PRINCIPAL);
+	}
+	
+	public Long getUserId() {
+		return getSid();
 	}
 }

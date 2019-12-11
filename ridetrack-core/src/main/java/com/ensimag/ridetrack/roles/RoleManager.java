@@ -1,14 +1,12 @@
 package com.ensimag.ridetrack.roles;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ensimag.ridetrack.models.ClientUser;
 import com.ensimag.ridetrack.models.Privilege;
 import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.SpaceUser;
@@ -19,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RoleManager {
 	
-	private Map<RoleType, Role> roleToEntityMap;
+	private Map<RoleType, Role> roleToEntityMap = new HashMap<>();
 	
 	@Autowired
 	private RoleRepository roleRepository;
@@ -34,6 +32,11 @@ public class RoleManager {
 	
 	public void assignRoleToUser(RoleType roleType, SpaceUser user) {
 		Role entityRole = roleToEntityMap.get(roleType);
+		user.addRole(entityRole);
+	}
+	
+	public void assignRoleToClientUser(ClientUser user) {
+		Role entityRole = roleToEntityMap.get(RoleType.CLIENT);
 		user.addRole(entityRole);
 	}
 	

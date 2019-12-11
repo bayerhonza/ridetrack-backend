@@ -75,24 +75,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated();
 		// @formatter:on
 	}
-	
+
 	@Override
 	public void configure(WebSecurity webSecurity) {
 		webSecurity
 				.ignoring().antMatchers(AUTH_WHITELIST);
 	}
-	
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth, RtUserManager userDetailsService) throws Exception {
 		auth.userDetailsService(userDetailsService).userDetailsPasswordManager(userDetailsService).passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
+
 	@Bean
 	public TokenProvider tokenProvider() {
 		return this.tokenProvider;

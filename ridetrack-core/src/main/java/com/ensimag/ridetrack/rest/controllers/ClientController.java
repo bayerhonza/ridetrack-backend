@@ -60,7 +60,7 @@ public class ClientController {
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
-				.buildAndExpand(newClient.getId())
+				.buildAndExpand(newClient.getOid())
 				.toUri();
 		ClientDTO resultClientDTO = clientMapper.toClientDTO(newClient);
 		return ResponseEntity.created(uri)

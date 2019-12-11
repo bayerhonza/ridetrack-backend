@@ -80,7 +80,7 @@ public class SpaceController {
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
-				.buildAndExpand(newSpace.getId())
+				.buildAndExpand(newSpace.getOid())
 				.toUri();
 		return ResponseEntity.created(uri)
 				.body(spaceMapper.toSpaceDTO(newSpace));

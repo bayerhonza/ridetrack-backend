@@ -1,23 +1,17 @@
 package com.ensimag.ridetrack.models;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
+import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.SidType;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 
 import lombok.Getter;
@@ -30,13 +24,8 @@ import lombok.Setter;
 	name = "UQ_ROLE_ROLE_NAME",
 	columnNames = {"role_name"}
 ))
-public class Role implements GrantedAuthority {
-
-	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO, generator="role_sequence")
-	@GenericGenerator(name = "role_sequence", strategy = "native")
-	@Column(name = "id_role")
-	private Long id;
+@PrimaryKeyJoinColumn(name = "id_role", foreignKey = @ForeignKey(name = "FK_ROLE_SID"))
+public class Role extends AclSid implements GrantedAuthority {
 
 	@Column(name = "role_name")
 	private String name;
@@ -56,9 +45,16 @@ public class Role implements GrantedAuthority {
 	)
 	private Set<Privilege> privileges = new HashSet<>();
 
-	public Role() {}
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	protected ZonedDateTime updatedAt;
+
+	public Role() {
+		super(SidType.ROLE);
+	}
 
 	public Role(String name) {
+		super(SidType.ROLE);
 		this.name = name;
 		this.privileges = new HashSet<>();
 	}
@@ -87,4 +83,5 @@ public class Role implements GrantedAuthority {
 	public String getAuthority() {
 		return name;
 	}
+
 }

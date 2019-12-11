@@ -10,20 +10,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "device_data")
-public class DeviceData extends AbstractTimestampedEntity {
+public class DeviceData {
 
-	@Id
+
+    @Id
 	@GeneratedValue(strategy= GenerationType.AUTO, generator="device_data_sequence")
 	@GenericGenerator(name = "device_data_sequence", strategy = "native")
 	@Column(name = "id_device_data")
@@ -41,5 +46,13 @@ public class DeviceData extends AbstractTimestampedEntity {
 	@OneToOne
 	@JoinColumn(name = "id_device", foreignKey = @ForeignKey(name = "fk_device_data_device_id"))
 	private Device device;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    protected ZonedDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    protected ZonedDateTime updatedAt;
 
 }

@@ -20,7 +20,7 @@ import com.ensimag.ridetrack.models.SpaceUser;
 import com.ensimag.ridetrack.rest.api.RestPaths;
 import com.ensimag.ridetrack.services.ClientManager;
 import com.ensimag.ridetrack.services.SpaceManager;
-import com.ensimag.ridetrack.services.ClientUserManager;
+import com.ensimag.ridetrack.services.SpaceUserManager;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SpaceUserController {
 	
 	@Autowired
-	private ClientUserManager userManager;
+	private SpaceUserManager userManager;
 	
 	@Autowired
 	private SpaceManager spaceManager;

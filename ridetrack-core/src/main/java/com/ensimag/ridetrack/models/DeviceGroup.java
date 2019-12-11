@@ -2,35 +2,29 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_GROUP_SPACE_GROUP_NAME;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.GenericGenerator;
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
+import org.hibernate.annotations.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CascadeType;
 
 
 @Setter
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @Entity
 @Table(
@@ -40,13 +34,9 @@ import lombok.Setter;
 						name = UQ_DEVICE_GROUP_SPACE_GROUP_NAME, columnNames = { "name", "id_space" }),
 		}
 )
-public class DeviceGroup extends AbstractTimestampedEntity {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "device_group_sequence")
-	@GenericGenerator(name = "device_group_sequence", strategy = "native")
-	@Column(name = "id_dev_group")
-	private Long id;
+@PrimaryKeyJoinColumn(name = "id_dev_group", foreignKey = @ForeignKey(name = "FK_DEV_GROUP_OID"))
+public class DeviceGroup extends AclObjectIdentity {
+
 	
 	@Column(name = "name")
 	private String name;
@@ -60,9 +50,17 @@ public class DeviceGroup extends AbstractTimestampedEntity {
 	@OneToMany(mappedBy = "deviceGroup")
 	@EqualsAndHashCode.Exclude
 	private Set<Device> devices;
+
+	@CreationTimestamp
+	@Column(name = "created_at")
+	protected ZonedDateTime createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	protected ZonedDateTime updatedAt;
 	
 	public DeviceGroup() {
-		// no-arg constructor
+        // no-arg constructor
 	}
-	
-}
+
+   }

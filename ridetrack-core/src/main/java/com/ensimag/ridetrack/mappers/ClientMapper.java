@@ -12,8 +12,7 @@ public interface ClientMapper {
 	
 	ClientDTO toClientDTO(Client client);
 
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "spaces", ignore = true)
-	@Mapping(target = "clientUsers", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
 	Client toClient(ClientDTO clientDTO);
 }

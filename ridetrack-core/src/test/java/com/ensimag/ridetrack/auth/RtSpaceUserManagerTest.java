@@ -32,8 +32,8 @@ class RtSpaceUserManagerTest {
 		SpaceUser user = SpaceUser.builder()
 			.password("hashedPassword")
 			.username("username")
-			.roles(Set.of(Role.of("TEST_ROLE","PRIVILEGE1", "PRIVILEGE2")))
 			.build();
+		user.addRole(Role.of("TEST_ROLE","PRIVILEGE1", "PRIVILEGE2"));
 		when(rtUserRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
 
 		UserDetails userDetails = instance.loadUserByUsername("tesing");
