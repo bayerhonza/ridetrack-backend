@@ -19,14 +19,12 @@
 	
 	
 	<dependencies>
-		
-		<!-- TTN Client -->
-		<dependency>
-			<groupId>org.thethingsnetwork</groupId>
-			<artifactId>data-mqtt</artifactId>
-			<version>${ttnMQTTClient.version}</version>
-		</dependency>
 
+		<dependency>
+			<groupId>com.ensimag.ridetrack</groupId>
+			<artifactId>ridetrack-radio-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>

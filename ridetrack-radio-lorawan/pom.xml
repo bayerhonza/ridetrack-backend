@@ -21,6 +21,11 @@
       <artifactId>data-mqtt</artifactId>
       <version>${ttnMQTTClient.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.ensimag.ridetrack</groupId>
+      <artifactId>ridetrack-radio-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 
