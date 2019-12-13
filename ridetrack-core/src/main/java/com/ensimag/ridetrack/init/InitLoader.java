@@ -1,7 +1,6 @@
 package com.ensimag.ridetrack.init;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -13,8 +12,9 @@ import org.springframework.stereotype.Component;
 import com.ensimag.ridetrack.models.AdminUser;
 import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.repository.PrivilegeRepository;
-import com.ensimag.ridetrack.roles.RoleRepository;
 import com.ensimag.ridetrack.repository.RtUserRepository;
+import com.ensimag.ridetrack.roles.RoleRepository;
+import com.ensimag.ridetrack.roles.RoleType;
 
 @Component
 public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -42,17 +42,17 @@ public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
 			return;
 		}
 		
-		Role adminRole = createRoleIfNotFound("ROLE_ADMIN");
+		Role adminRole = createRoleIfNotFound(RoleType.ADMIN);
 		
 		AdminUser adminUser = new AdminUser("administrator", passwordEncoder.encode("toto"));
 		adminUser.addRole(adminRole);
 		rtUserRepository.save(adminUser);
 	}
 	
-	public Role createRoleIfNotFound(String name) {
-		Optional<Role> roleOpt = roleRepository.findByName(name);
+	public Role createRoleIfNotFound(RoleType roleType) {
+		Optional<Role> roleOpt = roleRepository.findByName(roleType.getRoleName());
 		if (roleOpt.isEmpty()) {
-			return roleRepository.save(new Role(name));
+			return roleRepository.save(new Role(roleType.getRoleName()));
 		}
 		return roleOpt.get();
 	}
