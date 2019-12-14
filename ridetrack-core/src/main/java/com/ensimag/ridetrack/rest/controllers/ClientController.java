@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ensimag.ridetrack.dto.ClientDTO;
+import com.ensimag.ridetrack.dto.SpaceDTO;
 import com.ensimag.ridetrack.exception.RidetrackConflictException;
 import com.ensimag.ridetrack.mappers.ClientMapper;
+import com.ensimag.ridetrack.mappers.SpaceMapper;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
 import com.ensimag.ridetrack.rest.api.RestPaths;
@@ -31,20 +34,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(RestPaths.API_PATH)
+@PreAuthorize("hasRole('ADMIN')")
 @Slf4j
 public class ClientController {
 	
-	private final ClientManager clientManager;
+	@Autowired
+	private ClientManager clientManager;
 	
-	private final ClientMapper clientMapper;
+	@Autowired
+	private ClientMapper clientMapper;
 	
-	public ClientController(
-			@Autowired ClientManager clientManager,
-			@Autowired ClientMapper clientMapper) {
-		this.clientManager = clientManager;
-		this.clientMapper = clientMapper;
-		
-	}
+	@Autowired
+	private SpaceMapper spaceMapper;
 	
 	@PostMapping(path = "/client")
 	public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) {
@@ -104,4 +105,12 @@ public class ClientController {
 		return response;
 	}
 	
+	@GetMapping("/client/{clientName}/spaces")
+	public List<SpaceDTO> getAllSpacesOfClient(
+			@PathVariable("clientName") String clientName) {
+		Client client = clientManager.findClientOrThrow(clientName);
+		return client.getSpaces().stream()
+				.map(spaceMapper::toSpaceDTO)
+				.collect(Collectors.toList());
+	}
 }

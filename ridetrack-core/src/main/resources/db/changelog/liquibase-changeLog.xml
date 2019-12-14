@@ -70,7 +70,7 @@
 			</column>
 		</createTable>
 		
-		<createTable tableName="privilege">
+		<createTable tableName="aclPrivilege">
 			<column name="id_privilege" type="BIGINT" autoIncrement="${autoIncrement}">
 				<constraints primaryKey="true" primaryKeyName="privilege_pkey"/>
 			</column>
@@ -163,7 +163,7 @@
 		<addUniqueConstraint columnNames="device_uid" constraintName="uq_device_device_uid" tableName="device"/>
 		
 		<addUniqueConstraint columnNames="name, id_space" constraintName="uq_device_group_space_group_name" tableName="device_group"/>
-		<addUniqueConstraint columnNames="privilege_name" constraintName="uq_privilege_privilege_name" tableName="privilege"/>
+		<addUniqueConstraint columnNames="privilege_name" constraintName="uq_privilege_privilege_name" tableName="aclPrivilege"/>
 		<addUniqueConstraint columnNames="name, client_id" constraintName="uq_space_client_space_name" tableName="space"/>
 		<addUniqueConstraint columnNames="username" constraintName="uq_user_username" tableName="users"/>
 		
@@ -194,7 +194,7 @@
 		
 		<addForeignKeyConstraint baseColumnNames="id_privilege" baseTableName="role_privilege" constraintName="fk_role_privilege_id_privilege"
 								 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-								 referencedColumnNames="id_privilege" referencedTableName="privilege" validate="true"/>
+								 referencedColumnNames="id_privilege" referencedTableName="aclPrivilege" validate="true"/>
 		
 		<addForeignKeyConstraint baseColumnNames="id_role" baseTableName="role_privilege" constraintName="fk_role_privilege_id_role"
 								 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"

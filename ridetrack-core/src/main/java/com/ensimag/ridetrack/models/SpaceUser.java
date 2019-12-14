@@ -24,7 +24,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @AllArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Table(name = "space_users")
 @Entity
 @PrimaryKeyJoinColumn(name = "id_space_user", foreignKey = @ForeignKey(name = "FK_SPACE_USER_USER_ID"))

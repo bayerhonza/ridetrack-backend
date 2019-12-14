@@ -9,10 +9,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
+import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.SidType;
 import lombok.Getter;
 
 @Getter
 public class RtUserPrincipal implements UserDetails, CredentialsContainer {
+	
+	private AclSid principalObject;
 	
 	private final String username;
 	
@@ -28,17 +32,19 @@ public class RtUserPrincipal implements UserDetails, CredentialsContainer {
 	
 	private final boolean enabled;
 	
-	public RtUserPrincipal(String username, String password, Set<GrantedAuthority> privileges) {
-		this(username, password, true, true, true, true, privileges);
+	public RtUserPrincipal(AclSid principalObject, String username, String password, Set<? extends GrantedAuthority> privileges) {
+		this(principalObject, username, password, true, true, true, true, privileges);
 	}
 	
-	public RtUserPrincipal(String username, String password, boolean enabled,
+	public RtUserPrincipal(AclSid principalObject,String username, String password, boolean enabled,
 			boolean accountNonExpired, boolean credentialsNonExpired,
-			boolean accountNonLocked, Set<GrantedAuthority> privileges) {
+			boolean accountNonLocked, Set<? extends GrantedAuthority> privileges) {
 		
 		Assert.isTrue(!Strings.isEmpty(username),"Cannot pass null or empty values as username");
 		Assert.notNull(password,"Cannot pass null as password");
+		Assert.isTrue(principalObject.getSidType() == SidType.USER, "Only PRINCIPAL Sid type can login");
 		
+		this.principalObject = principalObject;
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;

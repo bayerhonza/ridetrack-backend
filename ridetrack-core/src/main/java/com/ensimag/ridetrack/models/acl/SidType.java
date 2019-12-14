@@ -1,7 +1,8 @@
 package com.ensimag.ridetrack.models.acl;
 
 public enum  SidType {
-    PRINCIPAL,
+    USER,
+    USER_GROUP,
     ROLE,
     PRIVILEGE;
 }

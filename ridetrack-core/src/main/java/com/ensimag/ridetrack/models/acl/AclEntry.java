@@ -48,8 +48,11 @@ public class AclEntry {
 			foreignKey = @ForeignKey(name = "FK_ACL_ENTRY_SID"))
 	private AclSid sidObject;
 	
-	@Column(name = "mask")
-	private int mask;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(
+			name = "privilege_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "FK_ACL_PRIVILEGE")
+	)
+	private AclPrivilege privilege;
 	
 	public AclEntry() {
 	

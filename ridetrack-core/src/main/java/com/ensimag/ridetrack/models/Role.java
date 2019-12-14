@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import javax.persistence.*;
 
+import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.models.acl.SidType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.ensimag.ridetrack.privileges.PrivilegeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,11 +28,11 @@ import lombok.Setter;
 ))
 @PrimaryKeyJoinColumn(name = "id_role", foreignKey = @ForeignKey(name = "FK_ROLE_SID"))
 public class Role extends AclSid implements GrantedAuthority {
-
+	
 	@Column(name = "role_name")
 	private String name;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "role_privilege",
 		joinColumns = @JoinColumn(
@@ -43,12 +45,16 @@ public class Role extends AclSid implements GrantedAuthority {
 			foreignKey = @ForeignKey(name = "FK_ROLE_PRIVILEGE_ID_PRIVILEGE")
 		)
 	)
-	private Set<Privilege> privileges = new HashSet<>();
-
+	private Set<AclPrivilege> aclPrivileges = new HashSet<>();
+	
+	@CreationTimestamp
+	@Column(name = "created_at")
+	private ZonedDateTime createdAt;
+	
 	@UpdateTimestamp
 	@Column(name = "updated_at")
-	protected ZonedDateTime updatedAt;
-
+	private ZonedDateTime updatedAt;
+	
 	public Role() {
 		super(SidType.ROLE);
 	}
@@ -56,13 +62,12 @@ public class Role extends AclSid implements GrantedAuthority {
 	public Role(String name) {
 		super(SidType.ROLE);
 		this.name = name;
-		this.privileges = new HashSet<>();
+		this.aclPrivileges = new HashSet<>();
 	}
 
-	public static Role of(String roleName, String... privileges) {
+	public static Role of(String roleName, AclPrivilege... privileges) {
 		Role role = Role.of(roleName);
 		Stream.of(privileges)
-			.map(Privilege::of)
 			.forEach(role::addPrivilege);
 		return role;
 	}
@@ -72,11 +77,11 @@ public class Role extends AclSid implements GrantedAuthority {
 	}
 
 
-	public void addPrivilege(Privilege privilege) {
-		if (privileges == null) {
-			privileges = new HashSet<>();
+	public void addPrivilege(AclPrivilege aclPrivilege) {
+		if (aclPrivileges == null) {
+			aclPrivileges = new HashSet<>();
 		}
-		privileges.add(privilege);
+		aclPrivileges.add(aclPrivilege);
 	}
 	
 	@Override

@@ -89,7 +89,7 @@ class SpaceManagerTest {
 				.name("test3space")
 				.build();
 		assertTrue(newSpace.getDeviceGroups().isEmpty());
-		spaceManager.createSpace(newClient, newSpace);
+		spaceManager.createSpace( newSpace);
 		Assertions.assertEquals("test3space", newSpace.getName());
 		Assertions.assertEquals(newClient, newSpace.getOwner());
 		MatcherAssert.assertThat(

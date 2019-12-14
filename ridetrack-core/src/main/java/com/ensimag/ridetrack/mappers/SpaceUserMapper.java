@@ -1,5 +1,7 @@
 package com.ensimag.ridetrack.mappers;
 
+import javax.persistence.ManyToOne;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,5 +20,6 @@ public interface SpaceUserMapper {
 	@Mapping(target = "userConfiguration", ignore = true)
 	@Mapping(target = "sid", ignore = true)
 	@Mapping(target = "sidType", ignore = true)
+	@Mapping(target = "userGroups", ignore = true)
 	SpaceUser toUser(SpaceUserDTO spaceUserDTO);
 }

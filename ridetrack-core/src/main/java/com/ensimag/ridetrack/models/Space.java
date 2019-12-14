@@ -77,5 +77,9 @@ public class Space extends AclObjectIdentity {
 	public Space() {
         // no-arg constructor
 	}
-
-    }
+	
+	public void setOwner(Client owner) {
+		this.owner = owner;
+		owner.addSpace(this);
+	}
+}

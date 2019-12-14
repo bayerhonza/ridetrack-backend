@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ensimag.ridetrack.models.ClientUser;
-import com.ensimag.ridetrack.models.Privilege;
+import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.SpaceUser;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class RoleManager {
 	@Autowired
 	public void init() {
 		for (RoleType roleType : RoleType.values()) {
-			Role role = createRoleIfNotFound(roleType.getRoleName(), new HashSet<>());
+			Role role = createRoleIfNotFound(roleType.getRoleName());
 			roleToEntityMap.put(roleType, role);
 		}
 	}
@@ -40,12 +40,11 @@ public class RoleManager {
 		user.addRole(entityRole);
 	}
 	
-	private Role createRoleIfNotFound(String name, Set<Privilege> privileges) {
+	private Role createRoleIfNotFound(String name) {
 		
 		Optional<Role> roleOpt = roleRepository.findByName(name);
 		if (roleOpt.isEmpty()) {
 			Role role = new Role(name);
-			role.setPrivileges(privileges);
 			return roleRepository.save(role);
 		}
 		return roleOpt.get();

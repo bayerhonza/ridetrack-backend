@@ -10,12 +10,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.models.acl.SidType;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -34,8 +34,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @PrimaryKeyJoinColumn(name = "id_user", foreignKey = @ForeignKey(name = "FK_USER_SID"))
-public abstract class RtUser extends AclSid {
-
+public abstract class RtUser extends AclSid  {
 	
 	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9._-]{2,}$")
 	@Size(max = 100)
@@ -71,6 +70,9 @@ public abstract class RtUser extends AclSid {
 	)
 	private final Set<Role> roles = new HashSet<>();
 	
+	@ManyToMany(mappedBy = "users")
+	private Set<AclOidUserGroup> userGroups;
+	
 	public void addRole(Role role) {
 		roles.add(role);
 	}
@@ -82,7 +84,7 @@ public abstract class RtUser extends AclSid {
 	}
 
 	public RtUser() {
-		super(SidType.PRINCIPAL);
+		super(SidType.USER);
 	}
 	
 	public Long getUserId() {

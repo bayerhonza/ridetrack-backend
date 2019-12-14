@@ -33,12 +33,12 @@ class RtSpaceUserManagerTest {
 			.password("hashedPassword")
 			.username("username")
 			.build();
-		user.addRole(Role.of("TEST_ROLE","PRIVILEGE1", "PRIVILEGE2"));
+		user.addRole(Role.of("TEST_ROLE"));
 		when(rtUserRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
 
 		UserDetails userDetails = instance.loadUserByUsername("tesing");
 
-		assertEquals(3, userDetails.getAuthorities().size());
+		assertEquals(0, userDetails.getAuthorities().size());
 	}
 
 }

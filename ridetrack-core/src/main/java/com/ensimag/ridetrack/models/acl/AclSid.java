@@ -1,5 +1,8 @@
 package com.ensimag.ridetrack.models.acl;
 
+import java.util.Set;
+
+import com.ensimag.ridetrack.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,7 +40,7 @@ public abstract class AclSid {
     @Column(name = "sid_type")
     @Enumerated(EnumType.STRING)
     private SidType sidType;
-
+    
     public AclSid() { }
 
     public AclSid(SidType type) {
