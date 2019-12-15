@@ -23,6 +23,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
+
+import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.SidType;
 
 @ExtendWith(MockitoExtension.class)
 class TokenRequestFilterTest {
@@ -33,11 +37,14 @@ class TokenRequestFilterTest {
 	@Mock
 	private UserDetailsService userDetailsService;
 	
+	@Mock
+	private AuthenticationEntryPoint entryPoint;
+	
 	private TokenRequestFilter instance;
 	
 	@BeforeEach
 	public void setUp() {
-		instance = new TokenRequestFilter("/testing", tokenProvider, userDetailsService);
+		instance = new TokenRequestFilter("/testing", tokenProvider, userDetailsService, entryPoint);
 	}
 	
 	@Test
@@ -67,8 +74,10 @@ class TokenRequestFilterTest {
 		req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer 123456789");
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
+		AclSid aclSid = mock(AclSid.class);
+		when(aclSid.getSidType()).thenReturn(SidType.USER);
 		
-		RtUserPrincipal userDetails = new RtUserPrincipal("username1", "pwwd1234", Collections.emptySet());
+		RtUserPrincipal userDetails = new RtUserPrincipal(aclSid, "username1", "pwwd1234", Collections.emptySet());
 		
 		when(userDetailsService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(tokenProvider.getUsernameFromToken("123456789")).thenReturn("username1");

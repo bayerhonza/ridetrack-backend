@@ -1,5 +1,6 @@
 package com.ensimag.ridetrack.auth;
 
+import antlr.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,20 +23,20 @@ public class AuthenticationController {
 	
 	private final AuthenticationService authenticationService;
 	
-	private final JwtTokenProvider jwtTokenProvider;
+	private final TokenProvider tokenProvider;
 	
 	public AuthenticationController(
 			@Autowired AuthenticationService authenticationService,
-			@Autowired JwtTokenProvider jwtTokenProvider) {
+			@Autowired TokenProvider tokenProvider) {
 		this.authenticationService = authenticationService;
-		this.jwtTokenProvider = jwtTokenProvider;
+		this.tokenProvider = tokenProvider;
 	}
 	
 	@PostMapping(value = "/authenticate")
 	public ResponseEntity<JwtResponse> createAuthenticationToken(
 			@RequestBody AuthRequest authenticationRequest) {
 		authenticationService.authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-		final String token = jwtTokenProvider.generateToken(authenticationRequest.getUsername());
+		final String token = tokenProvider.generateToken(authenticationRequest.getUsername());
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 	

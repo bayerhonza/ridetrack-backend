@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ensimag.ridetrack.models.User;
+import com.ensimag.ridetrack.models.RtUser;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface RtUserRepository extends JpaRepository<RtUser, Long> {
 
-  Optional<User> findByUsername(String username);
+  Optional<RtUser> findByUsername(String username);
 }

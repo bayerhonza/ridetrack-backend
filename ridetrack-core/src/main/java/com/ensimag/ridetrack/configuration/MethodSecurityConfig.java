@@ -1,9 +1,15 @@
 package com.ensimag.ridetrack.configuration;
-import org.springframework.context.annotation.Configuration;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
-@Configuration
+import com.ensimag.ridetrack.auth.acl.AclService;
+import com.ensimag.ridetrack.auth.CustomPermissionEvaluator;
+
 @EnableGlobalMethodSecurity(
 		securedEnabled = true,
 		jsr250Enabled = true,
@@ -11,11 +17,11 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 )
 public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 	
-	/**@Override
-	protected MethodSecurityExpressionHandler createExpressionHandler() {
-		DefaultMethodSecurityExpressionHandler expressionHandler =
-				new DefaultMethodSecurityExpressionHandler();
-		expressionHandler.setPermissionEvaluator(new RtPermissionEvaluator());
+	@Bean
+	public MethodSecurityExpressionHandler
+	defaultMethodSecurityExpressionHandler(@Autowired AclService aclService) {
+		DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+		expressionHandler.setPermissionEvaluator(new CustomPermissionEvaluator(aclService));
 		return expressionHandler;
-	}*/
+	}
 }

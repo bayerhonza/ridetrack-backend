@@ -4,27 +4,38 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
+
+import com.ensimag.ridetrack.models.acl.AclPrivilege;
 
 class RoleTest {
 
 	@Test
 	public void testRoleOf() {
-		String[] privileges = List.of("PRIVILEGE1", "PRIVILEGE2", "PRIVILEGE3").toArray(new String[0]);
-		Role role = Role.of("TEST_ROLE", "PRIVILEGE1", "PRIVILEGE2", "PRIVILEGE3");
-		assertEquals(3, role.getPrivileges().size());
-		assertTrue(role.getPrivileges().stream()
-			.anyMatch(privilege -> privilege.getOperationName().equals("PRIVILEGE2")));
+		Set<String> privileges = Set.of(
+				"PRIVILEGE1",
+				"PRIVILEGE2",
+				"PRIVILEGE3"
+		);
+		
+		AclPrivilege[] aclPrivileges = (AclPrivilege[]) privileges.stream()
+				.map(AclPrivilege::new)
+				.toArray();
+		Role role = Role.of("TEST_ROLE", aclPrivileges);
+		assertEquals(3, role.getAclPrivileges().size());
+		assertTrue(role.getAclPrivileges().stream()
+			.anyMatch(privilege -> privilege.getPrivilegeName().equals("PRIVILEGE2")));
 	}
 
 	@Test
 	public void testAddPrivilege() {
 		Role role = Role.of("TEST_ROLE");
-		Privilege privilege = Privilege.of("PRIVILEGE1");
-		role.setPrivileges(null);
-		role.addPrivilege(privilege);
-		assertNotNull(role.getPrivileges());
+		AclPrivilege aclPrivilege = AclPrivilege.of("PRIVILEGE1");
+		role.setAclPrivileges(null);
+		role.addPrivilege(aclPrivilege);
+		assertNotNull(role.getAclPrivileges());
 	}
 
 }

@@ -24,7 +24,7 @@ public class RidetrackJpaRepositoriesTest  extends AbstractRepositoryTest{
 			.build();
 		entityManager.persist(newClient);
 		entityManager.flush();
-		Assertions.assertNotEquals(0,newClient.getId());
+		Assertions.assertNotEquals(0,newClient.getOid());
 	}
 
 	@Test

@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(RestPaths.API_PATH)
+@PreAuthorize("hasRole('USER')")
 @Slf4j
 public class SpaceController {
 	
@@ -55,7 +57,7 @@ public class SpaceController {
 	}
 	
 	@GetMapping("/space/{clientName}/{spaceName}")
-	public List<SpaceDTO> getSpacesOfClient(
+	public List<SpaceDTO> getSpaceOfClient(
 			@PathVariable("clientName") String clientName,
 			@PathVariable("spaceName") String spaceName) {
 		Client client = clientManager.findClientOrThrow(clientName);
@@ -65,28 +67,32 @@ public class SpaceController {
 	}
 	
 	@PostMapping(path = "/space")
+	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<SpaceDTO> createSpace(@Valid @RequestBody SpaceDTO spaceDTO) {
-		if (spaceManager.spaceExistsForClient(spaceDTO.getClientName(), spaceDTO.getName())) {
-			log.warn("Space {} of {} already exists", spaceDTO.getName(), spaceDTO.getClientName());
+		Client client = clientManager.findClientOrThrow(spaceDTO.getClientName());
+		if (spaceManager.spaceExistsForClient(client, spaceDTO.getName())) {
+			log.warn("Space '{}@{}' already exists", spaceDTO.getName(), spaceDTO.getClientName());
 			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
 		}
 		
-		log.info("Creating space {} of {}", spaceDTO.getName(), spaceDTO.getClientName());
+		log.info("Creating space '{}@{}'", spaceDTO.getName(), spaceDTO.getClientName());
 		Space newSpace = spaceMapper.toSpace(spaceDTO);
 		
-		Client owner = clientManager.findClientOrThrow(spaceDTO.getClientName());
-		spaceManager.createSpace(owner, newSpace);
-		log.debug("Created space : {}", newSpace.getName());
+		newSpace.setOwner(client);
+		spaceManager.createSpace( newSpace);
+		
+		log.debug("Created space '{}'", newSpace.getName());
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
-				.buildAndExpand(newSpace.getId())
+				.buildAndExpand(newSpace.getOid())
 				.toUri();
 		return ResponseEntity.created(uri)
 				.body(spaceMapper.toSpaceDTO(newSpace));
 	}
 	
 	@PutMapping("/space/{clientName}/{spaceName}")
+	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<SpaceDTO> updateSpace(@PathVariable("clientName") String clientName,
 			@PathVariable("spaceName") String spaceName,
 			@Valid @RequestBody SpaceDTO spaceDetails) {
@@ -99,15 +105,15 @@ public class SpaceController {
 	}
 	
 	@DeleteMapping("/space/{clientName}/{spaceName}")
+	@PreAuthorize("hasRole('CLIENT')")
 	public Map<String, Boolean> delete(
 			@PathVariable(name = "clientName") String clientName,
 			@PathVariable(name = "spaceName") String spaceName) {
-			
+		
 		log.info("Deleting space {}", spaceName);
 		Client client = clientManager.findClientOrThrow(clientName);
 		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
 		spaceManager.deleteSpace(space);
-		
 		
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);

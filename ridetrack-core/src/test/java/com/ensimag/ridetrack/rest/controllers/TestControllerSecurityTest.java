@@ -22,21 +22,21 @@ import com.ensimag.ridetrack.auth.RtUserManager;
 import com.ensimag.ridetrack.auth.TokenProvider;
 import com.ensimag.ridetrack.configuration.MethodSecurityConfig;
 import com.ensimag.ridetrack.configuration.SecurityConfig;
-import com.ensimag.ridetrack.jwt.RtAuthenticationEntryPoint;
+import com.ensimag.ridetrack.jwt.RestAuthenticationEntryPoint;
 import com.ensimag.ridetrack.auth.TokenRequestFilter;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.repository.ClientRepository;
-import com.ensimag.ridetrack.repository.UserRepository;
+import com.ensimag.ridetrack.repository.RtUserRepository;
 import com.ensimag.ridetrack.services.ClientManager;
-import com.ensimag.ridetrack.services.SpaceManager;
+import com.ensimag.ridetrack.services.SpaceUserManager;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { SecurityConfig.class, ClientManager.class, MethodSecurityConfig.class })
-@MockBean(UserRepository.class)
+@MockBean(RtUserRepository.class)
 @MockBean(TokenRequestFilter.class)
-@MockBean(RtAuthenticationEntryPoint.class)
+@MockBean(RestAuthenticationEntryPoint.class)
 @MockBean(RtUserManager.class)
-@MockBean(SpaceManager.class)
+@MockBean(SpaceUserManager.class)
 @MockBean(TokenProvider.class)
 class TestControllerSecurityTest {
 	

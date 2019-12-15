@@ -1,42 +1,38 @@
 package com.ensimag.ridetrack.models;
 
-import java.time.ZonedDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.ZonedDateTime;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "sensors")
-public class Sensor {
+@PrimaryKeyJoinColumn(name = "id_sensor", foreignKey = @ForeignKey(name = "FK_SENSOR_OID"))
+public class Sensor extends AclObjectIdentity {
+	
+	@OneToOne(mappedBy = "sensor")
+	private Device device;
+	
+	@NotBlank(message = "deviceUID may not be empty")
+	@Column(name = "device_uid")
+	private String deviceUid;
 
-  @Id
-  @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-  @GenericGenerator(name = "native", strategy = "native")
-  @Column(name = "id_sensor")
-  private Long id;
+    @CreationTimestamp
+    @Column(name = "created_at")
+    protected ZonedDateTime createdAt;
 
-  @CreationTimestamp
- @Column(name = "created_at")
-private ZonedDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    protected ZonedDateTime updatedAt;
 
-  @UpdateTimestamp
- @Column(name = "updated_at")
-private ZonedDateTime updatedAt;
-
-  @OneToOne(mappedBy = "sensor")
-  private Device device;
-
-  @NotBlank(message = "deviceUID may not be empty")
-  @Column(name = "device_uid")
-  private String deviceUid;
 }

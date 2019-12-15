@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,9 +28,11 @@ import com.ensimag.ridetrack.exception.RestException;
 import com.ensimag.ridetrack.exception.RidetrackConflictException;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.exception.RidetrackValidationException;
+import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice(annotations = RestController.class)
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private final RestExceptionMessageService messageService;
@@ -120,13 +123,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(ex.getLocalizedMessage(), ex.getStatusCode(), ex, req);
 	}
 	
-	@ExceptionHandler({ AccessDeniedException.class})
-	public ResponseEntity<RestErrorInfo> handleSrpingException(AccessDeniedException ex, WebRequest req) {
+	@ExceptionHandler({ AccessDeniedException.class, AuthenticationException.class })
+	public ResponseEntity<RestErrorInfo> handleSpringException(Exception ex, WebRequest req) {
 		return buildResponseEntity(ex.getLocalizedMessage(), HttpStatus.UNAUTHORIZED, ex, req);
 	}
 	
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<RestErrorInfo> handleAll(Exception ex, WebRequest req) {
+		log.debug("Internal error stack trace: ", ex);
 		return buildResponseEntity("error occurred", HttpStatus.INTERNAL_SERVER_ERROR, ex, req);
 	}
 	

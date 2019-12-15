@@ -1,25 +1,21 @@
 package com.ensimag.ridetrack.models;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
+import com.ensimag.ridetrack.models.acl.AclPrivilege;
+import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.SidType;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.ensimag.ridetrack.privileges.PrivilegeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,18 +26,13 @@ import lombok.Setter;
 	name = "UQ_ROLE_ROLE_NAME",
 	columnNames = {"role_name"}
 ))
-public class Role implements GrantedAuthority {
-
-	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-	@GenericGenerator(name = "native", strategy = "native")
-	@Column(name = "id_role")
-	private Long id;
-
+@PrimaryKeyJoinColumn(name = "id_role", foreignKey = @ForeignKey(name = "FK_ROLE_SID"))
+public class Role extends AclSid implements GrantedAuthority {
+	
 	@Column(name = "role_name")
 	private String name;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "role_privilege",
 		joinColumns = @JoinColumn(
@@ -54,19 +45,29 @@ public class Role implements GrantedAuthority {
 			foreignKey = @ForeignKey(name = "FK_ROLE_PRIVILEGE_ID_PRIVILEGE")
 		)
 	)
-	private Set<Privilege> privileges = new HashSet<>();
-
-	public Role() {}
-
-	public Role(String name) {
-		this.name = name;
-		this.privileges = new HashSet<>();
+	private Set<AclPrivilege> aclPrivileges = new HashSet<>();
+	
+	@CreationTimestamp
+	@Column(name = "created_at")
+	private ZonedDateTime createdAt;
+	
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	private ZonedDateTime updatedAt;
+	
+	public Role() {
+		super(SidType.ROLE);
 	}
 
-	public static Role of(String roleName, String... privileges) {
+	public Role(String name) {
+		super(SidType.ROLE);
+		this.name = name;
+		this.aclPrivileges = new HashSet<>();
+	}
+
+	public static Role of(String roleName, AclPrivilege... privileges) {
 		Role role = Role.of(roleName);
 		Stream.of(privileges)
-			.map(Privilege::of)
 			.forEach(role::addPrivilege);
 		return role;
 	}
@@ -76,15 +77,16 @@ public class Role implements GrantedAuthority {
 	}
 
 
-	public void addPrivilege(Privilege privilege) {
-		if (privileges == null) {
-			privileges = new HashSet<>();
+	public void addPrivilege(AclPrivilege aclPrivilege) {
+		if (aclPrivileges == null) {
+			aclPrivileges = new HashSet<>();
 		}
-		privileges.add(privilege);
+		aclPrivileges.add(aclPrivilege);
 	}
 	
 	@Override
 	public String getAuthority() {
 		return name;
 	}
+
 }

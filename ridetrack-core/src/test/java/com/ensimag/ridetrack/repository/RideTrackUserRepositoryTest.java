@@ -15,34 +15,32 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.ensimag.ridetrack.models.User;
-
+import com.ensimag.ridetrack.models.RtUser;
+import com.ensimag.ridetrack.models.SpaceUser;
 
 @DataJpaTest
 @TestMethodOrder(OrderAnnotation.class)
 public class RideTrackUserRepositoryTest extends AbstractRepositoryTest {
 
   @Autowired
-  private UserRepository userRepository;
+  private RtUserRepository rtUserRepository;
 
   @Test
   @DisplayName("Test Spring Data for Client")
   @Order(1)
   public void testUser() {
-    User u1 = new User();
-    u1.setName("test1");
+    RtUser u1 = new SpaceUser();
     u1.setUsername("username1");
     u1.setPassword("abcde123456&é-è_è-('");
-    u1.setSurname("surname1");
     entityManager.persist(u1);
     entityManager.flush();
-    assertNotEquals(0, u1.getId());
-    System.out.print(u1.getId());
+    assertNotEquals(0, u1.getSid());
+    System.out.print(u1.getUserId());
 
-    Optional<User> u1FreshOptional = userRepository.findByUsername("username1");
+    Optional<RtUser> u1FreshOptional = rtUserRepository.findByUsername("username1");
     assertTrue(u1FreshOptional.isPresent());
     assertSame(u1FreshOptional.get(), u1);
-    assertEquals("test1", u1FreshOptional.get().getName());
+    assertEquals("username1", u1FreshOptional.get().getUsername());
   }
 
 }

@@ -15,30 +15,30 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ensimag.ridetrack.models.Role;
-import com.ensimag.ridetrack.models.User;
-import com.ensimag.ridetrack.repository.UserRepository;
+import com.ensimag.ridetrack.models.SpaceUser;
+import com.ensimag.ridetrack.repository.RtUserRepository;
 
 @ExtendWith(MockitoExtension.class)
-class RtUserManagerTest {
+class RtSpaceUserManagerTest {
 
 	@Mock
-	private UserRepository userRepository;
+	private RtUserRepository rtUserRepository;
 
 	@InjectMocks
 	private RtUserManager instance;
 
 	@Test
 	public void testLoadByUsername() {
-		User user = User.builder()
+		SpaceUser user = SpaceUser.builder()
 			.password("hashedPassword")
 			.username("username")
-			.roles(Set.of(Role.of("TEST_ROLE","PRIVILEGE1", "PRIVILEGE2")))
 			.build();
-		when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+		user.addRole(Role.of("TEST_ROLE"));
+		when(rtUserRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
 
 		UserDetails userDetails = instance.loadUserByUsername("tesing");
 
-		assertEquals(3, userDetails.getAuthorities().size());
+		assertEquals(0, userDetails.getAuthorities().size());
 	}
 
 }

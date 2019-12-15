@@ -1,7 +1,5 @@
 package com.ensimag.ridetrack.models;
 
-import java.time.ZonedDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -14,11 +12,13 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -27,19 +27,12 @@ import lombok.Setter;
 @Table(name = "device_data")
 public class DeviceData {
 
-	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-	@GenericGenerator(name = "native", strategy = "native")
+
+    @Id
+	@GeneratedValue(strategy= GenerationType.AUTO, generator="device_data_sequence")
+	@GenericGenerator(name = "device_data_sequence", strategy = "native")
 	@Column(name = "id_device_data")
 	private Long id;
-
-	@CreationTimestamp
-	@Column(name = "created_at")
-	private ZonedDateTime createdAt;
-
-	@UpdateTimestamp
-	@Column(name = "updated_at")
-	private ZonedDateTime updatedAt;
 
 	@Column(name = "x_coord")
 	private Long xCoord;
@@ -53,5 +46,13 @@ public class DeviceData {
 	@OneToOne
 	@JoinColumn(name = "id_device", foreignKey = @ForeignKey(name = "fk_device_data_device_id"))
 	private Device device;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    protected ZonedDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    protected ZonedDateTime updatedAt;
 
 }

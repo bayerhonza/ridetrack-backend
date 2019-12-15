@@ -1,81 +1,73 @@
 package com.ensimag.ridetrack.init;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.ensimag.ridetrack.models.Privilege;
+import com.ensimag.ridetrack.models.AdminUser;
 import com.ensimag.ridetrack.models.Role;
-import com.ensimag.ridetrack.models.User;
-import com.ensimag.ridetrack.repository.PrivilegeRepository;
-import com.ensimag.ridetrack.repository.RoleRepository;
-import com.ensimag.ridetrack.repository.UserRepository;
+import com.ensimag.ridetrack.models.acl.AclPrivilege;
+import com.ensimag.ridetrack.repository.acl.AclPrivilegeRepository;
+import com.ensimag.ridetrack.repository.RtUserRepository;
+import com.ensimag.ridetrack.roles.RoleRepository;
+import com.ensimag.ridetrack.roles.RoleType;
 
 @Component
 public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
 
 	boolean alreadySetup = false;
 	
+	@Value("#{'${ridetrack.auth.defaultProperties}'.split(',')}")
+	private List<String> defaultPrivileges;
+	
 	@Autowired
 	private RoleRepository roleRepository;
 	
 	@Autowired
-	private PrivilegeRepository privilegeRepository;
+	private AclPrivilegeRepository aclPrivilegeRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private RtUserRepository rtUserRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		if (alreadySetup || userRepository.findByUsername("administrator").isPresent()) {
+		if (alreadySetup || rtUserRepository.findByUsername("administrator").isPresent()) {
 			return;
 		}
-		Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
-		Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
 		
-		Set<Privilege> adminPrivileges = Set.of(readPrivilege, writePrivilege);
-		Role adminRole = createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
-		createRoleIfNotFound("ROLE_USER",Set.of(readPrivilege));
+		Role adminRole = createRoleIfNotFound(RoleType.ADMIN);
 		
-		User user = User.builder()
-				.name("Admin")
-				.surname("Ridetrack")
-				.username("administrator")
-				.password(passwordEncoder.encode("toto"))
-				.email("jan.bayer@grenole-inpr.org")
-				.roles(Set.of(adminRole))
-				.enabled(true)
-				.build();
-		userRepository.save(user);
-
-
+		AdminUser adminUser = new AdminUser("administrator", passwordEncoder.encode("toto"));
+		adminUser.addRole(adminRole);
+		rtUserRepository.save(adminUser);
+		defaultPrivileges.forEach(this::createPrivilegeIfNotFound);
 	}
 	
-	public Privilege createPrivilegeIfNotFound(String name) {
-		
-		Optional<Privilege> privilegeOpt = privilegeRepository.findByOperationName(name);
-		if (privilegeOpt.isEmpty()) {
-			return privilegeRepository.save(Privilege.of(name));
-		}
-		return privilegeOpt.get();
-	}
-	
-	public Role createRoleIfNotFound(String name, Set<Privilege> privileges) {
-
-		Optional<Role> roleOpt = roleRepository.findByName(name);
+	public Role createRoleIfNotFound(RoleType roleType) {
+		Optional<Role> roleOpt = roleRepository.findByName(roleType.getRoleName());
 		if (roleOpt.isEmpty()) {
-			Role role = new Role(name);
-			role.setPrivileges(privileges);
-			return roleRepository.save(role);
+			return roleRepository.save(new Role(roleType.getRoleName()));
 		}
 		return roleOpt.get();
+	}
+	
+	public void createPrivilegeIfNotFound(String privilege) {
+		Optional<AclPrivilege> privilegeOpt = aclPrivilegeRepository.findByPrivilegeName(privilege);
+		if (privilegeOpt.isEmpty()) {
+			aclPrivilegeRepository.save(new AclPrivilege(privilege));
+		}
 	}
 }

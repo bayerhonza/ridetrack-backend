@@ -9,66 +9,82 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@Data
+@Setter
+@Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "client",
-		uniqueConstraints = {
-				@UniqueConstraint(columnNames = { "client_name" }, name = UQ_CLIENT_CLIENT_NAME)
-		}
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"client_name"}, name = UQ_CLIENT_CLIENT_NAME)
+        }
 )
-public class Client {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-	@GenericGenerator(name = "native", strategy = "native")
-	@Column(name = "id_client")
-	private Long id;
-	
-	@NotBlank
-	@Column(name = "client_name")
-	private String clientName;
-	
-	@NotBlank
-	@Column(name = "full_name")
-	private String fullName;
-	
+@PrimaryKeyJoinColumn(name = "id_client", foreignKey = @ForeignKey(name = "FK_DEVICE_OID"))
+public class Client extends AclObjectIdentity {
+
+    @NotBlank
+    @Column(name = "client_name")
+    private String clientName;
+
+    @NotBlank
+    @Column(name = "full_name")
+    private String fullName;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    private final Set<Space> spaces = new HashSet<>();
+
+    @OneToMany(mappedBy = "assignedClient", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    private final Set<ClientUser> clientUsers = new HashSet<>();
+
 	@CreationTimestamp
 	@Column(name = "created_at")
-	private ZonedDateTime createdAt;
-	
+	protected ZonedDateTime createdAt;
+
 	@UpdateTimestamp
 	@Column(name = "updated_at")
-	private ZonedDateTime updatedAt;
-	
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
-	private final Set<Space> spaces = new HashSet<>();
-	
-	public void addSpace(Space space) {
-		spaces.add(space);
-	}
-	
-	public void removeSpace(Space space) {
-		spaces.remove(space);
-	}
-	
-}
+	protected ZonedDateTime updatedAt;
+
+    public Client() {
+        // no-arg constructor
+    }
+
+    public void addSpace(Space space) {
+        spaces.add(space);
+    }
+
+    public void addClientUser(ClientUser clientUser) {
+        clientUsers.add(clientUser);
+    }
+
+    public void removeClientUser(ClientUser clientUser) {
+        clientUsers.remove(clientUser);
+    }
+
+    public void removeSpace(Space space) {
+        spaces.remove(space);
+    }
+
+  }
