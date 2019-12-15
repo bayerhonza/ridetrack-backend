@@ -1,16 +1,13 @@
 package com.ensimag.ridetrack.models;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -24,8 +21,8 @@ public class Sensor extends AclObjectIdentity {
 	private Device device;
 	
 	@NotBlank(message = "deviceUID may not be empty")
-	@Column(name = "device_uid")
-	private String deviceUid;
+	@Column(name = "sensor_uid")
+	private String sensorUid;
 
     @CreationTimestamp
     @Column(name = "created_at")
