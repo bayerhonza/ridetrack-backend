@@ -27,6 +27,7 @@
         <module>ridetrack-radio</module>
         <module>ridetrack-rest-api</module>
         <module>ridetrack-radio-lorawan</module>
+        <module>ridetrack-radio-api</module>
     </modules>
     
     <distributionManagement>
