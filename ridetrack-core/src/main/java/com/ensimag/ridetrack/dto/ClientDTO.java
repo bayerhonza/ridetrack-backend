@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 public class ClientDTO {
 
-	@Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Non-valid clientName")
+	@Pattern(regexp = "^[a-zA-Z0-9_-]{3,15}$", message = "Non-valid clientName")
 	@NotBlank(message = "client name cannot be empty")
 	private String clientName;
 

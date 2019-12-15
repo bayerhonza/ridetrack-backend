@@ -12,6 +12,7 @@ import javax.transaction.NotSupportedException;
 
 import com.ensimag.ridetrack.auth.acl.AclService;
 import com.ensimag.ridetrack.models.AdminUser;
+import com.ensimag.ridetrack.models.RtUser;
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.models.acl.AclSid;
@@ -34,18 +35,26 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 		if (principal.getPrincipalObject() instanceof AdminUser) {
 			return true;
 		}
+		if (principal.getPrincipalObject() instanceof RtUser) {
+			RtUser rtUser = (RtUser) principal.getPrincipalObject();
+			
+		}
 		if (targetDomainObject == null || !(permission instanceof AclPrivilege)) {
 			return false;
 		}
-		Optional<AclPrivilege> aclPrivilege = aclService.getAclPrivilegeByName(permission.toString().toUpperCase());
-		if (aclPrivilege.isEmpty()) {
+		PrivilegeEnum privilegeEnum;
+		try {
+			 privilegeEnum = PrivilegeEnum.valueOf(permission.toString());
+		} catch (IllegalArgumentException ex) {
 			return false;
 		}
+		AclPrivilege aclPrivilege = aclService.getAclPrivilegeByName(privilegeEnum);
+		
 		
 		AclSid aclSid = principal.getPrincipalObject();
 		AclObjectIdentity aclOid = (AclObjectIdentity) targetDomainObject;
 		
-		return aclService.isAuthorized(aclSid, aclOid, aclPrivilege.get());
+		return aclService.isAuthorized(aclSid, aclOid, aclPrivilege);
 		
 	}
 	

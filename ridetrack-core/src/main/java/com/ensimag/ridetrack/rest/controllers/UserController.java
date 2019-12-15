@@ -59,12 +59,11 @@ public class UserController {
 				.assignedClient(client)
 				.enabled(true)
 				.build();
-		userRepository.save(newClientUser);
 		roleManager.assignRoleToClientUser(newClientUser);
-		userRepository.save(newClientUser);
 		AclOidUserGroup clientUserGroup = userGroupRepository.findByName(clientManager.getDefaultClientUserGroupName(client))
 				.orElseThrow(() -> new RidetrackInternalError("Client user group not found"));
 		clientUserGroup.addUser(newClientUser);
+		userRepository.save(newClientUser);
 		userGroupRepository.save(clientUserGroup);
 		return null;
 	}

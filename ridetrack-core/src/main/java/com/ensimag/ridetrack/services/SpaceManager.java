@@ -132,6 +132,6 @@ public class SpaceManager {
 	}
 	
 	public String getSpaceDefaultUGroupName(Space space) {
-		return space.getName() + DEFAULT_SPACE_USER_GROUP;
+		return space.getOwner().getClientName() + "_" + space.getName() + DEFAULT_SPACE_USER_GROUP;
 	}
 }

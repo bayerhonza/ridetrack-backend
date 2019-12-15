@@ -29,6 +29,7 @@ import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.privileges.PrivilegeEnum;
+import com.ensimag.ridetrack.privileges.PrivilegeManager;
 import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
 import com.ensimag.ridetrack.repository.acl.AclEntryRepository;
 import com.ensimag.ridetrack.repository.acl.AclObjectIdentityRepository;
@@ -64,7 +65,7 @@ public class AclService {
 	private AclOidUserGroupRepository userGroupRepository;
 	
 	@Autowired
-	private AclPrivilegeRepository privilegeRepository;
+	private PrivilegeManager privilegeManager;
 	
 	public void registerNewClientUserGroup(Client client,String userGroupName) {
 		AclOidUserGroup clientUserGroup = new AclOidUserGroup(userGroupName);
@@ -100,20 +101,15 @@ public class AclService {
 	}
 	
 	private AclEntry createAclEntry(AclObjectIdentity oid, AclSid sid, PrivilegeEnum privilegeEnum) {
-		return createAclEntry(oid, sid, privilegeEnum.getName());
-	}
-	
-	private AclEntry createAclEntry(AclObjectIdentity oid, AclSid sid, String privilegeName) {
 		return new AclEntry().toBuilder()
-				.oid(oid.getOid())
-				.sid(sid.getSid())
-				.privilege(privilegeRepository.findByPrivilegeName(privilegeName)
-						.orElseThrow(() -> new RidetrackNotFoundException("Privilege " + privilegeName + " not found")))
+				.objectIdentity(oid)
+				.sidObject(sid)
+				.privilege(privilegeManager.getPrivilege(privilegeEnum))
 				.build();
 	}
 	
-	public Optional<AclPrivilege> getAclPrivilegeByName(String name) {
-		return privilegeRepository.findByPrivilegeName(name);
+	public AclPrivilege getAclPrivilegeByName(PrivilegeEnum privilegeEnum) {
+		return privilegeManager.getPrivilege(privilegeEnum);
 	}
 	
 }
