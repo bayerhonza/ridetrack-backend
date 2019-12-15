@@ -1,11 +1,11 @@
 package com.ridetrack.ridetrack.radio;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class RadioBrokerAuth {
     private String hostname;

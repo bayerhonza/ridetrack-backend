@@ -1,6 +1,10 @@
 package com.ridetrack.ridetrack.radio;
 
+import com.ridetrack.ridetrack.radio.exceptions.RidetrackRadioException;
+
 public interface RadioService {
 
-    public byte[] getNextPacket();
+    void startService() throws RidetrackRadioException;
+
+    void stopService() throws RidetrackRadioException;
 }

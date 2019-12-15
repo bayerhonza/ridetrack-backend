@@ -1,30 +1,35 @@
 package com.ensimag.ridetrack.radio.packets;
 
+import com.ridetrack.ridetrack.radio.QueueCallbackListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
-public class PacketQueueHandler {
+public class PacketQueueHandler implements QueueCallbackListener {
 
-    private final QueueProxyService queueProxy;
+    private AtomicLong packetCounter = new AtomicLong(0);
+
+    @Autowired
+    private RawPacketHandler rawPacketHandler;
 
     private Queue<RtPacket> packetQueue = new LinkedList<>();
 
-    public PacketQueueHandler(
-            @Autowired QueueProxyService queueProxy) {
-        this.queueProxy = queueProxy;
+    @Override
+    public void processPacket(String messageType, byte[] packet) {
+        queuePacket(messageType, packet);
+        rawPacketHandler.processRawPayload(messageType, packet);
     }
 
-    public void init() {
-
+    public void queuePacket(String messageType, byte[] packet) {
+        RtPacket rtPacket = new RtPacket();
+        rtPacket.setPacketId(packetCounter.getAndIncrement());
+        rtPacket.setTopic(messageType);
+        rtPacket.setRawPayload(packet);
+        packetQueue.add(rtPacket);
     }
-
-    public void queuePacket(RtPacket packet) {
-        packetQueue.add(packet);
-    }
-
 
 }
