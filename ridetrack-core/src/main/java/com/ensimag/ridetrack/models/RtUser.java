@@ -5,21 +5,32 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.models.acl.SidType;
-import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
 @Setter
@@ -36,7 +47,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @PrimaryKeyJoinColumn(name = "id_user", foreignKey = @ForeignKey(name = "FK_USER_SID"))
 public abstract class RtUser extends AclSid  {
 	
-	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9._-]{2,}$")
+	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9._-]{2,15}$")
 	@Size(max = 100)
 	@Column(name = "username")
 	private String username;
@@ -70,7 +81,7 @@ public abstract class RtUser extends AclSid  {
 	)
 	private final Set<Role> roles = new HashSet<>();
 	
-	@ManyToMany(mappedBy = "users")
+	@ManyToMany(mappedBy = "users",fetch = FetchType.EAGER)
 	private Set<AclOidUserGroup> userGroups;
 	
 	public void addRole(Role role) {

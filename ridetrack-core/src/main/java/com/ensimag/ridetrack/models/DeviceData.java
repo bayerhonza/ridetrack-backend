@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -34,25 +35,20 @@ public class DeviceData {
 	@Column(name = "id_device_data")
 	private Long id;
 
-	@Column(name = "x_coord")
-	private Long xCoord;
+	@Column(name = "longitude")
+	private String longitude;
 
-	@Column(name = "y_coord")
-	private Long yCoord;
+	@Column(name = "latitude")
+	private String latitude;
 
-	@Column(name = "z_coord")
-	private Long zCoord;
+	@Column(name = "altitude")
+	private String altitude;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_device", foreignKey = @ForeignKey(name = "fk_device_data_device_id"))
 	private Device device;
 
-    @CreationTimestamp
     @Column(name = "created_at")
-    protected ZonedDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    protected ZonedDateTime updatedAt;
+    protected String createdAt;
 
 }

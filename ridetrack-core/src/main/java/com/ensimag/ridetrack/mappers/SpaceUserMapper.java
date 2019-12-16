@@ -1,7 +1,5 @@
 package com.ensimag.ridetrack.mappers;
 
-import javax.persistence.ManyToOne;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,7 +9,6 @@ import com.ensimag.ridetrack.models.SpaceUser;
 @Mapper(componentModel = "spring")
 public interface SpaceUserMapper {
 	
-	@Mapping(target = "spaceName", source = "space.name")
 	SpaceUserDTO toUserDTO(SpaceUser user);
 	
 	@Mapping(target = "createdAt", ignore = true)

@@ -27,7 +27,7 @@ public class DeviceGroupManager {
 	}
 	
 	public DeviceGroup createDefaultDeviceGroup(Space space) {
-		return createDeviceGroup(space, DEFAULT_DEVICE_GROUP_NAME);
+		return createDeviceGroup(space, getDefaultDeviceGroupName());
 	}
 	
 	@PreAuthorize("hasPermission(#space, T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_CREATE_DEV_GROUP)")
@@ -40,5 +40,8 @@ public class DeviceGroupManager {
 		return deviceGroupRepository.save(newDeviceGroup);
 	}
 	
+	public String getDefaultDeviceGroupName() {
+		return DEFAULT_DEVICE_GROUP_NAME;
+	}
 	
 }

@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TestController {
 
     @GetMapping("/test")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(@clientRepository.findByClientName('client1').orElse(null),T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_READ)")
     public String test() {
         log.debug("Some debug!");
         log.info("Some info!");

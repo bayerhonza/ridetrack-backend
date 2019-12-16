@@ -14,12 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ensimag.ridetrack.auth.acl.AclService;
 import com.ensimag.ridetrack.exception.RidetrackConflictException;
-import com.ensimag.ridetrack.exception.RidetrackInternalError;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.DeviceGroup;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.Space;
+import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
 import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
 import com.ensimag.ridetrack.repository.SpaceRepository;
@@ -67,7 +66,7 @@ public class SpaceManager {
 	}
 	
 	public Space createDefaultSpaceForClient(Client client) {
-		return createSpace(client, DEFAULT_SPACE_NAME);
+		return createSpace(client, getDefaultSpaceName());
 		
 	}
 	
@@ -133,5 +132,9 @@ public class SpaceManager {
 	
 	public String getSpaceDefaultUGroupName(Space space) {
 		return space.getOwner().getClientName() + "_" + space.getName() + DEFAULT_SPACE_USER_GROUP;
+	}
+	
+	public String getDefaultSpaceName() {
+		return DEFAULT_SPACE_NAME;
 	}
 }

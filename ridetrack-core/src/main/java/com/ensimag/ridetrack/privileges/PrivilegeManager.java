@@ -7,8 +7,6 @@ import com.ensimag.ridetrack.models.acl.AclPrivilege;
 
 public interface PrivilegeManager {
 	
-	void init();
-	
 	AclPrivilege createPrivilegeIfNotFound(PrivilegeEnum privilege);
 	
 	AclPrivilege getPrivilege(PrivilegeEnum privilegeEnum);

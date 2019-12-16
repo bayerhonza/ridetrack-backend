@@ -2,22 +2,25 @@ package com.ensimag.ridetrack.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ensimag.ridetrack.auth.acl.AclService;
+import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.SpaceUser;
-import com.ensimag.ridetrack.repository.RtUserRepository;
+import com.ensimag.ridetrack.repository.SpaceUserRepository;
 import com.ensimag.ridetrack.roles.RoleManager;
-import com.ensimag.ridetrack.roles.RoleType;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @Slf4j
-@PreAuthorize("hasRole('CLIENT')")
 public class SpaceUserManager {
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private RoleManager roleManager;
@@ -32,19 +35,22 @@ public class SpaceUserManager {
 	private AclService aclService;
 	
 	@Autowired
-	private RtUserRepository rtUserRepository;
+	private SpaceUserRepository userRepository;
 	
 	@PreAuthorize("hasPermission(#space,'CAN_CREATE_USER')")
-	public void createUser(Space space, SpaceUser user) {
-		log.info("Creating user '{}'", user.getUsername());
-		rtUserRepository.save(user);
-		
-		space.addUser(user);
-		user.setSpace(space);
+	public void createUser(Space space, SpaceUser newUser) {
+		log.info("Creating user '{}'", newUser.getUsername());
+		space.addUser(newUser);
 		spaceManager.updateSpace(space);
+		roleManager.assignRoleToUser(newUser);
+		userRepository.save(newUser);
 		
-		roleManager.assignRoleToUser(RoleType.USER, user);
-		rtUserRepository.save(user);
+		userRepository.save(newUser);
 		
+	}
+	
+	public SpaceUser findSpaceUserOrThrow(String username) {
+		return userRepository.findByUsername(username)
+				.orElseThrow(() -> new RidetrackNotFoundException("Usern not found"));
 	}
 }

@@ -6,21 +6,28 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
 @Setter
@@ -67,6 +74,7 @@ public class Space extends AclObjectIdentity {
 	
 	public void addUser(SpaceUser user) {
 		users.add(user);
+		user.setSpace(this);
 	}
 	
 	@Override

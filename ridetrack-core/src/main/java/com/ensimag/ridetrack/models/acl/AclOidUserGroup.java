@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -14,7 +15,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.ensimag.ridetrack.models.RtUser;
-import com.ensimag.ridetrack.models.SpaceUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class AclOidUserGroup extends AclSid {
 	@Column(name = "name")
 	private String name;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "user_group_user_group",
 			joinColumns = @JoinColumn(

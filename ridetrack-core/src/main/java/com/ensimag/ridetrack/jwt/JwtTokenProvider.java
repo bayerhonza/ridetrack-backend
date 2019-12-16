@@ -75,7 +75,8 @@ public class JwtTokenProvider implements TokenProvider {
 				.setSubject(subject)
 				.setIssuedAt(new Date(timestampNow))
 				.setExpiration(new Date(timestampNow + jwtConfiguration.getTokenValidity()))
-				.signWith(SignatureAlgorithm.HS512, jwtConfiguration.getSecret()).compact();
+				.signWith(SignatureAlgorithm.HS512, jwtConfiguration.getSecret())
+				.compact();
 	}
 	
 	@Override

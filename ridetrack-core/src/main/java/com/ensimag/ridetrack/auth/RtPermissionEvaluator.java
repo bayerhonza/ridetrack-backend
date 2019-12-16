@@ -1,28 +1,26 @@
 package com.ensimag.ridetrack.auth;
 
-import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.client.HttpServerErrorException.NotImplemented;
-
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.Set;
 
-import javax.naming.OperationNotSupportedException;
-import javax.transaction.NotSupportedException;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.Authentication;
 
 import com.ensimag.ridetrack.auth.acl.AclService;
 import com.ensimag.ridetrack.models.AdminUser;
 import com.ensimag.ridetrack.models.RtUser;
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
+import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.privileges.PrivilegeEnum;
 
-public class CustomPermissionEvaluator implements PermissionEvaluator {
+public class RtPermissionEvaluator implements PermissionEvaluator {
 	
 	private AclService aclService;
 	
-	public CustomPermissionEvaluator(AclService aclService) {
+	public RtPermissionEvaluator(AclService aclService) {
 		this.aclService = aclService;
 	}
 	
@@ -35,24 +33,27 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 		if (principal.getPrincipalObject() instanceof AdminUser) {
 			return true;
 		}
-		if (principal.getPrincipalObject() instanceof RtUser) {
-			RtUser rtUser = (RtUser) principal.getPrincipalObject();
-			
-		}
-		if (targetDomainObject == null || !(permission instanceof AclPrivilege)) {
+		
+		if (targetDomainObject == null || !(permission instanceof PrivilegeEnum)) {
 			return false;
 		}
-		PrivilegeEnum privilegeEnum;
-		try {
-			 privilegeEnum = PrivilegeEnum.valueOf(permission.toString());
-		} catch (IllegalArgumentException ex) {
-			return false;
-		}
+		PrivilegeEnum privilegeEnum = (PrivilegeEnum) permission;
 		AclPrivilege aclPrivilege = aclService.getAclPrivilegeByName(privilegeEnum);
-		
-		
 		AclSid aclSid = principal.getPrincipalObject();
 		AclObjectIdentity aclOid = (AclObjectIdentity) targetDomainObject;
+		
+		if (principal.getPrincipalObject() instanceof RtUser) {
+			RtUser rtUser = (RtUser) principal.getPrincipalObject();
+			Set<AclOidUserGroup> userGroups = rtUser.getUserGroups();
+			if (!userGroups.isEmpty()) {
+				Optional<AclOidUserGroup> result = userGroups.stream()
+						.filter(userGroup -> aclService.isAuthorized(userGroup, aclOid, aclPrivilege))
+						.findFirst();
+				if (result.isPresent()) {
+					return true;
+				}
+			}
+		}
 		
 		return aclService.isAuthorized(aclSid, aclOid, aclPrivilege);
 		

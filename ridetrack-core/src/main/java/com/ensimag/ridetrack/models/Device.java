@@ -14,6 +14,8 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -39,12 +41,20 @@ public class Device extends AclObjectIdentity {
 	@Column(name = "device_uid")
     private String deviceUid;
 	
+	@NotNull
+	@Column(name = "type")
+	private String deviceType;
+	
+	@NotNull
+	@Column(name = "name")
+	private String name;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_device_group", foreignKey = @ForeignKey(name = "fk_device_id_device_group"))
 	private DeviceGroup deviceGroup;
 	
-	@OneToOne(mappedBy = "device")
-	private DeviceData deviceData;
+	@OneToMany(mappedBy = "device")
+	private Set<DeviceData> deviceData = new HashSet<>();
 
 	@CreationTimestamp
 	@Column(name = "created_at")
@@ -57,4 +67,8 @@ public class Device extends AclObjectIdentity {
 	public Device() {
 		// no-arg constructor
     }
+    
+    public void addDeviceData(DeviceData deviceData) {
+		this.deviceData.add(deviceData);
+	}
 }
