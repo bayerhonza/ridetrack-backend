@@ -31,7 +31,7 @@ class ClientManagerTest {
 	public void testFindNonExistingClient() {
 		when(clientRepository.findByClientName("notPresent")).thenReturn(Optional.empty());
 		Assertions.assertThrows(RidetrackNotFoundException.class,
-				() -> instance.findClientOrThrow("notPresent"));
+				() -> instance.findClient("notPresent"));
 	}
 	
 	@Test

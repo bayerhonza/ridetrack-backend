@@ -1,7 +1,6 @@
 package com.ensimag.ridetrack.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -13,7 +12,6 @@ import com.ensimag.ridetrack.auth.acl.AclService;
 import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.Space;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.repository.ClientRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,9 +39,10 @@ public class ClientManager {
 	public void createClient(Client newClient) {
 		log.info("Creating client '{}'", newClient.getClientName());
 		clientRepository.save(newClient);
-		spaceManager.createDefaultSpaceForClient(newClient);
-		
+		Space defaultSpace = spaceManager.createDefaultSpaceForClient(newClient);
+		newClient.setDefaultSpace(defaultSpace);
 		aclService.registerNewClientUserGroup(newClient, getDefaultClientUserGroupName(newClient));
+		log.debug("Created client '{}'", newClient.getClientName());
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
@@ -53,19 +52,21 @@ public class ClientManager {
 	}
 	
 	public boolean clientExists(String clientName) {
-		return findClientByClientName(clientName).isPresent();
-	}
-	
-	@PostAuthorize("hasPermission(returnObject.get(),T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_READ)")
-	public Optional<Client> findClientByClientName(String clientName) {
-		return clientRepository.findByClientName(clientName);
+		try {
+			findClient(clientName);
+			return true;
+		} catch (RidetrackNotFoundException ex) {
+			return false;
+		}
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteClient(Client client) {
 		log.info("Removing client '{}'", client.getClientName());
 		spaceManager.deleteClientSpaces(client);
+		aclService.deleteAllEntriesOfOid(client);
 		clientRepository.delete(client);
+		
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
@@ -74,9 +75,9 @@ public class ClientManager {
 	}
 	
 	@PostAuthorize("hasPermission(returnObject, T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_READ)")
-	public Client findClientOrThrow(String clientName) {
-		return findClientByClientName(clientName)
-				.orElseThrow(() -> new RidetrackNotFoundException("Client" + clientName + " not found"));
+	public Client findClient(String clientName) {
+		return clientRepository.findByClientName(clientName)
+				.orElseThrow(() -> new RidetrackNotFoundException("Client not found"));
 	}
 	
 	public String getDefaultClientUserGroupName(Client client) {

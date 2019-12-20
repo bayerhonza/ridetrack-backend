@@ -5,26 +5,32 @@ import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVI
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CascadeType;
-
+import lombok.experimental.SuperBuilder;
 
 @Setter
 @Getter
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @Entity
 @Table(
@@ -62,5 +68,17 @@ public class DeviceGroup extends AclObjectIdentity {
 	public DeviceGroup() {
         // no-arg constructor
 	}
-
-   }
+	
+	public void addDevice(Device device) {
+		this.devices.add(device);
+	}
+	
+	public void remove(Device device) {
+		this.devices.remove(device);
+	}
+	
+	public Client getClient() {
+		return space.getClient();
+	}
+	
+}

@@ -15,8 +15,8 @@ import com.ensimag.ridetrack.dto.SpaceUserDTO;
 import com.ensimag.ridetrack.exception.RidetrackInternalError;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.ClientUser;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
-import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
+import com.ensimag.ridetrack.repository.AclUserGroupRepository;
 import com.ensimag.ridetrack.repository.RtUserRepository;
 import com.ensimag.ridetrack.rest.api.RestPaths;
 import com.ensimag.ridetrack.roles.RoleManager;
@@ -42,7 +42,7 @@ public class UserController {
 	private RtUserRepository userRepository;
 	
 	@Autowired
-	private AclOidUserGroupRepository userGroupRepository;
+	private AclUserGroupRepository userGroupRepository;
 	
 	@Autowired
 	private AclService aclService;
@@ -52,7 +52,7 @@ public class UserController {
 			@PathVariable(name = "clientName") String clientName,
 			@RequestParam String username,
 			@RequestParam String password) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		ClientUser newClientUser = new ClientUser().toBuilder()
 				.username(username)
 				.password(passwordEncoder.encode(password))
@@ -60,7 +60,7 @@ public class UserController {
 				.enabled(true)
 				.build();
 		roleManager.assignRoleToClientUser(newClientUser);
-		AclOidUserGroup clientUserGroup = userGroupRepository.findByName(clientManager.getDefaultClientUserGroupName(client))
+		AclUserGroup clientUserGroup = userGroupRepository.findByName(clientManager.getDefaultClientUserGroupName(client))
 				.orElseThrow(() -> new RidetrackInternalError("Client user group not found"));
 		clientUserGroup.addUser(newClientUser);
 		userRepository.save(newClientUser);

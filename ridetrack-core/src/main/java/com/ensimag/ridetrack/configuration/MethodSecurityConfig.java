@@ -41,7 +41,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 		String roleHierarchySettings = ADMIN.getRoleName() + " > " + CLIENT.getRoleName() + "\n"
 				+ CLIENT.getRoleName() + " >  " + USER.getRoleName() + "\n"
 				+ USER.getRoleName() + " > " + GUEST.getRoleName();
-		log.debug("Role hierarchy: {}", roleHierarchySettings);
+		log.debug("Role hierarchy: {}", roleHierarchySettings.replace('\n',','));
 		r.setHierarchy(roleHierarchySettings);
 		return r;
 	}

@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(RestPaths.API_PATH)
-@PreAuthorize("hasRole('USER')")
 @Slf4j
 public class SpaceController {
 	
@@ -50,7 +49,7 @@ public class SpaceController {
 	@GetMapping("/spaces/{clientName}")
 	public List<SpaceDTO> getAllSpacesOfClient(
 			@PathVariable("clientName") String clientName) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		return spaceManager.findAllSpacesOfClient(client).stream()
 				.map(spaceMapper::toSpaceDTO)
 				.collect(Collectors.toList());
@@ -60,7 +59,7 @@ public class SpaceController {
 	public List<SpaceDTO> getSpaceOfClient(
 			@PathVariable("clientName") String clientName,
 			@PathVariable("spaceName") String spaceName) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		return spaceManager.findSpaceOfClient(client, spaceName).stream()
 				.map(spaceMapper::toSpaceDTO)
 				.collect(Collectors.toList());
@@ -69,7 +68,7 @@ public class SpaceController {
 	@PostMapping(path = "/space")
 	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<SpaceDTO> createSpace(@Valid @RequestBody SpaceDTO spaceDTO) {
-		Client client = clientManager.findClientOrThrow(spaceDTO.getClientName());
+		Client client = clientManager.findClient(spaceDTO.getClientName());
 		if (spaceManager.spaceExistsForClient(client, spaceDTO.getName())) {
 			log.warn("Space '{}@{}' already exists", spaceDTO.getName(), spaceDTO.getClientName());
 			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
@@ -96,7 +95,7 @@ public class SpaceController {
 	public ResponseEntity<SpaceDTO> updateSpace(@PathVariable("clientName") String clientName,
 			@PathVariable("spaceName") String spaceName,
 			@Valid @RequestBody SpaceDTO spaceDetails) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
 		space.setName(spaceDetails.getName());
 		log.info("Updating space {}", space);
@@ -111,7 +110,7 @@ public class SpaceController {
 			@PathVariable(name = "spaceName") String spaceName) {
 		
 		log.info("Deleting space {}", spaceName);
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
 		spaceManager.deleteSpace(space);
 		

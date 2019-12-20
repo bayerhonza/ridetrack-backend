@@ -18,9 +18,9 @@ import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.DeviceGroup;
 import com.ensimag.ridetrack.models.Space;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
 import com.ensimag.ridetrack.models.constants.RideTrackConstraint;
-import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
+import com.ensimag.ridetrack.repository.AclUserGroupRepository;
 import com.ensimag.ridetrack.repository.SpaceRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +41,7 @@ public class SpaceManager {
 	private AclService aclService;
 	
 	@Autowired
-	private AclOidUserGroupRepository userGroupRepository;
+	private AclUserGroupRepository userGroupRepository;
 	
 	public SpaceManager(
 			SpaceRepository spaceRepository,
@@ -73,15 +73,13 @@ public class SpaceManager {
 	@PreAuthorize("hasPermission(#client, T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_CREATE_SPACE)")
 	public Space createSpace(Client client, String name) {
 		log.info("Creating space '{}@{}'", name, client.getClientName());
-		if (spaceRepository.findByOwnerAndName(client, name).isPresent()) {
-			log.error("Space {} of client {} already exists", name, client.getClientName());
-			throw new RidetrackConflictException(Space.class, RideTrackConstraint.UQ_SPACE_CLIENT_SPACE_NAME,
-					"Space " + name + " already defined");
-		}
+		checkIfSpaceExists(client, name);
+		
 		Space newSpace = new Space().toBuilder()
 				.name(name)
 				.build();
 		newSpace.setOwner(client);
+		
 		createSpace(newSpace);
 		return newSpace;
 	}
@@ -94,7 +92,7 @@ public class SpaceManager {
 	}
 	
 	public void createDefaultUserGroup(Space space) {
-		AclOidUserGroup userGroup = new AclOidUserGroup(getSpaceDefaultUGroupName(space));
+		AclUserGroup userGroup = new AclUserGroup(getSpaceDefaultUGroupName(space));
 		userGroupRepository.save(userGroup);
 		aclService.assignPrivilegeToUserGroup(space, userGroup, CAN_READ);
 		space.getDeviceGroups()
@@ -124,10 +122,19 @@ public class SpaceManager {
 		spaceRepository.save(space);
 	}
 	
-	@PreAuthorize("hasPermission(#client,  T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_READ)")
+	@PostAuthorize("hasPermission(returnObject,  T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_READ)")
 	public Space findSpaceOfClientOrThrow(Client client, String spaceName) {
 		return findSpaceOfClient(client, spaceName)
 				.orElseThrow(() -> new RidetrackNotFoundException("Space" + spaceName + " of " + client.getClientName() + " not found"));
+	}
+	
+	public void checkIfSpaceExists(Client owner, String spaceName) {
+		try {
+			findSpaceOfClientOrThrow(owner, spaceName);
+			throw new RidetrackConflictException(Space.class, RideTrackConstraint.UQ_SPACE_CLIENT_SPACE_NAME, "Space " + spaceName + " already defined");
+		} catch (RidetrackNotFoundException ex) {
+			// ok pour check
+		}
 	}
 	
 	public String getSpaceDefaultUGroupName(Space space) {

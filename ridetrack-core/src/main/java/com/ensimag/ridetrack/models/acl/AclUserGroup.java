@@ -32,8 +32,8 @@ import lombok.experimental.SuperBuilder;
 				@UniqueConstraint(name = "UQ_USER_GROUP", columnNames = { "name" })
 		}
 )
-@PrimaryKeyJoinColumn(name = "id_oid_user_group", foreignKey = @ForeignKey(name = "FK_UGROUP_SID"))
-public class AclOidUserGroup extends AclSid {
+@PrimaryKeyJoinColumn(name = "id_user_group", foreignKey = @ForeignKey(name = "FK_UGROUP_SID"))
+public class AclUserGroup extends AclSid {
 	
 	@Column(name = "name")
 	private String name;
@@ -51,11 +51,11 @@ public class AclOidUserGroup extends AclSid {
 	@Builder.Default
 	private Set<RtUser> users = new HashSet<>();
 	
-	public AclOidUserGroup() {
+	public AclUserGroup() {
 		super(SidType.USER_GROUP);
 	}
 	
-	public AclOidUserGroup(String name) {
+	public AclUserGroup(String name) {
 		this();
 		this.name = name;
 	}

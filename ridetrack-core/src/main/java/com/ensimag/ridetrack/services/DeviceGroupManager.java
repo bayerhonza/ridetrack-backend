@@ -1,10 +1,12 @@
 package com.ensimag.ridetrack.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.DeviceGroup;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.repository.DeviceGroupRepository;
@@ -38,6 +40,12 @@ public class DeviceGroupManager {
 				.space(space)
 				.build();
 		return deviceGroupRepository.save(newDeviceGroup);
+	}
+	
+	@PostAuthorize("hasPermission(returnObject, T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_READ)")
+	public DeviceGroup findBySpaceAndName(Space space, String devGroupName) {
+		return deviceGroupRepository.findBySpaceAndName(space, devGroupName)
+				.orElseThrow(() -> new RidetrackNotFoundException("device group " + devGroupName + "not found"));
 	}
 	
 	public String getDefaultDeviceGroupName() {

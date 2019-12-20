@@ -9,7 +9,7 @@ import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_READ;
 import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_UPDATE;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,24 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
 import com.ensimag.ridetrack.models.Client;
-import com.ensimag.ridetrack.models.ClientUser;
 import com.ensimag.ridetrack.models.DeviceGroup;
+import com.ensimag.ridetrack.models.RtUser;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.SpaceUser;
 import com.ensimag.ridetrack.models.acl.AclEntry;
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.models.acl.AclSid;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
 import com.ensimag.ridetrack.privileges.PrivilegeEnum;
 import com.ensimag.ridetrack.privileges.PrivilegeManager;
-import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
+import com.ensimag.ridetrack.repository.AclUserGroupRepository;
 import com.ensimag.ridetrack.repository.acl.AclEntryRepository;
-import com.ensimag.ridetrack.repository.acl.AclObjectIdentityRepository;
-import com.ensimag.ridetrack.repository.acl.AclPrivilegeRepository;
-import com.ensimag.ridetrack.repository.acl.AclSidRepository;
 import com.google.common.collect.ImmutableSet;
 
 @Service
@@ -62,15 +58,16 @@ public class AclService {
 	private AclEntryRepository entryRepository;
 	
 	@Autowired
-	private AclOidUserGroupRepository userGroupRepository;
+	private AclUserGroupRepository userGroupRepository;
 	
 	@Autowired
 	private PrivilegeManager privilegeManager;
 	
 	public void registerNewClientUserGroup(Client client,String userGroupName) {
-		AclOidUserGroup clientUserGroup = new AclOidUserGroup(userGroupName);
+		AclUserGroup clientUserGroup = new AclUserGroup(userGroupName);
 		userGroupRepository.save(clientUserGroup);
 		Set<Space> clientSpaces = client.getSpaces();
+		createEntryForEachOid(Set.of(client), clientUserGroup, Set.of(CAN_READ));
 		createEntryForEachOid(clientSpaces, clientUserGroup, defaultClientSpacePrivileges);
 	}
 	
@@ -95,7 +92,21 @@ public class AclService {
 				.isEmpty();
 	}
 	
-	public void assignPrivilegeToUserGroup(AclObjectIdentity oid, AclOidUserGroup userGroup, PrivilegeEnum privilegeEnum) {
+	public boolean evaluateSid(RtUser rtUser, AclObjectIdentity oid, AclPrivilege aclPrivilege) {
+		Set<AclUserGroup> userGroups = rtUser.getUserGroups();
+		boolean groupAccessGranted = userGroups
+				.stream()
+				.anyMatch(aclUserGroup -> isAuthorized(aclUserGroup, oid, aclPrivilege));
+		
+		if (groupAccessGranted) {
+			return true;
+		}
+		
+		return isAuthorized(rtUser, oid, aclPrivilege);
+		
+	}
+	
+	public void assignPrivilegeToUserGroup(AclObjectIdentity oid, AclUserGroup userGroup, PrivilegeEnum privilegeEnum) {
 		AclEntry entry = createAclEntry(oid, userGroup, privilegeEnum);
 		entryRepository.save(entry);
 	}
@@ -108,8 +119,16 @@ public class AclService {
 				.build();
 	}
 	
+	public void deleteAllEntriesOfOid(AclObjectIdentity objectIdentity) {
+		entryRepository.deleteAllByObjectIdentity(objectIdentity);
+	}
+	
 	public AclPrivilege getAclPrivilegeByName(PrivilegeEnum privilegeEnum) {
 		return privilegeManager.getPrivilege(privilegeEnum);
+	}
+	
+	public List<AclEntry> getSidEntries(AclSid sidObject) {
+		return entryRepository.findAllBySidObject(sidObject);
 	}
 	
 }

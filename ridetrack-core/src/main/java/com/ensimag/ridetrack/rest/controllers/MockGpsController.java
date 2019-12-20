@@ -1,5 +1,7 @@
 package com.ensimag.ridetrack.rest.controllers;
+import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_DELETE;
 import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_READ;
+import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_UPDATE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,10 +28,9 @@ import com.ensimag.ridetrack.models.DeviceData;
 import com.ensimag.ridetrack.models.DeviceGroup;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
-import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
+import com.ensimag.ridetrack.repository.AclUserGroupRepository;
 import com.ensimag.ridetrack.repository.DeviceDataRepository;
-import com.ensimag.ridetrack.repository.DeviceGroupRepository;
 import com.ensimag.ridetrack.repository.DeviceRepository;
 import com.ensimag.ridetrack.repository.SensorRepository;
 import com.ensimag.ridetrack.rest.api.RestPaths;
@@ -56,16 +57,13 @@ public class MockGpsController {
 	private SpaceManager spaceManager;
 	
 	@Autowired
-	private DeviceGroupRepository deviceGroupRepository;
-	
-	@Autowired
 	private DeviceRepository deviceRepository;
 	
 	@Autowired
 	private SensorRepository sensorRepository;
 	
 	@Autowired
-	private AclOidUserGroupRepository userGroupRepository;
+	private AclUserGroupRepository userGroupRepository;
 	
 	@Autowired
 	private AclService aclService;
@@ -79,12 +77,11 @@ public class MockGpsController {
 			@RequestParam String spaceName,
 			@RequestParam("file") MultipartFile uploadFile) {
 		log.info("File size is {}", uploadFile.getSize());
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
-		AclOidUserGroup userGroup = userGroupRepository.findByName(spaceManager.getSpaceDefaultUGroupName(space))
+		AclUserGroup userGroup = userGroupRepository.findByName(spaceManager.getSpaceDefaultUGroupName(space))
 				.orElseThrow(() -> new RidetrackNotFoundException("user group not found"));
-		DeviceGroup deviceGroup = deviceGroupRepository.findBySpaceAndName(space, deviceGroupManager.getDefaultDeviceGroupName())
-				.orElseThrow(() -> new RidetrackNotFoundException("default group not found"));
+		DeviceGroup deviceGroup = deviceGroupManager.findBySpaceAndName(space, deviceGroupManager.getDefaultDeviceGroupName());
 		ObjectMapper objectMapper = new ObjectMapper();
 		try (InputStream is = uploadFile.getInputStream()) {
 			MockGpsDTO[] values = objectMapper.readValue(is, MockGpsDTO[].class);
@@ -113,7 +110,7 @@ public class MockGpsController {
 				device.addDeviceData(deviceData);
 				deviceRepository.save(device);
 			}
-			aclService.createEntryForEachOid(objects, userGroup, Set.of(CAN_READ));
+			aclService.createEntryForEachOid(objects, userGroup, Set.of(CAN_READ, CAN_DELETE, CAN_UPDATE));
 		} catch (IOException ex) {
 			log.error("Deserialization failed", ex);
 		}

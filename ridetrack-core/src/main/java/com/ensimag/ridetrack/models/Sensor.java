@@ -1,14 +1,21 @@
 package com.ensimag.ridetrack.models;
 
-import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
-import lombok.Getter;
-import lombok.Setter;
+import java.time.ZonedDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.time.ZonedDateTime;
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -31,5 +38,9 @@ public class Sensor extends AclObjectIdentity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     protected ZonedDateTime updatedAt;
-
+	
+	@Override
+	public Client getClient() {
+		return device.getClient();
+	}
 }

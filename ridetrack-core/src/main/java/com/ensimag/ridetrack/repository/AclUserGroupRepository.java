@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
 
 @Repository
-public interface AclOidUserGroupRepository extends JpaRepository<AclOidUserGroup, Long> {
+public interface AclUserGroupRepository extends JpaRepository<AclUserGroup, Long> {
 	
-	Optional<AclOidUserGroup> findByName(String name);
+	Optional<AclUserGroup> findByName(String name);
 }

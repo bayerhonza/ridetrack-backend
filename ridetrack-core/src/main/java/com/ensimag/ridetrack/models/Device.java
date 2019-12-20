@@ -2,20 +2,29 @@ package com.ensimag.ridetrack.models;
 
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_DEVICE_UID;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
-import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
+import lombok.Getter;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -68,7 +77,20 @@ public class Device extends AclObjectIdentity {
 		// no-arg constructor
     }
     
-    public void addDeviceData(DeviceData deviceData) {
+    public void setDeviceGroup(DeviceGroup deviceGroup) {
+		if (this.deviceGroup != null) {
+			this.deviceGroup.remove(this);
+		}
+		this.deviceGroup = deviceGroup;
+		deviceGroup.addDevice(this);
+	}
+	
+	@Override
+	public Client getClient() {
+		return deviceGroup.getClient();
+	}
+	
+	public void addDeviceData(DeviceData deviceData) {
 		this.deviceData.add(deviceData);
 	}
 }

@@ -52,14 +52,14 @@ class TestControllerSecurityTest {
 	@Test
 	public void getTest_Unauthenticated() {
 		assertThrows(AuthenticationCredentialsNotFoundException.class,
-				() -> clientManager.findClientOrThrow("testing"));
+				() -> clientManager.findClient("testing"));
 	}
 	
 	@Test
 	@WithMockUser(roles = "ADMIN")
 	public void getTest_Authenticated() {
 		when(clientRepository.findByClientName(anyString())).thenReturn(Optional.of(mock(Client.class)));
-		clientManager.findClientOrThrow("testing");
+		clientManager.findClient("testing");
 		verify(clientRepository,times(1)).findByClientName(anyString());
 	}
 }

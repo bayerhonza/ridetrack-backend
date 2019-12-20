@@ -22,6 +22,11 @@
 			"name": "spring.security.authentication.jwt.secret",
 			"type": "java.lang.String",
 			"description": "Secret for JWT"
+		},
+		{
+			"name": "ridetrack.auth.defaultProperties",
+			"type": "java.lang.String",
+			"description": "Default permissions"
 		}
 	]
 }

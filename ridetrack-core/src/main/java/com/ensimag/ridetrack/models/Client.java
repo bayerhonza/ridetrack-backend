@@ -10,9 +10,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -20,7 +19,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Setter
 @Getter
@@ -50,6 +48,10 @@ public class Client extends AclObjectIdentity {
     @NotBlank
     @Column(name = "full_name")
     private String fullName;
+    
+    @ManyToOne
+    @JoinColumn(name = "default_space_id", foreignKey = @ForeignKey(name = "FK_CLIENT_DEF_SPACE_ID"))
+    private Space defaultSpace;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
@@ -70,7 +72,12 @@ public class Client extends AclObjectIdentity {
     public Client() {
         // no-arg constructor
     }
-
+    
+    @Override
+    public Client getClient() {
+        return this;
+    }
+    
     public void addSpace(Space space) {
         spaces.add(space);
     }

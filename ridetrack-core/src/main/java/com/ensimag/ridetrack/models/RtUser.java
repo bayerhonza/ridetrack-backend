@@ -24,7 +24,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
 import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.models.acl.SidType;
 import lombok.AllArgsConstructor;
@@ -82,7 +82,7 @@ public abstract class RtUser extends AclSid  {
 	private final Set<Role> roles = new HashSet<>();
 	
 	@ManyToMany(mappedBy = "users",fetch = FetchType.EAGER)
-	private Set<AclOidUserGroup> userGroups;
+	private Set<AclUserGroup> userGroups;
 	
 	public void addRole(Role role) {
 		roles.add(role);

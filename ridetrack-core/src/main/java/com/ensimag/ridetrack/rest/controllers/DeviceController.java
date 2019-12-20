@@ -17,12 +17,13 @@ import com.ensimag.ridetrack.dto.AllUserDevicesModel;
 import com.ensimag.ridetrack.dto.DeviceDataModel;
 import com.ensimag.ridetrack.dto.DeviceGroupModel;
 import com.ensimag.ridetrack.dto.DeviceModel;
+import com.ensimag.ridetrack.exception.RidetrackNotFoundException;
+import com.ensimag.ridetrack.models.ClientUser;
 import com.ensimag.ridetrack.models.Device;
 import com.ensimag.ridetrack.models.DeviceData;
 import com.ensimag.ridetrack.models.DeviceGroup;
-import com.ensimag.ridetrack.models.SpaceUser;
+import com.ensimag.ridetrack.repository.ClientUserRepository;
 import com.ensimag.ridetrack.rest.api.RestPaths;
-import com.ensimag.ridetrack.services.SpaceUserManager;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -32,15 +33,18 @@ import lombok.extern.slf4j.Slf4j;
 public class DeviceController {
 	
 	@Autowired
-	private SpaceUserManager spaceUserManager;
+	private ClientUserRepository userRepository;
 	
-	@GetMapping("/devices")
+	
+	@GetMapping("/client/devices")
+	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<AllUserDevicesModel> getUserDevices(
 			@AuthenticationPrincipal RtUserPrincipal principal) {
-		SpaceUser spaceUser = spaceUserManager.findSpaceUserOrThrow(principal.getUsername());
-		Set<DeviceGroup> deviceGroups = spaceUser.getSpace().getDeviceGroups();
+		ClientUser clientUser = userRepository.findByUsername(principal.getUsername())
+				.orElseThrow(() -> new RidetrackNotFoundException("Client user not found"));
+		Set<DeviceGroup> deviceGroups = clientUser.getAssignedClient().getDefaultSpace().getDeviceGroups();
 		AllUserDevicesModel model = AllUserDevicesModel.builder()
-				.clientName(spaceUser.getSpace().getOwner().getClientName())
+				.clientName(clientUser.getAssignedClient().getClientName())
 				.deviceGroups(deviceGroups.stream()
 						.map(this::mapDeviceGroupToModel)
 						.collect(Collectors.toSet()))

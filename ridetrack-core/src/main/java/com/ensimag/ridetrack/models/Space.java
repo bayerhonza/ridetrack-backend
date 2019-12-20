@@ -86,7 +86,15 @@ public class Space extends AclObjectIdentity {
         // no-arg constructor
 	}
 	
+	@Override
+	public Client getClient() {
+		return owner;
+	}
+	
 	public void setOwner(Client owner) {
+		if (this.owner != null) {
+			owner.removeSpace(this);
+		}
 		this.owner = owner;
 		owner.addSpace(this);
 	}

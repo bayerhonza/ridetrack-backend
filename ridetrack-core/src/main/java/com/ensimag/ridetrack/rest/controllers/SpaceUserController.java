@@ -19,8 +19,8 @@ import com.ensimag.ridetrack.exception.RidetrackInternalError;
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.Space;
 import com.ensimag.ridetrack.models.SpaceUser;
-import com.ensimag.ridetrack.models.acl.AclOidUserGroup;
-import com.ensimag.ridetrack.repository.AclOidUserGroupRepository;
+import com.ensimag.ridetrack.models.acl.AclUserGroup;
+import com.ensimag.ridetrack.repository.AclUserGroupRepository;
 import com.ensimag.ridetrack.rest.api.RestPaths;
 import com.ensimag.ridetrack.services.ClientManager;
 import com.ensimag.ridetrack.services.SpaceManager;
@@ -47,7 +47,7 @@ public class SpaceUserController {
 	private ClientManager clientManager;
 	
 	@Autowired
-	private AclOidUserGroupRepository userGroupRepository;
+	private AclUserGroupRepository userGroupRepository;
 	
 	@Autowired
 	private AclService aclService;
@@ -57,7 +57,7 @@ public class SpaceUserController {
 			@PathVariable(name = "clientName") String clientName,
 			@PathVariable(name = "spaceName") String spaceName,
 			@Valid @RequestBody SpaceUserDTO spaceUserDTO) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		Space space = spaceManager.findSpaceOfClientOrThrow(client, spaceName);
 		createSpaceUser(space, spaceUserDTO);
 		return null;
@@ -73,7 +73,7 @@ public class SpaceUserController {
 				.enabled(true)
 				.build();
 		userManager.createUser(space, spaceUser);
-		AclOidUserGroup spaceUserGroup = userGroupRepository.findByName(spaceManager.getSpaceDefaultUGroupName(space))
+		AclUserGroup spaceUserGroup = userGroupRepository.findByName(spaceManager.getSpaceDefaultUGroupName(space))
 				.orElseThrow(() -> new RidetrackInternalError("Default space user group not found"));
 		spaceUserGroup.addUser(spaceUser);
 		userGroupRepository.save(spaceUserGroup);

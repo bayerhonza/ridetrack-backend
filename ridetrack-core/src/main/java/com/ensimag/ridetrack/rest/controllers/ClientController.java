@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(RestPaths.API_PATH)
-@PreAuthorize("hasRole('ADMIN')")
 @Slf4j
 public class ClientController {
 	
@@ -53,11 +51,8 @@ public class ClientController {
 			log.warn("Client {} already exists", clientDTO.getClientName());
 			throw new RidetrackConflictException(Client.class, RideTrackConstraint.UQ_CLIENT_CLIENT_NAME, "Client already defined");
 		}
-		log.info("Creating client : {}", clientDTO.getClientName());
 		Client newClient = clientMapper.toClient(clientDTO);
-		
 		clientManager.createClient(newClient);
-		log.debug("Created client : {}", clientDTO.getClientName());
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
@@ -77,7 +72,7 @@ public class ClientController {
 	
 	@GetMapping("/client/{clientName}")
 	public ResponseEntity<ClientDTO> getClient(@PathVariable(name = "clientName") String clientName) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		return ResponseEntity.ok()
 				.body(clientMapper.toClientDTO(client));
 	}
@@ -85,7 +80,7 @@ public class ClientController {
 	@PutMapping("/client/{clientName}")
 	public ResponseEntity<ClientDTO> updateClient(@PathVariable(value = "clientName") String clientName,
 			@Valid @RequestBody ClientDTO clientDetails) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		client.setClientName(clientDetails.getClientName());
 		client.setFullName(clientDetails.getFullName());
 		
@@ -95,7 +90,7 @@ public class ClientController {
 	
 	@DeleteMapping("/client/{clientName}")
 	public Map<String, Boolean> delete(@PathVariable(name = "clientName") String clientName) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		
 		log.info("Deleting client {}", clientName);
 		clientManager.deleteClient(client);
@@ -108,7 +103,7 @@ public class ClientController {
 	@GetMapping("/client/{clientName}/spaces")
 	public List<SpaceDTO> getAllSpacesOfClient(
 			@PathVariable("clientName") String clientName) {
-		Client client = clientManager.findClientOrThrow(clientName);
+		Client client = clientManager.findClient(clientName);
 		return client.getSpaces().stream()
 				.map(spaceMapper::toSpaceDTO)
 				.collect(Collectors.toList());
