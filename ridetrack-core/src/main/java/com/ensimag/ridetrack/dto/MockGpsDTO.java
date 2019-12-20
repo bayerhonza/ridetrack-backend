@@ -1,6 +1,4 @@
 package com.ensimag.ridetrack.dto;
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +12,6 @@ public class MockGpsDTO {
 	private String altitude;
 	private String type;
 	private String name;
+	private String status;
 	
 }

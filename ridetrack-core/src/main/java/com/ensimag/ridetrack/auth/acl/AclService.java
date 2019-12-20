@@ -9,7 +9,6 @@ import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_READ;
 import static com.ensimag.ridetrack.privileges.PrivilegeEnum.CAN_UPDATE;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,10 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ensimag.ridetrack.models.Client;
-import com.ensimag.ridetrack.models.DeviceGroup;
 import com.ensimag.ridetrack.models.RtUser;
 import com.ensimag.ridetrack.models.Space;
-import com.ensimag.ridetrack.models.SpaceUser;
 import com.ensimag.ridetrack.models.acl.AclEntry;
 import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
@@ -47,13 +44,6 @@ public class AclService {
 			CAN_READ
 	);
 	
-	private static final Set<PrivilegeEnum> defaultSpaceClientPrivileges = ImmutableSet.of(
-			CAN_CREATE_DEVICE,
-			CAN_DELETE,
-			CAN_UPDATE,
-			CAN_READ
-	);
-	
 	@Autowired
 	private AclEntryRepository entryRepository;
 	
@@ -69,11 +59,6 @@ public class AclService {
 		Set<Space> clientSpaces = client.getSpaces();
 		createEntryForEachOid(Set.of(client), clientUserGroup, Set.of(CAN_READ));
 		createEntryForEachOid(clientSpaces, clientUserGroup, defaultClientSpacePrivileges);
-	}
-	
-	public void registerNewSpaceUser(Space space, SpaceUser spaceUser) {
-		Set<DeviceGroup> deviceGroups = space.getDeviceGroups();
-		createEntryForEachOid(deviceGroups, spaceUser, defaultClientSpacePrivileges);
 	}
 	
 	public void createEntryForEachOid(Set<? extends AclObjectIdentity> objectIdentities, AclSid sid, Set<PrivilegeEnum> privilegeEnums) {
@@ -126,9 +111,4 @@ public class AclService {
 	public AclPrivilege getAclPrivilegeByName(PrivilegeEnum privilegeEnum) {
 		return privilegeManager.getPrivilege(privilegeEnum);
 	}
-	
-	public List<AclEntry> getSidEntries(AclSid sidObject) {
-		return entryRepository.findAllBySidObject(sidObject);
-	}
-	
 }

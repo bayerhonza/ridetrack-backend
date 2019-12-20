@@ -97,6 +97,7 @@ public class MockGpsController {
 					device.setDeviceGroup(deviceGroup);
 					device.setDeviceType(value.getType());
 					device.setName(value.getName());
+					device.setStatus(value.getStatus());
 					objects.add(device);
 					deviceRepository.save(device);
 				}

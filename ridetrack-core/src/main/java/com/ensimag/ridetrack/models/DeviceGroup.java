@@ -5,6 +5,7 @@ import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVI
 import java.time.ZonedDateTime;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -16,8 +17,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -49,11 +48,10 @@ public class DeviceGroup extends AclObjectIdentity {
 	
 	@NotNull
 	@ManyToOne
-	@Cascade(value = CascadeType.PERSIST)
 	@JoinColumn(name = "id_space", foreignKey = @ForeignKey(name = "fk_devgroup_id_space"))
 	private Space space;
 	
-	@OneToMany(mappedBy = "deviceGroup")
+	@OneToMany(mappedBy = "deviceGroup",cascade = CascadeType.ALL, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private Set<Device> devices;
 

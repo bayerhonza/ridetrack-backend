@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.ensimag.ridetrack.models.Client;
 import com.ensimag.ridetrack.models.Space;

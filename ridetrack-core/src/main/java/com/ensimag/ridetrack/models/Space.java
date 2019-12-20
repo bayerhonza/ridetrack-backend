@@ -52,11 +52,11 @@ public class Space extends AclObjectIdentity {
 	@JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_space_client_id"))
 	private Client owner;
 	
-	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private final Set<DeviceGroup> deviceGroups = new HashSet<>();
 	
-	@OneToMany(mappedBy = "space")
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private final Set<SpaceUser> users = new HashSet<>();
 

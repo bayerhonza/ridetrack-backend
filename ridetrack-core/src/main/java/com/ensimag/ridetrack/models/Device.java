@@ -54,6 +54,9 @@ public class Device extends AclObjectIdentity {
 	@Column(name = "type")
 	private String deviceType;
 	
+	@Column(name = "status")
+	private String status;
+	
 	@NotNull
 	@Column(name = "name")
 	private String name;
@@ -62,7 +65,7 @@ public class Device extends AclObjectIdentity {
 	@JoinColumn(name = "id_device_group", foreignKey = @ForeignKey(name = "fk_device_id_device_group"))
 	private DeviceGroup deviceGroup;
 	
-	@OneToMany(mappedBy = "device")
+	@OneToMany(mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<DeviceData> deviceData = new HashSet<>();
 
 	@CreationTimestamp

@@ -1,5 +1,6 @@
 package com.ensimag.ridetrack.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import com.ensimag.ridetrack.models.Space;
 public interface DeviceGroupRepository extends JpaRepository<DeviceGroup, Long> {
 	
 	Optional<DeviceGroup> findBySpaceAndName(Space space, String devGroupName);
+	
+	List<DeviceGroup> findAllBySpace(Space space);
 }

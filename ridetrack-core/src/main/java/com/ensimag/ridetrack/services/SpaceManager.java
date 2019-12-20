@@ -113,7 +113,12 @@ public class SpaceManager {
 	
 	@PreAuthorize("hasPermission(#client, T(com.ensimag.ridetrack.privileges.PrivilegeEnum).CAN_DELETE_SPACES)")
 	public void deleteClientSpaces(Client client) {
-		spaceRepository.deleteAllByOwnerClientName(client.getClientName());
+		List<Space> spaces = spaceRepository.findAllByOwner(client);
+		spaces.forEach(space -> {
+			deviceGroupManager.deleteDeviceGroups(space);
+			aclService.deleteAllEntriesOfOid(space);
+			spaceRepository.delete(space);
+		});
 	}
 	
 	public void initDefaultDeviceGroup(Space space) {

@@ -1,13 +1,19 @@
 package com.ensimag.ridetrack.repository;
 
-import com.ensimag.ridetrack.models.Client;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import com.ensimag.ridetrack.models.Client;
+import com.ensimag.ridetrack.models.Device;
+import com.ensimag.ridetrack.models.DeviceGroup;
+import com.ensimag.ridetrack.models.Space;
 
 @DataJpaTest
 @TestMethodOrder(OrderAnnotation.class)
@@ -19,16 +25,25 @@ public class RidetrackJpaRepositoriesTest  extends AbstractRepositoryTest{
 	@Order(0)
 	public void createClientTest() {
 		Client newClient = Client.builder()
-			.clientName("testClientName")
-			.fullName("Full Client Name")
-			.build();
+				.clientName("testClientName")
+				.fullName("Full Client Name")
+				.build();
 		entityManager.persist(newClient);
-		entityManager.flush();
-		Assertions.assertNotEquals(0,newClient.getOid());
+		assertNotNull(newClient.getOid());
+		Space newSpace = new Space().toBuilder()
+				.name("testSpace")
+				.owner(newClient)
+				.build();
+		entityManager.persist(newSpace);
+		assertNotNull(newSpace.getOid());
+		clientRepository.delete(newClient);
+		assertFalse(clientRepository.findByClientName(newClient.getClientName()).isPresent());
 	}
 
 	@Test
 	@Order(0)
 	public void createSpace() {
+		DeviceGroup deviceGroup = new DeviceGroup();
+		Device device = new Device();
 	}
 }
