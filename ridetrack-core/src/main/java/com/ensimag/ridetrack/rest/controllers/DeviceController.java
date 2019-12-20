@@ -79,6 +79,7 @@ public class DeviceController {
 				.deviceStatus("OK")
 				.xCoordinate(deviceData.getLongitude())
 				.yCoordinate(deviceData.getLatitude())
+				.timestamp(deviceData.getCreatedAt())
 				.build();
 	}
 	
