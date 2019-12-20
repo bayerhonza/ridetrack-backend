@@ -14,7 +14,6 @@ public interface SpaceUserMapper {
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	@Mapping(target = "space", ignore = true)
-	@Mapping(target = "userConfiguration", ignore = true)
 	@Mapping(target = "sid", ignore = true)
 	@Mapping(target = "sidType", ignore = true)
 	@Mapping(target = "userGroups", ignore = true)
