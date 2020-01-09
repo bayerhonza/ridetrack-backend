@@ -1,14 +1,15 @@
 package com.ensimag.ridetrack.lorawan;
 
-import com.ridetrack.ridetrack.radio.RadioBrokerAuth;
+import static com.ensimag.ridetrack.lorawan.TtnMqttTopics.ACTIVATION;
+import static com.ensimag.ridetrack.lorawan.TtnMqttTopics.UP_LINK_MESSAGE;
+
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import static com.ensimag.ridetrack.lorawan.TtnMqttTopics.ACTIVATION;
-import static com.ensimag.ridetrack.lorawan.TtnMqttTopics.UP_LINK_MESSAGE;
+import com.ridetrack.ridetrack.radio.RadioBrokerAuth;
 
 public class TTNClient extends MqttClient {
 
@@ -32,7 +33,7 @@ public class TTNClient extends MqttClient {
         options.setPassword(auth.getApiToken().toCharArray());
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
-        options.setConnectionTimeout(10);
+        options.setConnectionTimeout(100);
 
         // connect to MQTT server
         connect(options);

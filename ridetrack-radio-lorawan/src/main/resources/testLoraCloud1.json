@@ -1,0 +1,149 @@
+{
+	"gateways": [
+		{
+			"gatewayId": "eui-7276fffffe0198ac",
+			"latitude": 45.17335,
+			"longitude": 5.71249,
+			"altitude": 254
+		},
+		{
+			"gatewayId": "eui-7276fffffe019881",
+			"latitude": 45.18782,
+			"longitude": 5.68834,
+			"altitude": 225
+		},
+		{
+			"gatewayId": "eui-024b08fffe040015",
+			"latitude": 45.199165,
+			"longitude": 5.776178,
+			"altitude": 210
+		},
+		{
+			"gatewayId": "eui-7276fffffe01988f",
+			"latitude": 45.19044,
+			"longitude": 5.70351,
+			"altitude": 250
+		},
+		{
+			"gatewayId": "eui-7276fffffe019843",
+			"latitude": 45.18551,
+			"longitude": 5.71981,
+			"altitude": 246
+		},
+		{
+			"gatewayId": "cea-chamrousse-gateway",
+			"latitude": 45.12564,
+			"longitude": 5.9028797,
+			"altitude": 2253
+		},
+		{
+			"gatewayId": "eui-904d4afffeff4c91",
+			"latitude": 45.18191,
+			"longitude": 5.7263,
+			"altitude": 256
+		},
+		{
+			"gatewayId": "eui-904d4afffeff4d8e",
+			"latitude": 45.18545,
+			"longitude": 5.74252,
+			"altitude": 231
+		},
+		{
+			"gatewayId": "eui-904d4afffeff4dd3",
+			"latitude": 45.17095,
+			"longitude": 5.74141,
+			"altitude": 245
+		},
+		{
+			"gatewayId": "eui-904d4afffeff4dd5",
+			"latitude": 45.17856,
+			"longitude": 5.75079,
+			"altitude": 241
+		},
+		{
+			"gatewayId": "eui-904d4afffeff4c03",
+			"latitude": 45.19072,
+			"longitude": 5.73682,
+			"altitude": 250
+		}
+	],
+	"frame": [
+		[
+			"eui-7276fffffe0198ac",
+			null,
+			null,
+			-136,
+			-18
+		],
+		[
+			"eui-7276fffffe019881",
+			null,
+			null,
+			0,
+			-17.8
+		],
+		[
+			"eui-024b08fffe040015",
+			null,
+			null,
+			-121,
+			-13.2
+		],
+		[
+			"eui-7276fffffe01988f",
+			null,
+			248992285,
+			-121,
+			-12
+		],
+		[
+			"eui-7276fffffe019843",
+			null,
+			null,
+			-128,
+			-10
+		],
+		[
+			"cea-chamrousse-gateway",
+			null,
+			null,
+			-119,
+			-6.25
+		],
+		[
+			"eui-904d4afffeff4c91",
+			1,
+			null,
+			-115,
+			-4
+		],
+		[
+			"eui-904d4afffeff4d8e",
+			1,
+			826265216,
+			-114,
+			-1
+		],
+		[
+			"eui-904d4afffeff4dd3",
+			null,
+			null,
+			-114,
+			1
+		],
+		[
+			"eui-904d4afffeff4dd5",
+			1,
+			null,
+			-111,
+			2
+		],
+		[
+			"eui-904d4afffeff4c03",
+			1,
+			null,
+			-100,
+			12
+		]
+	]
+}

@@ -2,7 +2,7 @@ package com.ensimag.ridetrack.lorawan;
 
 public enum TtnMqttTopics {
 
-    ACTIVATION("ridetrack/devices/+/events/activations"),
+    ACTIVATION("+/devices/+/events/activations"),
     UP_LINK_MESSAGE("ridetrack/devices/+/up");
 
     TtnMqttTopics(String topic) {
