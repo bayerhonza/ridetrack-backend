@@ -1,26 +1,20 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.7.xsd">
-    <changeSet author="janbayer (generated)" id="1578650065096-1">
+    
+    
+    <property name="autoIncrement" value="true" dbms="mysql,mariadb"/>
+    <property name="autoIncrement" value="false" dbms="!mysql,!mariadb"/>
+    
+    <changeSet author="janbayer (generated)" id="1578650622288-1" dbms="!mysql,!mariadb">
         <createSequence sequenceName="acl_entry_sequence"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-2">
         <createSequence sequenceName="acl_oid_sequence"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-3">
         <createSequence sequenceName="acl_privilege_sequence"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-4">
         <createSequence sequenceName="acl_sid_sequence"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-5">
         <createSequence sequenceName="device_data_sequence"/>
     </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-6">
-        <createSequence sequenceName="user_conf_sequence"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-7">
+    <changeSet author="janbayer (generated)" id="1578650622288-6">
         <createTable tableName="acl_entry">
-            <column name="acl_entry_id" type="BIGINT">
+            <column name="acl_entry_id" type="BIGINT" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" primaryKeyName="acl_entry_pkey"/>
             </column>
             <column name="oid" type="BIGINT">
@@ -33,32 +27,24 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-8">
-        <createTable tableName="acl_object_identity">
+        <createTable tableName="acl_object_identity" autoIncrement="${autoIncrement}">
             <column name="oid" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="acl_object_identity_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-9">
         <createTable tableName="acl_sid">
-            <column name="sid" type="BIGINT">
+            <column name="sid" type="BIGINT" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" primaryKeyName="acl_sid_pkey"/>
             </column>
             <column name="sid_type" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-10">
         <createTable tableName="admins">
             <column name="id_admin" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="admins_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-11">
         <createTable tableName="client">
             <column name="client_name" type="VARCHAR(255)"/>
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
@@ -69,8 +55,6 @@
             </column>
             <column name="default_space_id" type="BIGINT"/>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-12">
         <createTable tableName="client_user">
             <column name="id_client_user" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="client_user_pkey"/>
@@ -79,8 +63,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-13">
         <createTable tableName="device">
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="type" type="VARCHAR(255)">
@@ -92,18 +74,16 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="status" type="VARCHAR(255)"/>
             <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="id_device" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="device_pkey"/>
             </column>
             <column name="id_device_group" type="BIGINT"/>
             <column name="id_sensor" type="BIGINT"/>
-            <column name="status" type="VARCHAR(255)"/>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-14">
         <createTable tableName="device_data">
-            <column name="id_device_data" type="BIGINT">
+            <column name="id_device_data" type="BIGINT" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" primaryKeyName="device_data_pkey"/>
             </column>
             <column name="altitude" type="VARCHAR(255)"/>
@@ -112,8 +92,6 @@
             <column name="longitude" type="VARCHAR(255)"/>
             <column name="id_device" type="BIGINT"/>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-15">
         <createTable tableName="device_group">
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="name" type="VARCHAR(255)"/>
@@ -125,18 +103,14 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-16">
         <createTable tableName="privilege">
-            <column name="id_privilege" type="BIGINT">
+            <column name="id_privilege" type="BIGINT" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" primaryKeyName="privilege_pkey"/>
             </column>
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="privilege_name" type="VARCHAR(255)"/>
             <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-17">
         <createTable tableName="role">
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="role_name" type="VARCHAR(255)"/>
@@ -145,8 +119,6 @@
                 <constraints primaryKey="true" primaryKeyName="role_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-18">
         <createTable tableName="rt_users">
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="enabled" type="BOOLEAN"/>
@@ -157,8 +129,6 @@
                 <constraints primaryKey="true" primaryKeyName="rt_users_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-19">
         <createTable tableName="sensors">
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="sensor_uid" type="VARCHAR(255)"/>
@@ -167,8 +137,6 @@
                 <constraints primaryKey="true" primaryKeyName="sensors_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-20">
         <createTable tableName="space">
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="name" type="VARCHAR(255)"/>
@@ -180,8 +148,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-21">
         <createTable tableName="space_users">
             <column name="email" type="VARCHAR(255)"/>
             <column name="name" type="VARCHAR(100)"/>
@@ -190,39 +156,13 @@
                 <constraints primaryKey="true" primaryKeyName="space_users_pkey"/>
             </column>
             <column name="id_space" type="BIGINT"/>
-            <column name="id_user_configuration" type="BIGINT"/>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-22">
-        <createTable tableName="user_configuration">
-            <column name="id_configuration" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="user_configuration_pkey"/>
-            </column>
-            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-23">
-        <createTable tableName="user_dev_group_config">
-            <column name="id_device_group" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="user_dev_group_config_pkey"/>
-            </column>
-            <column name="id_user_config" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="user_dev_group_config_pkey"/>
-            </column>
-            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-24">
         <createTable tableName="user_group">
             <column name="name" type="VARCHAR(255)"/>
             <column name="id_user_group" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="user_group_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-25">
         <createTable tableName="user_group_user_group">
             <column name="id_oid_user_group" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="user_group_user_group_pkey"/>
@@ -231,8 +171,6 @@
                 <constraints primaryKey="true" primaryKeyName="user_group_user_group_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-26">
         <createTable tableName="user_role">
             <column name="id_user" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="user_role_pkey"/>
@@ -242,112 +180,45 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-27">
+    <changeSet author="janbayer (generated)" id="1578650622288-24">
         <addUniqueConstraint columnNames="sid_type, sid" constraintName="uq_acl_sid_sid_sid_type" tableName="acl_sid"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-28">
         <addUniqueConstraint columnNames="client_name" constraintName="uq_client_client_name" tableName="client"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-29">
         <addUniqueConstraint columnNames="device_uid" constraintName="uq_device_device_uid" tableName="device"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-30">
         <addUniqueConstraint columnNames="name, id_space" constraintName="uq_device_group_space_group_name" tableName="device_group"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-31">
         <addUniqueConstraint columnNames="privilege_name" constraintName="uq_privilege_name" tableName="privilege"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-32">
         <addUniqueConstraint columnNames="role_name" constraintName="uq_role_role_name" tableName="role"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-33">
         <addUniqueConstraint columnNames="name, client_id" constraintName="uq_space_client_space_name" tableName="space"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-34">
         <addUniqueConstraint columnNames="name" constraintName="uq_user_group" tableName="user_group"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-35">
         <addUniqueConstraint columnNames="username" constraintName="uq_user_username" tableName="rt_users"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-36">
-        <addForeignKeyConstraint baseColumnNames="id_user_config" baseTableName="user_dev_group_config" constraintName="fk55vgkrw8r32swqw4m5j0wexnx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_configuration" referencedTableName="user_configuration" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-37">
+        
         <addForeignKeyConstraint baseColumnNames="oid" baseTableName="acl_entry" constraintName="fk_acl_entry_oid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="oid" referencedTableName="acl_object_identity" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-38">
         <addForeignKeyConstraint baseColumnNames="sid" baseTableName="acl_entry" constraintName="fk_acl_entry_sid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="sid" referencedTableName="acl_sid" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-39">
         <addForeignKeyConstraint baseColumnNames="privilege_id" baseTableName="acl_entry" constraintName="fk_acl_privilege" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id_privilege" referencedTableName="privilege" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-40">
         <addForeignKeyConstraint baseColumnNames="id_admin" baseTableName="admins" constraintName="fk_admin_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user" referencedTableName="rt_users" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-41">
         <addForeignKeyConstraint baseColumnNames="default_space_id" baseTableName="client" constraintName="fk_client_def_space_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_space" referencedTableName="space" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-42">
         <addForeignKeyConstraint baseColumnNames="client_id" baseTableName="client_user" constraintName="fk_client_user_client_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_client" referencedTableName="client" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-43">
         <addForeignKeyConstraint baseColumnNames="id_client_user" baseTableName="client_user" constraintName="fk_client_user_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user" referencedTableName="rt_users" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-44">
         <addForeignKeyConstraint baseColumnNames="id_dev_group" baseTableName="device_group" constraintName="fk_dev_group_oid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="oid" referencedTableName="acl_object_identity" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-45">
         <addForeignKeyConstraint baseColumnNames="id_space" baseTableName="device_group" constraintName="fk_devgroup_id_space" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_space" referencedTableName="space" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-46">
         <addForeignKeyConstraint baseColumnNames="id_device" baseTableName="device_data" constraintName="fk_device_data_device_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_device" referencedTableName="device" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-47">
         <addForeignKeyConstraint baseColumnNames="id_device_group" baseTableName="device" constraintName="fk_device_id_device_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_dev_group" referencedTableName="device_group" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-48">
         <addForeignKeyConstraint baseColumnNames="id_client" baseTableName="client" constraintName="fk_device_oid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="oid" referencedTableName="acl_object_identity" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-49">
         <addForeignKeyConstraint baseColumnNames="id_sensor" baseTableName="device" constraintName="fk_device_sensor" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_sensor" referencedTableName="sensors" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-50">
         <addForeignKeyConstraint baseColumnNames="id_role" baseTableName="role" constraintName="fk_role_sid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="sid" referencedTableName="acl_sid" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-51">
         <addForeignKeyConstraint baseColumnNames="id_space" baseTableName="space" constraintName="fk_sensor_oid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="oid" referencedTableName="acl_object_identity" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-52">
         <addForeignKeyConstraint baseColumnNames="client_id" baseTableName="space" constraintName="fk_space_client_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_client" referencedTableName="client" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-53">
         <addForeignKeyConstraint baseColumnNames="id_space_user" baseTableName="space_users" constraintName="fk_space_user_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user" referencedTableName="rt_users" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-54">
         <addForeignKeyConstraint baseColumnNames="id_user_group" baseTableName="user_group" constraintName="fk_ugroup_sid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="sid" referencedTableName="acl_sid" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-55">
         <addForeignKeyConstraint baseColumnNames="id_space" baseTableName="space_users" constraintName="fk_user_id_space" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_space" referencedTableName="space" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-56">
         <addForeignKeyConstraint baseColumnNames="id_role" baseTableName="user_role" constraintName="fk_user_role_id_role" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_role" referencedTableName="role" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-57">
         <addForeignKeyConstraint baseColumnNames="id_user" baseTableName="user_role" constraintName="fk_user_role_id_user" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user" referencedTableName="rt_users" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-58">
         <addForeignKeyConstraint baseColumnNames="id_user" baseTableName="rt_users" constraintName="fk_user_sid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="sid" referencedTableName="acl_sid" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-59">
         <addForeignKeyConstraint baseColumnNames="id_oid_user_group" baseTableName="user_group_user_group" constraintName="fk_user_ugroup_ugroup_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user_group" referencedTableName="user_group" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-60">
         <addForeignKeyConstraint baseColumnNames="id_user" baseTableName="user_group_user_group" constraintName="fk_user_ugroup_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user" referencedTableName="rt_users" validate="true"/>
     </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-61">
-        <addForeignKeyConstraint baseColumnNames="id_user_configuration" baseTableName="space_users" constraintName="fk_user_user_config" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_configuration" referencedTableName="user_configuration" validate="true"/>
-    </changeSet>
-    <changeSet author="janbayer (generated)" id="1578650065096-62">
-        <addForeignKeyConstraint baseColumnNames="id_device_group" baseTableName="user_dev_group_config" constraintName="fkgd4u11kxebtemom7c399ml9id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_dev_group" referencedTableName="device_group" validate="true"/>
+    <changeSet id="2020-01-10#1" author="janbayer">
+        <addColumn tableName="device">
+            <column name="data_order_index" type="BIGINT"/>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
