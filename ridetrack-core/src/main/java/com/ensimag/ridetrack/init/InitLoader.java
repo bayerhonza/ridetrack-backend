@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 import com.ensimag.ridetrack.models.AdminUser;
 import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
-import com.ensimag.ridetrack.repository.acl.AclPrivilegeRepository;
 import com.ensimag.ridetrack.repository.RtUserRepository;
+import com.ensimag.ridetrack.repository.acl.AclPrivilegeRepository;
 import com.ensimag.ridetrack.roles.RoleRepository;
 import com.ensimag.ridetrack.roles.RoleType;
 
 @Component
 public class InitLoader implements ApplicationListener<ContextRefreshedEvent> {
-
+	
 	boolean alreadySetup = false;
 	
 	@Value("#{'${ridetrack.auth.defaultProperties}'.split(',')}")

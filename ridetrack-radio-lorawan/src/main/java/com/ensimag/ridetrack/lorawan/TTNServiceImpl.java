@@ -1,11 +1,12 @@
 package com.ensimag.ridetrack.lorawan;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 import com.ridetrack.ridetrack.radio.QueueCallbackListener;
 import com.ridetrack.ridetrack.radio.RadioBrokerAuth;
 import com.ridetrack.ridetrack.radio.RadioService;
 import com.ridetrack.ridetrack.radio.exceptions.RidetrackRadioException;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class TTNServiceImpl implements RadioService {
 

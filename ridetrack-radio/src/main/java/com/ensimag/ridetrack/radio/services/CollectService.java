@@ -1,24 +1,30 @@
 package com.ensimag.ridetrack.radio.services;
 
+import static com.ridetrack.ridetrack.radio.RadioType.LORAWAN;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ridetrack.ridetrack.radio.RadioBrokerAuth;
 import com.ridetrack.ridetrack.radio.RadioService;
 import com.ridetrack.ridetrack.radio.exceptions.RidetrackRadioException;
-import org.springframework.stereotype.Service;
-
-import static com.ridetrack.ridetrack.radio.RadioType.LORAWAN;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class CollectService {
-
+    
+    @Autowired
     private RadioServiceManager radioServiceManager;
 
-    public void testCollect() throws RidetrackRadioException {
+    public void initAndLaunchLoraService(String hostname, String apiToken, String username) throws RidetrackRadioException {
         RadioBrokerAuth auth = RadioBrokerAuth.builder()
-                .hostname("eu.thethings.network")
-                .apiToken("ttn-account-v2.FnXxZ08ZXLja9Uc4yNCsPzdZxlwgrqEAMnLQX3CPgMg")
-                .username("ridetrack")
+                .hostname(hostname)
+                .apiToken(apiToken)
+                .username(username)
                 .build();
-        RadioService ttnService = radioServiceManager.getRadioService(auth, LORAWAN);
-        ttnService.startService();
+        RadioService radioService = radioServiceManager.getRadioService(auth, LORAWAN);
+        log.info("Starting radio service {}", LORAWAN.name());
+        radioService.startService();
     }
 }
