@@ -13,6 +13,5 @@ import lombok.Setter;
 @Builder
 public class DeviceGroupModel {
 	private String name;
-	private Set<DeviceModel> devices;
-
+	private List<LastDevicePositionDTO> devices;
 }
