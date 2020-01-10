@@ -1,6 +1,6 @@
 package com.ensimag.ridetrack.dto;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,6 @@ public class DeviceModel {
 	private String deviceUid;
 	private String name;
 	private String deviceType;
-	private Set<DeviceDataModel> data;
+	private List<DeviceDataModel> data;
 	
 }

@@ -1,6 +1,6 @@
 package com.ensimag.ridetrack.dto;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

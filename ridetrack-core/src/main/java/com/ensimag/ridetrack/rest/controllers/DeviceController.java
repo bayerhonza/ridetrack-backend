@@ -86,7 +86,7 @@ public class DeviceController {
 				.data(device.getDeviceData().stream()
 						.skip(Math.max(0, device.getDeviceData().size() - limit))
 						.map(this::mapDeviceDataToModel)
-						.collect(Collectors.toSet()))
+						.collect(Collectors.toList()))
 				.build();
 	}
 	

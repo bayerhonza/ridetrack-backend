@@ -217,8 +217,8 @@
         <addForeignKeyConstraint baseColumnNames="id_user" baseTableName="user_group_user_group" constraintName="fk_user_ugroup_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_user" referencedTableName="rt_users" validate="true"/>
     </changeSet>
     <changeSet id="2020-01-10#1" author="janbayer">
-        <addColumn tableName="device">
-            <column name="data_order_index" type="BIGINT"/>
+        <addColumn tableName="device_data">
+            <column name="data_order_index" type="INTEGER"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
