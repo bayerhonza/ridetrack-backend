@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class AllUserDevicesModel {
+public class LastDevicePositionsModel {
 	private String clientName;
 	private Set<DeviceGroupModel> deviceGroups;
 	

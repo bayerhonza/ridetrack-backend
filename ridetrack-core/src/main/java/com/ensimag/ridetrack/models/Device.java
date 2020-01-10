@@ -3,8 +3,8 @@ package com.ensimag.ridetrack.models;
 import static com.ensimag.ridetrack.models.constants.RideTrackConstraint.UQ_DEVICE_DEVICE_UID;
 
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -66,7 +67,8 @@ public class Device extends AclObjectIdentity {
 	private DeviceGroup deviceGroup;
 	
 	@OneToMany(mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<DeviceData> deviceData = new HashSet<>();
+	@OrderColumn(name = "data_order_index")
+	private List<DeviceData> deviceData = new ArrayList<>();
 
 	@CreationTimestamp
 	@Column(name = "created_at")

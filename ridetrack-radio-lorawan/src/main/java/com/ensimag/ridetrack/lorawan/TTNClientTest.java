@@ -19,24 +19,16 @@ class TTNClientTest {
 		
 		TTNClient ttnClient = new TTNClient(auth);
 		ttnClient.initAndStart(this::packetHandler);
-		Thread thread = new Thread(() -> {
-			while (true) {
-				synchronized (lock) {
-					try {
-						lock.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+		while (true) {
+			synchronized (lock) {
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				System.out.println("processed packet number " + ++number);
 			}
-		}, "testThread");
-		thread.start();
-		Thread.sleep(1000);
-		synchronized (lock) {
-			lock.notify();
+			System.out.println("processed packet number " + ++number);
 		}
-		thread.join();
 	}
 	
 	public static void main(String[] args) throws MqttException, InterruptedException {
