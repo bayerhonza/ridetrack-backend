@@ -11,4 +11,5 @@ public class RtPacket {
     private PacketType packetType;
     private String topic;
     private Long packetId;
+    private String timestamp;
 }

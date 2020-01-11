@@ -22,7 +22,7 @@
         <tag>HEAD</tag>
     </scm>
     <modules>
-        <module>ridetrack-core</module>
+        <module>ridetrack-app</module>
         <module>ridetrack-api</module>
         <module>ridetrack-radio</module>
         <module>ridetrack-rest-api</module>

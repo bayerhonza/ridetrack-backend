@@ -1,0 +1,61 @@
+{
+	"app_id": "ridetrack",
+	"dev_id": "test2",
+	"hardware_serial": "00BA391B24D03CE2",
+	"port": 2,
+	"counter": 1,
+	"is_retry": true,
+	"payload_raw": "AAAAAAAAAP4+CQ0FA6sAAA==",
+	"metadata": {
+		"time": "2020-01-10T16:42:11.6551916Z",
+		"frequency": 867.7,
+		"modulation": "LORA",
+		"data_rate": "SF12BW125",
+		"airtime": 1646592000,
+		"coding_rate": "4/5",
+		"gateways": [
+			{
+				"gtw_id": "eui-904d4afffeff4c03",
+				"timestamp": 795376772,
+				"fine_timestamp_encrypted": "n4+wMpxbNYUe3irmBLrdVw==",
+				"time": "2020-01-10T16:42:10.472869Z",
+				"antenna": 1,
+				"channel": 19,
+				"rssi": -139,
+				"snr": -24,
+				"rf_chain": 0,
+				"latitude": 45.19076,
+				"longitude": 5.73683,
+				"altitude": 252
+			},
+			{
+				"gtw_id": "eui-7276fffffe01988f",
+				"timestamp": 3166080532,
+				"fine_timestamp_encrypted": "OkkMtTnyum83W3K77hbvIQ==",
+				"time": "2020-01-10T16:42:10.472884Z",
+				"channel": 3,
+				"rssi": -140,
+				"snr": -22,
+				"rf_chain": 0,
+				"latitude": 45.19046,
+				"longitude": 5.70353,
+				"altitude": 247
+			},
+			{
+				"gtw_id": "eui-904d4afffeff4dd5",
+				"timestamp": 883481932,
+				"fine_timestamp_encrypted": "mUDAdxPAJ75A6TTY9JUpwg==",
+				"time": "2020-01-10T16:42:10.472853Z",
+				"antenna": 1,
+				"channel": 19,
+				"rssi": -132,
+				"snr": -18,
+				"rf_chain": 0,
+				"latitude": 45.17864,
+				"longitude": 5.75082,
+				"altitude": 239
+			}
+		]
+	},
+	"topic": "ridetrack/devices/test2/up"
+}

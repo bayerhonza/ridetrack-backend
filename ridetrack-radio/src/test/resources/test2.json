@@ -1,0 +1,46 @@
+{
+	"gateways": [
+		{
+			"gatewayId": "eui-904d4afffeff4c03",
+			"latitude": 45.19076,
+			"longitude": 5.73683,
+			"altitude": 252.0
+		},
+		{
+			"gatewayId": "eui-7276fffffe01988f",
+			"latitude": 45.19046,
+			"longitude": 5.70353,
+			"altitude": 247.0
+		},
+		{
+			"gatewayId": "eui-904d4afffeff4dd5",
+			"latitude": 45.17864,
+			"longitude": 5.75082,
+			"altitude": 239.0
+		}
+	],
+	"frame": [
+		[
+			"eui-904d4afffeff4c03",
+			1,
+			null,
+			-139.0,
+			-24.0
+		],
+		[
+			"eui-7276fffffe01988f",
+			null,
+			null,
+			-140.0,
+			-22.0
+		],
+		[
+			"eui-904d4afffeff4dd5",
+			1,
+			null,
+			-132.0,
+			-18.0
+		]
+	],
+	"params": null
+}
