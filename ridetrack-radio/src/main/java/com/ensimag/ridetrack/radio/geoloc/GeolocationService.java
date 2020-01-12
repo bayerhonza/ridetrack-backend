@@ -46,7 +46,6 @@ public class GeolocationService {
 				.longitude(locationDTO.getLongitude())
 				.precision(locationDTO.getToleranceHoriz())
 				.build();
-		
 	}
 	
 	private String getDeviceUidFromPayload(String payloadString) {
