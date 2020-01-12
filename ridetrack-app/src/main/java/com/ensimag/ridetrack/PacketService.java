@@ -98,7 +98,7 @@ public class PacketService {
 					deviceData.setCreatedAt(rtPacket.getTimestamp());
 					device.addDeviceData(deviceData);
 					deviceRepository.save(device);
-					deviceDataRepository.save(deviceData);
+					log.debug("Saved new device data to device {}", device.getDeviceUid());
 				}
 			}
 		});
