@@ -153,6 +153,7 @@ public class DeviceController {
 	public LastDevicePositionDTO mapDeviceToLastDevicePositionModel(final Device device) {
 		return LastDevicePositionDTO.builder()
 				.deviceType(device.getDeviceType())
+				.deviceStatus(device.getStatus())
 				.deviceUid(device.getDeviceUid())
 				.name(device.getName())
 				.lastPosition(mapDeviceDataToModel(device.getDeviceData().get(device.getDeviceData().size() - 1)))

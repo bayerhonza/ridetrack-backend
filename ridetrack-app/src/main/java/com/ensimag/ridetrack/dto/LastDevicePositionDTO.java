@@ -13,6 +13,7 @@ public class LastDevicePositionDTO {
 	private String deviceUid;
 	private String name;
 	private String deviceType;
+	private String deviceStatus;
 	private DeviceDataModel lastPosition;
 	
 }
