@@ -15,6 +15,7 @@ public class DeviceModel {
 	private String deviceUid;
 	private String name;
 	private String deviceType;
+	private String deviceStatus;
 	private List<DeviceDataModel> data;
 	
 }

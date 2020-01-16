@@ -4,6 +4,7 @@ import static com.ensimag.ridetrack.auth.privileges.PrivilegeEnum.CAN_DELETE;
 import static com.ensimag.ridetrack.auth.privileges.PrivilegeEnum.CAN_READ;
 import static com.ensimag.ridetrack.auth.privileges.PrivilegeEnum.CAN_UPDATE;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -137,9 +138,11 @@ public class DeviceController {
 	public DeviceModel mapDeviceToDeviceModel(final Device device, Integer limit) {
 		return DeviceModel.builder()
 				.deviceType(device.getDeviceType())
+				.deviceStatus(device.getStatus())
 				.deviceUid(device.getDeviceUid())
 				.name(device.getName())
 				.data(device.getDeviceData().stream()
+						.filter(Objects::nonNull)
 						.skip(Math.max(0, device.getDeviceData().size() - limit))
 						.map(this::mapDeviceDataToModel)
 						.collect(Collectors.toList()))
@@ -158,7 +161,6 @@ public class DeviceController {
 	
 	private DeviceDataModel mapDeviceDataToModel(final DeviceData deviceData) {
 		return DeviceDataModel.builder()
-				.deviceStatus("OK")
 				.xCoordinate(deviceData.getLongitude())
 				.yCoordinate(deviceData.getLatitude())
 				.timestamp(deviceData.getCreatedAt())

@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class DeviceDataModel {
-	private String deviceStatus;
 	private String xCoordinate;
 	private String yCoordinate;
 	private String timestamp;
