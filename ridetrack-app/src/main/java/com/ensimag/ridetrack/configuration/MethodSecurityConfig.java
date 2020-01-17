@@ -18,6 +18,9 @@ import com.ensimag.ridetrack.auth.RtPermissionEvaluator;
 import com.ensimag.ridetrack.auth.acl.AclService;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Configuration of method security to enable method-security annotations
+ */
 @EnableGlobalMethodSecurity(
 		securedEnabled = true,
 		jsr250Enabled = true,

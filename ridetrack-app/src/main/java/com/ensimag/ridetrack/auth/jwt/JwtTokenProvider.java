@@ -16,6 +16,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Mai class for processing and creation of JWT tokens
+ */
 @Slf4j
 public class JwtTokenProvider implements TokenProvider {
 	
@@ -35,6 +38,13 @@ public class JwtTokenProvider implements TokenProvider {
 		return getClaimFromToken(token, Claims::getSubject);
 	}
 	
+	/**
+	 * Retrieves a claim from JWT token
+	 * @param token token
+	 * @param claimsResolver callback for claim processing
+	 * @param <T> type of claim
+	 * @return claim
+	 */
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);

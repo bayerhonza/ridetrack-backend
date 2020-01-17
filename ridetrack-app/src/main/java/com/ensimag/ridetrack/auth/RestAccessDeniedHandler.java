@@ -13,6 +13,9 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import com.ensimag.ridetrack.rest.exceptions.RestErrorInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Handler of denies access
+ */
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
 	
 	@Override

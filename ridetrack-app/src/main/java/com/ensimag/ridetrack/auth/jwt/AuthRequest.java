@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import lombok.Getter;
 
+/**
+ * POJO for authentication request
+ */
 @Getter
 public class AuthRequest implements Serializable {
 	

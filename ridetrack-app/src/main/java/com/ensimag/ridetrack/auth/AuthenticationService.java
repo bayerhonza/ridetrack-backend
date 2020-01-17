@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.ensimag.ridetrack.exception.RestException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service of authentication
+ */
 @Service
 @Slf4j
 public class AuthenticationService {
@@ -28,6 +31,11 @@ public class AuthenticationService {
 		this.authenticationManager = authenticationManager;
 	}
 	
+	/**
+	 * Authenticates a user. Updates {@link SecurityContextHolder} with found {@link org.springframework.security.core.userdetails.UserDetails}
+	 * @param username username
+	 * @param password password
+	 */
 	public void authenticate(String username, String password) {
 		try {
 			log.info("Authenticating user=[{}] using username-password.", username);

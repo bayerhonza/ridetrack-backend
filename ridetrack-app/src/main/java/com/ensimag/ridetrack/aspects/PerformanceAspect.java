@@ -28,7 +28,7 @@ public class PerformanceAspect {
 	}
 	
 	/**
-	 *
+	 * Method AOP for measur of execution time
 	 * @param joinPoint
 	 * @return
 	 * @throws Throwable

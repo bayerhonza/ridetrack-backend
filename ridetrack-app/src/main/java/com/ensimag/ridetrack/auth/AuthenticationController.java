@@ -15,6 +15,9 @@ import com.ensimag.ridetrack.auth.jwt.AuthRequest;
 import com.ensimag.ridetrack.auth.jwt.JwtResponse;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Authentication REST controller
+ */
 @RestController
 @Slf4j
 public class AuthenticationController {
@@ -30,6 +33,11 @@ public class AuthenticationController {
 		this.tokenProvider = tokenProvider;
 	}
 	
+	/**
+	 * Creates authentication token
+	 * @param authenticationRequest jwt request
+	 * @return response with token
+	 */
 	@PostMapping(value = "/authenticate")
 	public ResponseEntity<JwtResponse> createAuthenticationToken(
 			@RequestBody AuthRequest authenticationRequest) {
@@ -38,6 +46,11 @@ public class AuthenticationController {
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 	
+	/**
+	 * "Who am I"
+	 * @param user user
+	 * @return username of currently logged user
+	 */
 	@GetMapping("/api/whoami")
 	@ResponseBody
 	@PreAuthorize("isFullyAuthenticated()")

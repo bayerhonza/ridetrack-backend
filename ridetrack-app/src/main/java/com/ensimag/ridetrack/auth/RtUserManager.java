@@ -15,6 +15,9 @@ import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.RtUser;
 import com.ensimag.ridetrack.repository.RtUserRepository;
 
+/**
+ * Implementation of Spring User manager
+ */
 @Service
 @Primary
 public class RtUserManager implements UserDetailsService, UserDetailsPasswordService {

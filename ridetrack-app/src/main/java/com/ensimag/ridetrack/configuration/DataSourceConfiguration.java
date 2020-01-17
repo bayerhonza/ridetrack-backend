@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
+/**
+ * Configuration of database for production and tests
+ */
 @Configuration
 @PropertySource(value = "file:${app.home}/conf/config.properties", ignoreResourceNotFound = true)
 public class DataSourceConfiguration {
@@ -17,7 +20,7 @@ public class DataSourceConfiguration {
 	public DataSourceConfiguration(@Autowired Environment env) {
 		this.env = env;
 	}
-
+	
 	@Bean
 	@Profile("!test")
 	public DataSource getDataSource() {

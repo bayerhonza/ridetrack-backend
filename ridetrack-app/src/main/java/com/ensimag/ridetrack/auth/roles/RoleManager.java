@@ -11,6 +11,9 @@ import com.ensimag.ridetrack.models.Role;
 import com.ensimag.ridetrack.models.SpaceUser;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Manager of roles
+ */
 @Service
 @Transactional
 @Slf4j
@@ -26,11 +29,19 @@ public class RoleManager {
 		}
 	}
 	
+	/**
+	 * Assigns user role to space user
+	 * @param user space user
+	 */
 	public void assignRoleToUser(SpaceUser user) {
 		Role entityRole = createRoleIfNotFound(RoleType.USER.getRoleName());
 		user.addRole(entityRole);
 	}
 	
+	/**
+	 * Assigns client role to client user
+	 * @param user client user
+	 */
 	public void assignRoleToClientUser(ClientUser user) {
 		Role entityRole = createRoleIfNotFound(RoleType.CLIENT.getRoleName());
 		user.addRole(entityRole);

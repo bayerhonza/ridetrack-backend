@@ -14,6 +14,9 @@ import com.ensimag.ridetrack.models.acl.AclObjectIdentity;
 import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.auth.privileges.PrivilegeEnum;
 
+/**
+ * Evaluator of permission for Spring Security
+ */
 public class RtPermissionEvaluator implements PermissionEvaluator {
 	
 	private AclService aclService;

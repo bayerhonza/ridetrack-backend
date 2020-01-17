@@ -30,6 +30,9 @@ import com.ensimag.ridetrack.repository.AclUserGroupRepository;
 import com.ensimag.ridetrack.repository.acl.AclEntryRepository;
 import com.google.common.collect.ImmutableSet;
 
+/**
+ * Service which takes care of ACL of objects
+ */
 @Service
 @Transactional
 public class AclService {
@@ -53,6 +56,11 @@ public class AclService {
 	@Autowired
 	private PrivilegeManager privilegeManager;
 	
+	/**
+	 * Registration of new client user group in ACL system
+	 * @param client
+	 * @param userGroupName
+	 */
 	public void registerNewClientUserGroup(Client client,String userGroupName) {
 		AclUserGroup clientUserGroup = new AclUserGroup(userGroupName);
 		userGroupRepository.save(clientUserGroup);
@@ -61,6 +69,12 @@ public class AclService {
 		createEntryForEachOid(clientSpaces, clientUserGroup, defaultClientSpacePrivileges);
 	}
 	
+	/**
+	 * Creation of {@link AclEntry} for each OID and SID
+	 * @param objectIdentities set of OIDs
+	 * @param sid SID
+	 * @param privilegeEnums set of privileges
+	 */
 	public void createEntryForEachOid(Set<? extends AclObjectIdentity> objectIdentities, AclSid sid, Set<PrivilegeEnum> privilegeEnums) {
 		Set<AclEntry> aclEntries = objectIdentities.stream()
 				.map(oid -> privilegeEnums.stream()
@@ -71,12 +85,26 @@ public class AclService {
 		entryRepository.saveAll(aclEntries);
 	}
 	
+	/**
+	 * Verifies the privilege of an SID in regard of OID
+	 * @param aclSid sid
+	 * @param aclObjectIdentity oid
+	 * @param privilege privilege
+	 * @return true if access granted, else false
+	 */
 	public boolean isAuthorized(AclSid aclSid, AclObjectIdentity aclObjectIdentity, AclPrivilege privilege) {
 		return !entryRepository
 				.findAclEntriesBySidObjectAndObjectIdentityAndPrivilege(aclSid, aclObjectIdentity, privilege)
 				.isEmpty();
 	}
 	
+	/**
+	 * Access evaluation of an user to OID
+	 * @param rtUser logged user
+	 * @param oid oid
+	 * @param aclPrivilege desired privilege
+	 * @return true if access granted, else false
+	 */
 	public boolean evaluateSid(RtUser rtUser, AclObjectIdentity oid, AclPrivilege aclPrivilege) {
 		Set<AclUserGroup> userGroups = rtUser.getUserGroups();
 		boolean groupAccessGranted = userGroups
@@ -91,6 +119,12 @@ public class AclService {
 		
 	}
 	
+	/**
+	 * Assigns privilege to user group
+	 * @param oid oid
+	 * @param userGroup user group
+	 * @param privilegeEnum privilege
+	 */
 	public void assignPrivilegeToUserGroup(AclObjectIdentity oid, AclUserGroup userGroup, PrivilegeEnum privilegeEnum) {
 		AclEntry entry = createAclEntry(oid, userGroup, privilegeEnum);
 		entryRepository.save(entry);
@@ -104,10 +138,19 @@ public class AclService {
 				.build();
 	}
 	
+	/**
+	 * Deletes all {@link AclObjectIdentity} of an OID
+	 * @param objectIdentity OID
+	 */
 	public void deleteAllEntriesOfOid(AclObjectIdentity objectIdentity) {
 		entryRepository.deleteAllByObjectIdentity(objectIdentity);
 	}
 	
+	/**
+	 * Finds privilege entity base on privilege enum
+	 * @param privilegeEnum privilege enum
+	 * @return {@link AclPrivilege} entity of privilege
+	 */
 	public AclPrivilege getAclPrivilegeByName(PrivilegeEnum privilegeEnum) {
 		return privilegeManager.getPrivilege(privilegeEnum);
 	}

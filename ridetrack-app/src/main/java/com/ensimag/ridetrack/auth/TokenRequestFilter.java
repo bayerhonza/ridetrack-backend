@@ -25,6 +25,9 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Filter for token
+ */
 @Slf4j
 public class TokenRequestFilter extends GenericFilterBean {
 	
@@ -36,6 +39,13 @@ public class TokenRequestFilter extends GenericFilterBean {
 	
 	private final RequestMatcher requiresAuthenticationRequestMatcher;
 	
+	/**
+	 * Constructor
+	 * @param antPattern pattern to filter
+	 * @param tokenProvider token of provider
+	 * @param userDetailsService user service service
+	 * @param entryPoint entry point
+	 */
 	public TokenRequestFilter(String antPattern,
 			TokenProvider tokenProvider,
 			UserDetailsService userDetailsService,

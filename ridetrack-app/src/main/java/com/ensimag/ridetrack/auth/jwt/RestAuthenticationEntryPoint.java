@@ -14,7 +14,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import com.ensimag.ridetrack.rest.exceptions.RestErrorInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+/**
+ * Error processing of REST controllers
+ */
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
 	@Override

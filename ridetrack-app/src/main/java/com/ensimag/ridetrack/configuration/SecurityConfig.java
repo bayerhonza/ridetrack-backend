@@ -22,9 +22,13 @@ import com.ensimag.ridetrack.auth.jwt.JwtConfiguration;
 import com.ensimag.ridetrack.auth.jwt.JwtTokenProvider;
 import com.ensimag.ridetrack.auth.jwt.RestAuthenticationEntryPoint;
 
+/**
+ * Configuration of spring security
+ */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	/** whitelisted patterns */
 	private static final String[] AUTH_WHITELIST = {
 			"/v2/api-docs",
 			"/swagger-resources",
@@ -41,7 +45,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final TokenProvider tokenProvider;
 	
 	private final AccessDeniedHandler accessDeniedHandler;
-
+	
+	/**
+	 * Constructor of Security config
+	 * @param jwtConfiguration pojo of jwt configuration
+	 */
 	public SecurityConfig(@Autowired JwtConfiguration jwtConfiguration) {
 		this.authEntryPoint = new RestAuthenticationEntryPoint();
 		this.tokenProvider = JwtTokenProvider.buildFrom(jwtConfiguration);

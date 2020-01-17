@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import com.ensimag.ridetrack.radio.services.CollectService;
 import com.ridetrack.ridetrack.radio.exceptions.RidetrackRadioException;
 
+/**
+ * POJO for collect configuration
+ */
 @Configuration
 public class CollectConfiguration {
 	

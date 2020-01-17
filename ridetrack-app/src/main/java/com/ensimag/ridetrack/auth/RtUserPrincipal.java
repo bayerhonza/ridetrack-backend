@@ -13,6 +13,9 @@ import com.ensimag.ridetrack.models.acl.AclSid;
 import com.ensimag.ridetrack.models.acl.SidType;
 import lombok.Getter;
 
+/**
+ * Implementation of principal
+ */
 @Getter
 public class RtUserPrincipal implements UserDetails, CredentialsContainer {
 	

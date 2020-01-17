@@ -9,6 +9,9 @@ import com.ensimag.ridetrack.models.acl.AclPrivilege;
 import com.ensimag.ridetrack.repository.acl.AclPrivilegeRepository;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementation of privilege manager
+ */
 @Component
 @Slf4j
 @Transactional

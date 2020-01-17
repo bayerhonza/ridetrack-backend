@@ -1,4 +1,7 @@
 package com.ensimag.ridetrack.auth.privileges;
+/**
+ * Enum of possible privileges
+ */
 public enum PrivilegeEnum {
 	CAN_CREATE_SPACE("CAN_CREATE_SPACE"),
 	CAN_CREATE_SPACE_USER("CAN_CREATE_SPACE_USER"),
